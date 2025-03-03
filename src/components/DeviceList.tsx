@@ -63,6 +63,11 @@ function DeviceItem({ device }: DeviceItemProps) {
                     購入日: {new Date(device.purchase_date).toLocaleDateString()}
                   </p>
                 )}
+                {device.last_battery_change && (
+                  <p className="mt-1 text-sm text-gray-500">
+                    交換日: {new Date(device.last_battery_change).toLocaleDateString()}
+                  </p>
+                )}
               </div>
             </div>
           </Link>
