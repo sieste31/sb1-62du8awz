@@ -1,62 +1,48 @@
-# StackBlitz から GitHub リポジトリへの登録方法
+# StackBlitz から既存の GitHub リポジトリへの登録方法
 
-StackBlitz で作成したプロジェクトを GitHub リポジトリに登録する手順を説明します。
+StackBlitz で修正したプロジェクトを既存の GitHub リポジトリに登録する手順を説明します。
 
 ## 前提条件
 
 - GitHub アカウントを持っていること
-- StackBlitz プロジェクトが完成していること
+- 既存の GitHub リポジトリが存在すること
+- StackBlitz プロジェクトの修正が完了していること
 
 ## 手順
 
-### 1. GitHub リポジトリの作成
-
-1. [GitHub](https://github.com/) にログインします。
-2. 右上の「+」アイコンをクリックし、「New repository」を選択します。
-3. リポジトリ名（例：`battery-management-app`）を入力します。
-4. 必要に応じて説明を追加します。
-5. リポジトリの公開設定（Public または Private）を選択します。
-6. 「Create repository」ボタンをクリックします。
-
-### 2. StackBlitz からのエクスポート
-
-#### 方法1: StackBlitz の GitHub 連携機能を使用する（推奨）
+### 1. StackBlitz での準備
 
 1. StackBlitz プロジェクトを開きます。
 2. 左側のメニューから「GitHub」アイコンをクリックします。
    - または、上部メニューの「Project」→「Connect Repository」を選択します。
 3. GitHub アカウントとの連携を許可します（初回のみ）。
-4. 作成したリポジトリを選択するか、新しいリポジトリを作成します。
-5. ブランチ名を確認し、「Connect Repository」をクリックします。
-6. 変更内容を確認し、コミットメッセージを入力して「Commit & Push」をクリックします。
 
-#### 方法2: 手動でファイルをエクスポートする
+### 2. 既存リポジトリとの接続
 
-1. StackBlitz プロジェクトを開きます。
-2. 上部メニューの「Project」→「Export Project」→「Download as ZIP」を選択します。
-3. ダウンロードした ZIP ファイルを解凍します。
-4. ローカルで Git リポジトリを初期化し、GitHub リポジトリに接続します：
+1. 「Connect to GitHub」ダイアログで、既存のリポジトリを選択します。
+2. ブランチ名を確認します（例：`feature/stackblitz-updates`）。
+   - 新しいブランチを作成することを推奨します。
+3. 「Connect Repository」をクリックします。
 
-```bash
-cd battery-management-app
-git init
-git add .
-git commit -m "Initial commit from StackBlitz"
-git branch -M main
-git remote add origin https://github.com/yourusername/battery-management-app.git
-git push -u origin main
-```
+### 3. 変更内容の確認とコミット
 
-### 3. 環境変数の設定
+1. 変更内容を確認します。
+2. コミットメッセージを入力します（例：「Update project with StackBlitz changes」）。
+3. 「Commit & Push」をクリックします。
+
+### 4. プルリクエストの作成
+
+1. GitHub リポジトリにアクセスします。
+2. 「Pull requests」タブを開きます。
+3. 「New pull request」をクリックします。
+4. ベースブランチ（通常は`main`）と作成したブランチを選択します。
+5. 変更内容を確認し、プルリクエストを作成します。
+
+### 5. 環境変数の設定
 
 1. `.env` ファイルが `.gitignore` に含まれていることを確認します。
 2. `.env.example` ファイルが正しく作成されていることを確認します。
-3. GitHub リポジトリの README.md に環境変数の設定方法が記載されていることを確認します。
-
-### 4. GitHub リポジトリの確認
-
-1. GitHub リポジトリにアクセスし、すべてのファイルが正しくアップロードされていることを確認します。
-2. `.env` ファイルがリポジトリに含まれていないことを確認します。
+3. 必要な環境変数をプロジェクトの設定に追加します。
 
 ## 注意事項
 
@@ -72,5 +58,14 @@ A: GitHub の認証情報が正しいか確認してください。必要に応�
 ### Q: 一部のファイルがアップロードされない場合
 A: `.gitignore` ファイルを確認し、必要なファイルが除外されていないか確認してください。
 
-### Q: 大きなファイルをアップロードできない場合
-A: GitHub には単一ファイルのサイズ制限があります。大きなファイルは Git LFS の使用を検討してください。
+### Q: コンフリクトが発生した場合
+A: 
+1. ローカルに最新の変更をプルします。
+2. コンフリクトを解決します。
+3. 変更をコミットして再度プッシュします。
+
+## 補足
+
+- プルリクエストのレビュー後、問題がなければマージしてください。
+- マージ後、一時的なブランチは削除しても構いません。
+- 定期的に最新の変更を取り込むことを推奨します。

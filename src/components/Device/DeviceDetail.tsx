@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ArrowLeft, Battery, Pencil, X, Check, History, Upload, ToyBrick } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ArrowLeft, Battery, Pencil, X, Check, History, Upload, ToyBrick, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -11,6 +11,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { DeviceBatterySlot } from './DeviceBatterySlot';
 import { DeviceUsageHistory } from './DeviceUsageHistory';
 import { getDeviceImage } from '@/lib/deviceImages';
+import { compressImage, validateImage } from '@/lib/imageUtils';
+import { ImageCropper } from '@/components/ImageCropper';
 import type { Database } from '@/lib/database.types';
 
 type Device = Database['public']['Tables']['devices']['Row'];
@@ -40,18 +42,20 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
   const [showHistory, setShowHistory] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editData, setEditData] = useState<{
     name: string;
     type: Device['type'];
     batteryType: string;
     batteryCount: number;
+    batteryLifeWeeks: string | number;
     purchaseDate: string;
     notes: string;
   } | null>(null);
 
-  // Reset edit data when device changes or editing mode is toggled
   useEffect(() => {
     if (device) {
       setEditData({
@@ -59,6 +63,7 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
         type: device.type,
         batteryType: device.battery_type,
         batteryCount: device.battery_count,
+        batteryLifeWeeks: device.battery_life_weeks || '',
         purchaseDate: device.purchase_date || '',
         notes: device.notes || '',
       });
@@ -78,15 +83,48 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
 
   const DeviceIcon = deviceTypeIcons[device.type as keyof typeof deviceTypeIcons];
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const calculateBatteryEndDate = () => {
+    if (!device.last_battery_change || !device.battery_life_weeks) return null;
+    const lastChange = new Date(device.last_battery_change);
+    const endDate = new Date(lastChange);
+    endDate.setDate(endDate.getDate() + (device.battery_life_weeks * 7));
+    return endDate;
+  };
+
+  const batteryEndDate = calculateBatteryEndDate();
+  const isNearingEnd = batteryEndDate && (new Date(batteryEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 7;
+
+  const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
+      validateImage(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        setShowCropper(true);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('画像選択エラー:', err);
+      setError(err instanceof Error ? err.message : '画像の選択に失敗しました');
+    }
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user || !device) return;
+
+    try {
+      const compressedFile = await compressImage(croppedBlob, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+      });
+
+      const fileExt = compressedFile.name.split('.').pop();
       const filePath = `${user.id}/${device.id}/image.${fileExt}`;
 
-      // まず既存の画像を削除
       if (device.image_url) {
         const existingPath = device.image_url.split('/').slice(-3).join('/');
         await supabase.storage
@@ -94,10 +132,9 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
           .remove([existingPath]);
       }
 
-      // 新しい画像をアップロード
       const { error: uploadError } = await supabase.storage
         .from('device-images')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, compressedFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 
@@ -108,8 +145,11 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
 
       if (updateError) throw updateError;
 
+      setShowCropper(false);
+      setSelectedImage(null);
       window.location.reload();
     } catch (err) {
+      console.error('画像アップロード処理エラー:', err);
       setError(err instanceof Error ? err.message : '画像のアップロードに失敗しました');
     }
   };
@@ -127,6 +167,7 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
           type: editData.type,
           battery_type: editData.batteryType,
           battery_count: editData.batteryCount,
+          battery_life_weeks: editData.batteryLifeWeeks ? Number(editData.batteryLifeWeeks) : null,
           purchase_date: editData.purchaseDate || null,
           notes: editData.notes || null,
         })
@@ -146,22 +187,19 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
   };
 
   const handleCancelEdit = () => {
-    // Reset form data to current device data
     setEditData({
       name: device.name,
       type: device.type,
       batteryType: device.battery_type,
       batteryCount: device.battery_count,
+      batteryLifeWeeks: device.battery_life_weeks || '',
       purchaseDate: device.purchase_date || '',
       notes: device.notes || '',
     });
     setIsEditing(false);
   };
 
-  // デバイスに設定されている電池の数を計算
   const installedCount = batteries.length;
-  
-  // 電池が設定されているかどうかを確認
   const hasBatteriesInstalled = installedCount > 0;
 
   return (
@@ -249,7 +287,7 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={handleImageUpload}
+                    onChange={handleImageSelect}
                   />
                 </div>
               </div>
@@ -371,6 +409,36 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
                   </div>
 
                   <div>
+                    <dt className="text-sm font-medium text-gray-500">電池寿命（週）</dt>
+                    <dd className="mt-1">
+                      {isEditing ? (
+                        <div className="relative rounded-md shadow-sm">
+                          <input
+                            type="number"
+                            min="1"
+                            value={editData.batteryLifeWeeks}
+                            onChange={(e) =>
+                              setEditData({
+                                ...editData,
+                                batteryLifeWeeks: e.target.value,
+                              })
+                            }
+                            className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm pr-8"
+                            placeholder="例: 12"
+                          />
+                          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">週</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-900">
+                          {device.battery_life_weeks ? `${device.battery_life_weeks}週` : '---'}
+                        </span>
+                      )}
+                    </dd>
+                  </div>
+
+                  <div>
                     <dt className="text-sm font-medium text-gray-500">購入日</dt>
                     <dd className="mt-1">
                       {isEditing ? (
@@ -398,11 +466,24 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
                   <div>
                     <dt className="text-sm font-medium text-gray-500">最終電池交換日</dt>
                     <dd className="mt-1">
-                      <span className="text-sm text-gray-900">
-                        {device.last_battery_change
-                          ? new Date(device.last_battery_change).toLocaleDateString()
-                          : '---'}
-                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-900">
+                          {device.last_battery_change
+                            ? new Date(device.last_battery_change).toLocaleDateString()
+                            : '---'}
+                        </span>
+                        {batteryEndDate && (
+                          <div className={`flex items-center text-sm ${
+                            isNearingEnd ? 'text-red-600' : 'text-gray-500'
+                          }`}>
+                            <Clock className="h-4 w-4 mr-1" />
+                            <span>
+                              交換予定: {batteryEndDate.toLocaleDateString()}
+                              {isNearingEnd && ' (まもなく交換時期)'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </dd>
                   </div>
 
@@ -466,7 +547,6 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
                 battery={battery}
               />
             ))}
-            {/* 未設置のスロットを表示 */}
             {Array.from({ length: device.battery_count - batteries.length }).map((_, index) => (
               <DeviceBatterySlot
                 key={`empty-${index}`}
@@ -488,6 +568,17 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
           deviceId={device.id}
           deviceName={device.name}
         />
+
+        {showCropper && selectedImage && (
+          <ImageCropper
+            image={selectedImage}
+            onClose={() => {
+              setShowCropper(false);
+              setSelectedImage(null);
+            }}
+            onCropComplete={handleCropComplete}
+          />
+        )}
       </div>
     </div>
   );

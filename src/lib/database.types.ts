@@ -118,12 +118,14 @@ export interface Database {
           type: 'smartphone' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy'
           battery_type: string
           battery_count: number
+          battery_life_weeks: number | null
           purchase_date: string | null
           notes: string | null
           image_url: string | null
           created_at: string
           user_id: string
           last_battery_change: string | null
+          has_batteries: boolean
         }
         Insert: {
           id?: string
@@ -131,12 +133,14 @@ export interface Database {
           type: 'smartphone' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy'
           battery_type: string
           battery_count: number
+          battery_life_weeks?: number | null
           purchase_date?: string | null
           notes?: string | null
           image_url?: string | null
           created_at?: string
           user_id: string
           last_battery_change?: string | null
+          has_batteries?: boolean
         }
         Update: {
           id?: string
@@ -144,12 +148,14 @@ export interface Database {
           type?: 'smartphone' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy'
           battery_type?: string
           battery_count?: number
+          battery_life_weeks?: number | null
           purchase_date?: string | null
           notes?: string | null
           image_url?: string | null
           created_at?: string
           user_id?: string
           last_battery_change?: string | null
+          has_batteries?: boolean
         }
       }
     }

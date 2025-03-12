@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Battery, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import { getBatteryImage } from '@/lib/batteryImages';
+import { supabase } from '@/lib/supabase';
 import type { Database } from '@/lib/database.types';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
@@ -18,14 +19,32 @@ interface BatteryListItemProps {
 
 export function BatteryListItem({ group }: BatteryListItemProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const installedCount = group.batteries?.filter(b => b.device_id).length ?? 0;
+  const [installedCount, setInstalledCount] = useState(0);
   const totalCount = group.count;
   const shortId = group.id.slice(0, 8);
 
   useEffect(() => {
     getBatteryImage(group.type as keyof typeof defaultBatteryImages, group.image_url)
       .then(url => setImageUrl(url));
-  }, [group.type, group.image_url]);
+    
+    // Fetch the actual installed count from the database
+    async function fetchInstalledCount() {
+      try {
+        const { data, error } = await supabase
+          .from('batteries')
+          .select('id')
+          .eq('group_id', group.id)
+          .not('device_id', 'is', null);
+        
+        if (error) throw error;
+        setInstalledCount(data?.length || 0);
+      } catch (err) {
+        console.error('Error fetching installed batteries count:', err);
+      }
+    }
+    
+    fetchInstalledCount();
+  }, [group.type, group.image_url, group.id]);
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200">

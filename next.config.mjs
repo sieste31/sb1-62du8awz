@@ -5,6 +5,12 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com', 'gokqhgrqpigwicuojlzh.supabase.co'],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', '.webcontainer.io'],
+    },
+  },
+  optimizeFonts: false,
 };
 
 export default nextConfig;

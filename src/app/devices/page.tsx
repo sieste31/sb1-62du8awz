@@ -1,6 +1,6 @@
 'use client';
 
-import { DeviceList } from '@/components/DeviceList';
+import { DeviceList } from '@/components/Device/DeviceList';
 import { Navigation } from '@/components/Navigation';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AuthRequired } from '@/components/AuthRequired';

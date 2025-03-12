@@ -28,6 +28,7 @@ export function DeviceForm() {
     type: 'smartphone' as DeviceType,
     batteryType: '単3形',
     batteryCount: 1,
+    batteryLifeWeeks: '' as string | number,
     purchaseDate: '',
     notes: '',
   });
@@ -47,6 +48,7 @@ export function DeviceForm() {
           type: formData.type,
           battery_type: formData.batteryType,
           battery_count: formData.batteryCount,
+          battery_life_weeks: formData.batteryLifeWeeks ? Number(formData.batteryLifeWeeks) : null,
           purchase_date: formData.purchaseDate || null,
           notes: formData.notes || null,
           user_id: user.id,
@@ -158,6 +160,29 @@ export function DeviceForm() {
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="batteryLifeWeeks" className="block text-sm font-medium text-gray-700">
+                電池寿命（週）
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <input
+                  type="number"
+                  id="batteryLifeWeeks"
+                  min="1"
+                  value={formData.batteryLifeWeeks}
+                  onChange={(e) => setFormData({ ...formData, batteryLifeWeeks: e.target.value })}
+                  placeholder="例: 12"
+                  className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">週</span>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                電池の予想寿命を週単位で設定します。空欄の場合は通知されません。
+              </p>
             </div>
 
             <div>

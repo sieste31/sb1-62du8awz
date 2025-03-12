@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Battery, Camera, Upload, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -8,8 +6,10 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage } from '@/lib/batteryImages';
+import { compressImage, validateImage } from '@/lib/imageUtils';
 import { BatteryItem } from './BatteryItem';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { ImageCropper } from './ImageCropper';
 import type { Database } from '@/lib/database.types';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
@@ -32,6 +32,8 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editData, setEditData] = useState<{
     name: string;
     type: string;
@@ -67,12 +69,38 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
     );
   }
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
+      // 画像のバリデーション
+      validateImage(file);
+
+      // 画像をData URLに変換
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        setShowCropper(true);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('画像選択エラー:', err);
+      setError(err instanceof Error ? err.message : '画像の選択に失敗しました');
+    }
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user) return;
+
+    try {
+      // 圧縮処理
+      const compressedFile = await compressImage(croppedBlob, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+      });
+
+      const fileExt = compressedFile.name.split('.').pop();
       const filePath = `${user.id}/${batteryGroup.id}/image.${fileExt}`;
 
       // まず既存の画像を削除
@@ -86,7 +114,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
       // 新しい画像をアップロード
       const { error: uploadError } = await supabase.storage
         .from('battery-images')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, compressedFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 
@@ -97,8 +125,12 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
 
       if (updateError) throw updateError;
 
+      // クロッパーを閉じて画面を更新
+      setShowCropper(false);
+      setSelectedImage(null);
       window.location.reload();
     } catch (err) {
+      console.error('画像アップロード処理エラー:', err);
       setError(err instanceof Error ? err.message : '画像のアップロードに失敗しました');
     }
   };
@@ -370,7 +402,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={handleImageUpload}
+                    onChange={handleImageSelect}
                   />
                 </div>
               </div>
@@ -521,6 +553,18 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           message={`「${batteryGroup.name}」を削除してもよろしいですか？\n\n※この操作は取り消せません。`}
           loading={deleting}
         />
+
+        {/* Image Cropper */}
+        {showCropper && selectedImage && (
+          <ImageCropper
+            image={selectedImage}
+            onClose={() => {
+              setShowCropper(false);
+              setSelectedImage(null);
+            }}
+            onCropComplete={handleCropComplete}
+          />
+        )}
       </div>
     </div>
   );

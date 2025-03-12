@@ -1,16 +1,6 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-
-// Configure the Inter font with display: 'swap' to improve performance
-// and prevent abort errors during font loading
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-  fallback: ['system-ui', 'sans-serif']
-});
 
 export const metadata: Metadata = {
   title: '電池＆デバイス管理',
@@ -24,7 +14,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={inter.className}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-sans">
         <Providers>{children}</Providers>
       </body>
     </html>

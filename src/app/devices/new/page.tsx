@@ -1,6 +1,6 @@
 'use client';
 
-import { DeviceForm } from '@/components/DeviceForm';
+import { DeviceForm } from '@/components/Device/DeviceForm';
 import { Navigation } from '@/components/Navigation';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AuthRequired } from '@/components/AuthRequired';

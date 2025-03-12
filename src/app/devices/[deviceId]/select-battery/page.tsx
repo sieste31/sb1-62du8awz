@@ -1,6 +1,6 @@
 'use client';
 
-import { SelectBattery } from '@/components/SelectBattery';
+import { SelectBattery } from '@/components/Device/SelectBattery';
 import { Navigation } from '@/components/Navigation';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AuthRequired } from '@/components/AuthRequired';

@@ -19,16 +19,15 @@ type Battery = Database['public']['Tables']['batteries']['Row'] & {
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
-// キャッシュのキー定数
 export const QUERY_KEYS = {
   BATTERY_GROUPS: 'batteryGroups',
   BATTERY_GROUP: 'batteryGroup',
   DEVICES: 'devices',
   DEVICE: 'device',
   AVAILABLE_BATTERIES: 'availableBatteries',
+  DEVICE_BATTERIES: 'deviceBatteries',
 } as const;
 
-// 電池グループ一覧の取得
 export function useBatteryGroups() {
   const queryClient = useQueryClient();
   const setBatteryGroups = useStore((state) => state.setBatteryGroups);
@@ -54,7 +53,7 @@ export function useBatteryGroups() {
       if (error) throw error;
       return data as BatteryGroup[];
     },
-    staleTime: 0, // キャッシュを即時無効化
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -66,7 +65,6 @@ export function useBatteryGroups() {
   return { batteryGroups: data || [], loading };
 }
 
-// 電池グループ詳細の取得
 export function useBatteryGroup(id: string) {
   const queryClient = useQueryClient();
   const updateBatteryGroup = useStore((state) => state.updateBatteryGroup);
@@ -96,7 +94,7 @@ export function useBatteryGroup(id: string) {
 
       return { batteryGroup, batteries };
     },
-    staleTime: 0, // キャッシュを即時無効化
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -112,7 +110,6 @@ export function useBatteryGroup(id: string) {
   };
 }
 
-// デバイス一覧の取得
 export function useDevices() {
   const queryClient = useQueryClient();
   const setDevices = useStore((state) => state.setDevices);
@@ -129,7 +126,7 @@ export function useDevices() {
       if (error) throw error;
       return data as Device[];
     },
-    staleTime: 0, // キャッシュを即時無効化
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -141,7 +138,6 @@ export function useDevices() {
   return { devices: data || [], loading };
 }
 
-// デバイス詳細の取得
 export function useDevice(id: string) {
   const queryClient = useQueryClient();
   const updateDevice = useStore((state) => state.updateDevice);
@@ -173,7 +169,7 @@ export function useDevice(id: string) {
         batteries: batteriesData as Battery[],
       };
     },
-    staleTime: 0, // キャッシュを即時無効化
+    staleTime: 0,
   });
 
   useEffect(() => {
@@ -189,7 +185,28 @@ export function useDevice(id: string) {
   };
 }
 
-// 利用可能な電池の取得
+export function useDeviceBatteries(deviceId: string) {
+  const { data, isLoading: loading } = useQuery({
+    queryKey: [QUERY_KEYS.DEVICE_BATTERIES, deviceId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('batteries')
+        .select('*')
+        .eq('device_id', deviceId);
+
+      if (error) throw error;
+      return data as Battery[];
+    },
+    staleTime: 0,
+  });
+
+  return {
+    batteries: data || [],
+    installedCount: data?.length || 0,
+    loading,
+  };
+}
+
 export function useAvailableBatteries(batteryType: string) {
   const queryClient = useQueryClient();
 
@@ -199,10 +216,27 @@ export function useAvailableBatteries(batteryType: string) {
       const { data: groups, error: groupsError } = await supabase
         .from('battery_groups')
         .select(`
-          *,
-          batteries (
-            *,
-            devices (
+          id,
+          name,
+          type,
+          kind,
+          count,
+          voltage,
+          notes,
+          image_url,
+          created_at,
+          user_id,
+          batteries!inner (
+            id,
+            group_id,
+            slot_number,
+            status,
+            last_checked,
+            last_changed_at,
+            device_id,
+            created_at,
+            user_id,
+            devices:device_id (
               id,
               name
             )
@@ -213,29 +247,27 @@ export function useAvailableBatteries(batteryType: string) {
 
       if (groupsError) throw groupsError;
 
-      // すべての電池グループを返す（フィルタリングを削除）
       return groups as BatteryGroup[];
     },
-    staleTime: 0, // キャッシュを即時無効化
-    enabled: !!batteryType, // batteryTypeが存在する場合のみクエリを実行
+    staleTime: 0,
+    enabled: !!batteryType,
   });
 
   return { availableBatteryGroups: data ?? [], loading };
 }
 
-// キャッシュを無効化する関数
 export function invalidateQueries(queryClient: ReturnType<typeof useQueryClient>) {
   return {
-    // 電池関連のキャッシュを無効化
     invalidateBatteries: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BATTERY_GROUPS] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.BATTERY_GROUP] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.AVAILABLE_BATTERIES] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICE_BATTERIES] });
     },
-    // デバイス関連のキャッシュを無効化
     invalidateDevices: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICES] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICE] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICE_BATTERIES] });
     },
   };
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { X, Battery, Calendar } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
-import type { Database } from '../lib/database.types';
+import { supabase } from '@/lib/supabase';
+import type { Database } from '@/lib/database.types';
 
 type UsageHistory = Database['public']['Tables']['battery_usage_history']['Row'] & {
   batteries: (Database['public']['Tables']['batteries']['Row'] & {
