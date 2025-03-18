@@ -6,11 +6,12 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
-import { compressImage, validateImage } from '@/lib/imageUtils';
-import { BatteryItem } from './BatteryItem';
+import { compressImage } from '@/lib/imageUtils';
+import { BatteryDetailItem } from './BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { ImageCropper } from '@/components/ImageCropper';
 import type { Database } from '@/lib/database.types';
+import {BatteryDetailImage} from './BatteryDetailImage';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -69,26 +70,6 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
     );
   }
 
-  const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !user) return;
-
-    try {
-      // 画像のバリデーション
-      validateImage(file);
-
-      // 画像をData URLに変換
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-        setShowCropper(true);
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      console.error('画像選択エラー:', err);
-      setError(err instanceof Error ? err.message : '画像の選択に失敗しました');
-    }
-  };
 
   const handleCropComplete = async (croppedBlob: Blob) => {
     if (!user) return;
@@ -350,28 +331,13 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
 
           <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
             <div className="flex space-x-6">
-              <div className="flex-shrink-0">
-                <div className="relative group">
-                  <img
-                    src={imageUrl || ''}
-                    alt={`${batteryGroup.type}の画像`}
-                    className="w-32 h-32 rounded-lg object-cover"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                  >
-                    <Upload className="h-6 w-6 text-white" />
-                  </button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageSelect}
-                  />
-                </div>
-              </div>
+              <BatteryDetailImage
+                imageUrl={imageUrl}
+                batteryGroup={batteryGroup}
+                setError={setError}
+                setSelectedImage={setSelectedImage}
+                setShowCropper={setShowCropper}
+              />
               <div className="flex-1">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                   <div>
@@ -495,7 +461,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           </div>
           <div className="divide-y divide-gray-200">
             {sortedBatteries.map((battery) => (
-              <BatteryItem
+              <BatteryDetailItem
                 key={battery.slot_number}
                 battery={battery}
                 batteryGroup={batteryGroup}
