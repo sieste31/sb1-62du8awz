@@ -34,7 +34,7 @@ interface BatteryItemProps {
   setError: (error: string) => void;
 }
 
-export function BatteryItem({ battery, batteryGroup, setError }: BatteryItemProps) {
+export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryItemProps) {
   const [showHistory, setShowHistory] = useState(false);
   const { user } = useAuth();
   
