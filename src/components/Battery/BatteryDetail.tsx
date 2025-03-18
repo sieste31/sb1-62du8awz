@@ -187,7 +187,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
       // 本数が減った場合は余分な電池を削除（デバイスに設定されていない電池のみ）
       else if (newCount < currentCount) {
         const batteriesToKeep = batteries
-          .sort((a, b) => {
+          .sort((a: Battery, b: Battery) => {
             // デバイスに設定されている電池を優先
             if (a.device_id && !b.device_id) return -1;
             if (!a.device_id && b.device_id) return 1;
@@ -197,7 +197,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           .slice(0, newCount);
 
         const batteriesToDelete = batteries
-          .filter((b: Battery) => !batteriesToKeep.find(keep => keep.id === b.id))
+          .filter((b: Battery) => !batteriesToKeep.find((keep: { id: string; }) => keep.id === b.id))
           .map((b: Battery) => b.id);
 
         if (batteriesToDelete.length > 0) {
@@ -264,49 +264,15 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
     setIsEditing(false);
   };
 
-  const handleBatteryStatusChange = async (batteryId: string, newStatus: 'charged' | 'in_use' | 'empty' | 'disposed') => {
-    if (!user) return;
-    if (batteryGroup.kind === 'disposable' && newStatus === 'charged') {
-      return; // 使い切り電池は充電済みに変更できない
-    }
-
-    try {
-      const now = new Date().toISOString();
-      const updates: {
-        status: string;
-        last_checked: string;
-        last_changed_at?: string;
-      } = {
-        status: newStatus,
-        last_checked: now,
-      };
-
-      // 充電済みまたは使用中に変更する場合は交換日も更新
-      if (newStatus === 'charged' || newStatus === 'in_use') {
-        updates.last_changed_at = now;
-      }
-
-      const { error: updateError } = await supabase
-        .from('batteries')
-        .update(updates)
-        .eq('id', batteryId);
-
-      if (updateError) throw updateError;
-
-      window.location.reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '電池の状態の更新に失敗しました');
-    }
-  };
 
   // 電池をslot_numberで昇順にソート
   const sortedBatteries = [...batteries].sort((a, b) => a.slot_number - b.slot_number);
 
   // デバイスに設定されている電池の数を計算
-  const installedCount = batteries.filter(b => b.device_id).length;
+  const installedCount = batteries.filter((b: Battery) => b.device_id).length;
   
   // 使用中の電池があるかどうかを確認
-  const hasInUseBatteries = batteries.some(b => b.status === 'in_use' || b.device_id);
+  const hasInUseBatteries = batteries.some((b: Battery) => b.status === 'in_use' || b.device_id);
   
   // 電池種別と本数の編集を制限するかどうか
   const restrictTypeAndCountEditing = hasInUseBatteries;
@@ -533,7 +499,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
                 key={battery.slot_number}
                 battery={battery}
                 batteryGroup={batteryGroup}
-                onStatusChange={handleBatteryStatusChange}
+                setError={setError}
               />
             ))}
           </div>

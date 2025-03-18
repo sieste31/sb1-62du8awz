@@ -5,6 +5,8 @@ import { Smartphone, History } from 'lucide-react';
 import Link from 'next/link';
 import { BatteryUsageHistory } from './BatteryUsageHistory';
 import type { Database } from '@/lib/database.types';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-provider';
 
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
   devices?: Database['public']['Tables']['devices']['Row'] | null;
@@ -29,11 +31,47 @@ const batteryStatusColors = {
 interface BatteryItemProps {
   battery: Battery;
   batteryGroup: BatteryGroup;
-  onStatusChange: (batteryId: string, newStatus: 'charged' | 'in_use' | 'empty' | 'disposed') => void;
+  setError: (error: string) => void;
 }
 
-export function BatteryItem({ battery, batteryGroup, onStatusChange }: BatteryItemProps) {
+export function BatteryItem({ battery, batteryGroup, setError }: BatteryItemProps) {
   const [showHistory, setShowHistory] = useState(false);
+  const { user } = useAuth();
+  
+  const handleBatteryStatusChange = async (batteryId: string, newStatus: 'charged' | 'in_use' | 'empty' | 'disposed') => {
+    if (!user) return;
+    if (batteryGroup.kind === 'disposable' && newStatus === 'charged') {
+      return; // 使い切り電池は充電済みに変更できない
+    }
+
+    try {
+      const now = new Date().toISOString();
+      const updates: {
+        status: string;
+        last_checked: string;
+        last_changed_at?: string;
+      } = {
+        status: newStatus,
+        last_checked: now,
+      };
+
+      // 充電済みまたは使用中に変更する場合は交換日も更新
+      if (newStatus === 'charged' || newStatus === 'in_use') {
+        updates.last_changed_at = now;
+      }
+
+      const { error: updateError } = await supabase
+        .from('batteries')
+        .update(updates)
+        .eq('id', batteryId);
+
+      if (updateError) throw updateError;
+
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '電池の状態の更新に失敗しました');
+    }
+  };
 
   return (
     <div className="px-4 py-4 sm:px-6">
@@ -84,7 +122,7 @@ export function BatteryItem({ battery, batteryGroup, onStatusChange }: BatteryIt
           {Object.entries(batteryStatusLabels).map(([status, label]) => (
             <button
               key={status}
-              onClick={() => onStatusChange(battery.id, status as any)}
+              onClick={() => handleBatteryStatusChange(battery.id, status as any)}
               disabled={batteryGroup.kind === 'disposable' && status === 'charged'}
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 battery.status === status
