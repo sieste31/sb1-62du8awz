@@ -1,6 +1,6 @@
 'use client';
 
-import { BatteryForm } from '@/components/BatteryForm';
+import { BatteryForm } from '@/components/Battery/BatteryForm';
 import { Navigation } from '@/components/Navigation';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { AuthRequired } from '@/components/AuthRequired';

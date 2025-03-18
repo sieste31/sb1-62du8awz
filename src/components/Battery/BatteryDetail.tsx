@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroup } from '@/lib/hooks';
-import { getBatteryImage } from '@/lib/batteryImages';
+import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { compressImage, validateImage } from '@/lib/imageUtils';
 import { BatteryItem } from './BatteryItem';
-import { DeleteConfirmDialog } from './DeleteConfirmDialog';
-import { ImageCropper } from './ImageCropper';
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
+import { ImageCropper } from '@/components/ImageCropper';
 import type { Database } from '@/lib/database.types';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
@@ -145,7 +145,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
       const newCount = editData.count;
 
       // デバイスに設定されている電池の数を確認
-      const installedCount = batteries.filter(b => b.device_id).length;
+      const installedCount: number = batteries.filter((b: Battery) => b.device_id).length;
 
       // 本数を減らす場合は、デバイスに設定されている電池がないことを確認
       if (newCount < currentCount && installedCount > 0) {
@@ -197,8 +197,8 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           .slice(0, newCount);
 
         const batteriesToDelete = batteries
-          .filter(b => !batteriesToKeep.find(keep => keep.id === b.id))
-          .map(b => b.id);
+          .filter((b: Battery) => !batteriesToKeep.find(keep => keep.id === b.id))
+          .map((b: Battery) => b.id);
 
         if (batteriesToDelete.length > 0) {
           const { error: deleteError } = await supabase

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Battery, Smartphone } from 'lucide-react';
 import Link from 'next/link';
-import { getBatteryImage } from '@/lib/batteryImages';
+import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/lib/database.types';
 
