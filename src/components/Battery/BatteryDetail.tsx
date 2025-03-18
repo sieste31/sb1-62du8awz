@@ -12,6 +12,7 @@ import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { ImageCropper } from '@/components/ImageCropper';
 import type { Database } from '@/lib/database.types';
 import {BatteryDetailImage} from './BatteryDetailImage';
+import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -275,17 +276,8 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Battery className="h-6 w-6 text-gray-400 mr-3" />
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    className="text-xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent"
-                  />
-                ) : (
-                  <h2 className="text-xl font-bold text-gray-900">{batteryGroup.name}</h2>
-                )}
+                <Battery className="h-6 w-6 text-gray-400 mr-3" />  
+                <BatteryDetailElemTitle isEditing={isEditing} name={editData.name} setName={(e) => setEditData({ ...editData, name: e.name })} />
               </div>
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-500">
