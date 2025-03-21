@@ -1,6 +1,6 @@
 import React from 'react';
 import { Battery } from 'lucide-react';
-import type { Database } from '../lib/database.types';
+import type { Database } from '@/lib/database.types';
 
 type InstalledBattery = Database['public']['Tables']['batteries']['Row'] & {
   battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
