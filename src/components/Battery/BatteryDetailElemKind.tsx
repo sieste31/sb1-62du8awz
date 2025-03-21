@@ -1,20 +1,14 @@
 import React from 'react';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-interface BatteryDetailElemKindProps {
-  isEditing: boolean;
-  editData: { kind: 'disposable' | 'rechargeable' };
-  setEditData: (data: { kind: 'disposable' | 'rechargeable' }) => void;
-  restrictTypeAndCountEditing: boolean;
-  batteryGroup: { kind: 'disposable' | 'rechargeable' };
-}
-
-export function BatteryDetailElemKind({
-  isEditing,
-  editData,
-  setEditData,
-  restrictTypeAndCountEditing,
-  batteryGroup,
-}: BatteryDetailElemKindProps) {
+export function BatteryDetailElemKind() {
+  const isEditing = useBatteryDetailStore(state => state.isEditing);
+  const editData = useBatteryDetailStore(state => state.editData);
+  const setEditData = useBatteryDetailStore(state => state.setEditData);
+  const restrictTypeAndCountEditing = useBatteryDetailStore(state => state.restrictTypeAndCountEditing);
+  const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
+  
+  if (!editData || !batteryGroup) return null;
   if (isEditing) {
     return (
       <div>

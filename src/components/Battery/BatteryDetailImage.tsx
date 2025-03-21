@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth-provider';
 import { validateImage, compressImage } from '@/lib/imageUtils';
 import { supabase } from '@/lib/supabase';
 import { ImageCropper } from '@/components/ImageCropper';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
 interface BatteryDetailImageProps {
     imageUrl: string | null;

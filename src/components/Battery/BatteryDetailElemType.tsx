@@ -1,20 +1,14 @@
 import React from 'react';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-interface BatteryDetailElemTypeProps {
-  isEditing: boolean;
-  editData: { type: string };
-  setEditData: (data: { type: string }) => void;
-  restrictTypeAndCountEditing: boolean;
-  batteryGroup: { type: string };
-}
-
-export function BatteryDetailElemType({
-  isEditing,
-  editData,
-  setEditData,
-  restrictTypeAndCountEditing,
-  batteryGroup,
-}: BatteryDetailElemTypeProps) {
+export function BatteryDetailElemType() {
+  const isEditing = useBatteryDetailStore(state => state.isEditing);
+  const editData = useBatteryDetailStore(state => state.editData);
+  const setEditData = useBatteryDetailStore(state => state.setEditData);
+  const restrictTypeAndCountEditing = useBatteryDetailStore(state => state.restrictTypeAndCountEditing);
+  const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
+  
+  if (!editData || !batteryGroup) return null;
   if (isEditing) {
     return (
       <div>
@@ -23,7 +17,7 @@ export function BatteryDetailElemType({
           <div>
             <select
               value={editData.type}
-              onChange={(e) => setEditData({ ...editData, type: e.target.value })}
+              onChange={(e) => setEditData({ type: e.target.value })}
               disabled={restrictTypeAndCountEditing}
               className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${restrictTypeAndCountEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                 }`}

@@ -1,18 +1,13 @@
 import React from 'react';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-interface BatteryDetailElemVoltProps {
-  isEditing: boolean;
-  editData: { voltage: number };
-  setEditData: (data: { voltage: number }) => void;
-  batteryGroup: { voltage: number };
-}
-
-export function BatteryDetailElemVolt({
-  isEditing,
-  editData,
-  setEditData,
-  batteryGroup,
-}: BatteryDetailElemVoltProps) {
+export function BatteryDetailElemVolt() {
+  const isEditing = useBatteryDetailStore(state => state.isEditing);
+  const editData = useBatteryDetailStore(state => state.editData);
+  const setEditData = useBatteryDetailStore(state => state.setEditData);
+  const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
+  
+  if (!editData || !batteryGroup) return null;
   if (isEditing) {
     return (
       <div>

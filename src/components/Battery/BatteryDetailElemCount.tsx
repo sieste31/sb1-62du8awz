@@ -1,22 +1,15 @@
 import React from 'react';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-interface BatteryDetailElemCountProps {
-  isEditing: boolean;
-  editData: { count: number };
-  setEditData: (data: { count: number }) => void;
-  restrictTypeAndCountEditing: boolean;
-  batteryGroup: { count: number };
-  installedCount: number;
-}
-
-export function BatteryDetailElemCount({
-  isEditing,
-  editData,
-  setEditData,
-  restrictTypeAndCountEditing,
-  batteryGroup,
-  installedCount,
-}: BatteryDetailElemCountProps) {
+export function BatteryDetailElemCount() {
+  const isEditing = useBatteryDetailStore(state => state.isEditing);
+  const editData = useBatteryDetailStore(state => state.editData);
+  const setEditData = useBatteryDetailStore(state => state.setEditData);
+  const restrictTypeAndCountEditing = useBatteryDetailStore(state => state.restrictTypeAndCountEditing);
+  const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
+  const installedCount = useBatteryDetailStore(state => state.installedCount);
+  
+  if (!editData || !batteryGroup) return null;
   if (isEditing) {
     return (
       <div>

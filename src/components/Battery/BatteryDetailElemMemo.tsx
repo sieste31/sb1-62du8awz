@@ -1,18 +1,13 @@
 import React from 'react';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-interface BatteryDetailElemMemoProps {
-  isEditing: boolean;
-  editData: { notes: string };
-  setEditData: (data: { notes: string }) => void;
-  batteryGroup: { notes: string | null };
-}
-
-export function BatteryDetailElemMemo({
-  isEditing,
-  editData,
-  setEditData,
-  batteryGroup,
-}: BatteryDetailElemMemoProps) {
+export function BatteryDetailElemMemo() {
+  const isEditing = useBatteryDetailStore(state => state.isEditing);
+  const editData = useBatteryDetailStore(state => state.editData);
+  const setEditData = useBatteryDetailStore(state => state.setEditData);
+  const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
+  
+  if (!editData || !batteryGroup) return null;
   if (isEditing) {
     return (
       <div className="sm:col-span-2">

@@ -1,15 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Battery, Camera, Upload, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { BatteryDetailItem } from './BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
-import { ImageCropper } from '@/components/ImageCropper';
-import type { Database } from '@/lib/database.types';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import {BatteryDetailImage} from './BatteryDetailImage';
 import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
 import {BatteryDetailElemType} from './BatteryDetailElemType';
@@ -18,10 +14,6 @@ import {BatteryDetailElemCount} from './BatteryDetailElemCount';
 import {BatteryDetailElemVolt} from './BatteryDetailElemVolt';
 import {BatteryDetailElemMemo} from './BatteryDetailElemMemo';
 
-type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
-type Battery = Database['public']['Tables']['batteries']['Row'] & {
-  devices?: Database['public']['Tables']['devices']['Row'] | null;
-};
 
 interface BatteryDetailProps {
   id: string;
@@ -29,41 +21,33 @@ interface BatteryDetailProps {
 
 export function BatteryDetail({ id }: BatteryDetailProps) {
   const router = useRouter();
-  const { user } = useAuth();
   const { batteryGroup, batteries, loading } = useBatteryGroup(id);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [editData, setEditData] = useState<{
-    name: string;
-    type: string;
-    kind: 'disposable' | 'rechargeable';
-    count: number;
-    voltage: number;
-    notes: string;
-  } | null>(null);
+  
+  // Zustandストアから状態と関数を取得
+  const {
+    isEditing, setIsEditing,
+    editData, initializeEditData,
+    error, setError,
+    imageUrl, setImageUrl,
+    showDeleteConfirm, setShowDeleteConfirm,
+    saving, deleting,
+    handleSave, handleDelete, handleCancelEdit,
+    setBatteryGroup, setBatteries,
+    installedCount, restrictTypeAndCountEditing
+  } = useBatteryDetailStore();
 
   // 初期データをセット
   useEffect(() => {
     if (batteryGroup) {
-      setEditData({
-        name: batteryGroup.name,
-        type: batteryGroup.type,
-        kind: batteryGroup.kind,
-        count: batteryGroup.count,
-        voltage: batteryGroup.voltage,
-        notes: batteryGroup.notes ?? '',
-      });
+      setBatteryGroup(batteryGroup);
+      setBatteries(batteries);
+      initializeEditData(batteryGroup);
 
       // 画像URLを取得
       getBatteryImage(batteryGroup.type as keyof typeof defaultBatteryImages, batteryGroup.image_url)
         .then(url => setImageUrl(url));
     }
-  }, [batteryGroup, isEditing]);
+  }, [batteryGroup, batteries, setBatteryGroup, setBatteries, initializeEditData, setImageUrl]);
 
   if (loading || !batteryGroup || !editData) {
     return (
@@ -75,147 +59,8 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
 
 
 
-  const handleSave = async () => {
-    if (!user) return;
-    setSaving(true);
-    setError(null);
-
-    try {
-      const currentCount = batteryGroup.count;
-      const newCount = editData.count;
-
-      // デバイスに設定されている電池の数を確認
-      const installedCount: number = batteries.filter((b: Battery) => b.device_id).length;
-
-      // 本数を減らす場合は、デバイスに設定されている電池がないことを確認
-      if (newCount < currentCount && installedCount > 0) {
-        throw new Error('デバイスに設定されている電池があるため、本数を減らすことはできません');
-      }
-
-      // 電池グループを更新
-      const { error: groupError } = await supabase
-        .from('battery_groups')
-        .update({
-          name: editData.name,
-          type: editData.type,
-          kind: editData.kind,
-          count: editData.count,
-          voltage: editData.voltage,
-          notes: editData.notes || null,
-        })
-        .eq('id', batteryGroup.id);
-
-      if (groupError) throw groupError;
-
-      // 本数が増えた場合は新しい電池を追加
-      if (newCount > currentCount) {
-        const newBatteries = Array.from(
-          { length: newCount - currentCount },
-          () => ({
-            group_id: batteryGroup.id,
-            status: batteryGroup.kind === 'rechargeable' ? 'charged' : 'empty',
-            user_id: user.id,
-          })
-        );
-
-        const { error: insertError } = await supabase
-          .from('batteries')
-          .insert(newBatteries);
-
-        if (insertError) throw insertError;
-      }
-      // 本数が減った場合は余分な電池を削除（デバイスに設定されていない電池のみ）
-      else if (newCount < currentCount) {
-        const batteriesToKeep = batteries
-          .sort((a: Battery, b: Battery) => {
-            // デバイスに設定されている電池を優先
-            if (a.device_id && !b.device_id) return -1;
-            if (!a.device_id && b.device_id) return 1;
-            // 次にスロット番号の小さい順
-            return a.slot_number - b.slot_number;
-          })
-          .slice(0, newCount);
-
-        const batteriesToDelete = batteries
-          .filter((b: Battery) => !batteriesToKeep.find((keep: { id: string; }) => keep.id === b.id))
-          .map((b: Battery) => b.id);
-
-        if (batteriesToDelete.length > 0) {
-          const { error: deleteError } = await supabase
-            .from('batteries')
-            .delete()
-            .in('id', batteriesToDelete);
-
-          if (deleteError) throw deleteError;
-        }
-      }
-
-      setIsEditing(false);
-      setSaving(false);
-      window.location.reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '保存に失敗しました');
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!user) return;
-    setDeleting(true);
-    setError(null);
-
-    try {
-      // 電池グループを削除すると、関連する電池も自動的に削除される（ON DELETE CASCADE）
-      const { error: deleteError } = await supabase
-        .from('battery_groups')
-        .delete()
-        .eq('id', batteryGroup.id);
-
-      if (deleteError) throw deleteError;
-
-      // 画像も削除
-      if (batteryGroup.image_url) {
-        const filePath = batteryGroup.image_url.split('/').pop();
-        if (filePath) {
-          await supabase.storage
-            .from('battery-images')
-            .remove([`${user.id}/${batteryGroup.id}/${filePath}`]);
-        }
-      }
-
-      router.push('/batteries');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '削除に失敗しました');
-      setDeleting(false);
-      setShowDeleteConfirm(false);
-    }
-  };
-
-  const handleCancelEdit = () => {
-    // Reset form data to current battery group data
-    setEditData({
-      name: batteryGroup.name,
-      type: batteryGroup.type,
-      kind: batteryGroup.kind,
-      count: batteryGroup.count,
-      voltage: batteryGroup.voltage,
-      notes: batteryGroup.notes ?? '',
-    });
-    setIsEditing(false);
-  };
-
-
   // 電池をslot_numberで昇順にソート
-  const sortedBatteries = [...batteries].sort((a, b) => a.slot_number - b.slot_number);
-
-  // デバイスに設定されている電池の数を計算
-  const installedCount = batteries.filter((b: Battery) => b.device_id).length;
-  
-  // 使用中の電池があるかどうかを確認
-  const hasInUseBatteries = batteries.some((b: Battery) => b.status === 'in_use' || b.device_id);
-  
-  // 電池種別と本数の編集を制限するかどうか
-  const restrictTypeAndCountEditing = hasInUseBatteries;
+  const sortedBatteries = batteries ? [...batteries].sort((a, b) => a.slot_number - b.slot_number) : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -235,7 +80,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Battery className="h-6 w-6 text-gray-400 mr-3" />  
-                <BatteryDetailElemTitle isEditing={isEditing} name={editData.name} setName={(e) => setEditData({ ...editData, name: e.name })} />
+                <BatteryDetailElemTitle />
               </div>
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-500">
@@ -288,44 +133,11 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
               />
               <div className="flex-1">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                  <BatteryDetailElemType
-                    isEditing={isEditing}
-                    editData={editData}
-                    setEditData={(data: { type: string }) => {setEditData({ ...editData, ...data })}}
-                    restrictTypeAndCountEditing={restrictTypeAndCountEditing}
-                    batteryGroup={batteryGroup}
-                  />
-
-                  <BatteryDetailElemKind
-                    isEditing={isEditing}
-                    editData={editData}
-                    setEditData={(data) => setEditData({ ...editData, ...data })}
-                    restrictTypeAndCountEditing={restrictTypeAndCountEditing}
-                    batteryGroup={batteryGroup}
-                  />
-
-                  <BatteryDetailElemCount
-                    isEditing={isEditing}
-                    editData={editData}
-                    setEditData={(data) => setEditData({ ...editData, ...data })}
-                    restrictTypeAndCountEditing={restrictTypeAndCountEditing}
-                    batteryGroup={batteryGroup}
-                    installedCount={installedCount}
-                  />
-
-                  <BatteryDetailElemVolt
-                    isEditing={isEditing}
-                    editData={editData}
-                    setEditData={(data) => setEditData({ ...editData, ...data })}
-                    batteryGroup={batteryGroup}
-                  />
-
-                  <BatteryDetailElemMemo
-                    isEditing={isEditing}
-                    editData={editData}
-                    setEditData={(data) => setEditData({ ...editData, ...data })}
-                    batteryGroup={batteryGroup}
-                  />
+                  <BatteryDetailElemType />
+                  <BatteryDetailElemKind />
+                  <BatteryDetailElemCount />
+                  <BatteryDetailElemVolt />
+                  <BatteryDetailElemMemo />
                 </dl>
               </div>
             </div>
