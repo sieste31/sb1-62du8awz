@@ -14,6 +14,7 @@ import type { Database } from '@/lib/database.types';
 import {BatteryDetailImage} from './BatteryDetailImage';
 import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
 import {BatteryDetailElemType} from './BatteryDetailElemType';
+import {BatteryDetailElemKind} from './BatteryDetailElemKind';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -341,16 +342,13 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
                     batteryGroup={batteryGroup}
                   />
 
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">電池タイプ</dt>
-                    <dd className="mt-1">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        batteryGroup.kind === 'rechargeable' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {batteryGroup.kind === 'rechargeable' ? '充電池' : '使い切り'}
-                      </span>
-                    </dd>
-                  </div>
+                  <BatteryDetailElemKind
+                    isEditing={isEditing}
+                    editData={editData}
+                    setEditData={(data) => setEditData({ ...editData, ...data })}
+                    restrictTypeAndCountEditing={restrictTypeAndCountEditing}
+                    batteryGroup={batteryGroup}
+                  />
 
                   <div>
                     <dt className="text-sm font-medium text-gray-500">本数</dt>
