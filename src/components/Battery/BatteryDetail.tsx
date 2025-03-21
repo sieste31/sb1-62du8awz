@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
-import { compressImage } from '@/lib/imageUtils';
 import { BatteryDetailItem } from './BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { ImageCropper } from '@/components/ImageCropper';
@@ -39,8 +38,6 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [showCropper, setShowCropper] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editData, setEditData] = useState<{
     name: string;
     type: string;
@@ -77,50 +74,6 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
   }
 
 
-  const handleCropComplete = async (croppedBlob: Blob) => {
-    if (!user) return;
-
-    try {
-      // 圧縮処理
-      const compressedFile = await compressImage(croppedBlob, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1024,
-      });
-
-      const fileExt = compressedFile.name.split('.').pop();
-      const filePath = `${user.id}/${batteryGroup.id}/image.${fileExt}`;
-
-      // まず既存の画像を削除
-      if (batteryGroup.image_url) {
-        const existingPath = batteryGroup.image_url.split('/').slice(-3).join('/');
-        await supabase.storage
-          .from('battery-images')
-          .remove([existingPath]);
-      }
-
-      // 新しい画像をアップロード
-      const { error: uploadError } = await supabase.storage
-        .from('battery-images')
-        .upload(filePath, compressedFile, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { error: updateError } = await supabase
-        .from('battery_groups')
-        .update({ image_url: filePath })
-        .eq('id', batteryGroup.id);
-
-      if (updateError) throw updateError;
-
-      // クロッパーを閉じて画面を更新
-      setShowCropper(false);
-      setSelectedImage(null);
-      window.location.reload();
-    } catch (err) {
-      console.error('画像アップロード処理エラー:', err);
-      setError(err instanceof Error ? err.message : '画像のアップロードに失敗しました');
-    }
-  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -332,8 +285,6 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
                 imageUrl={imageUrl}
                 batteryGroup={batteryGroup}
                 setError={setError}
-                setSelectedImage={setSelectedImage}
-                setShowCropper={setShowCropper}
               />
               <div className="flex-1">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
@@ -412,17 +363,6 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
           loading={deleting}
         />
 
-        {/* Image Cropper */}
-        {showCropper && selectedImage && (
-          <ImageCropper
-            image={selectedImage}
-            onClose={() => {
-              setShowCropper(false);
-              setSelectedImage(null);
-            }}
-            onCropComplete={handleCropComplete}
-          />
-        )}
       </div>
     </div>
   );
