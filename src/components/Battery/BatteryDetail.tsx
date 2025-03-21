@@ -336,7 +336,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
                   <BatteryDetailElemType
                     isEditing={isEditing}
                     editData={editData}
-                    setEditData={(e: String) => {setEditData({ ...editData, ...e })}}
+                    setEditData={(data: { type: string }) => {setEditData({ ...editData, ...data })}}
                     restrictTypeAndCountEditing={restrictTypeAndCountEditing}
                     batteryGroup={batteryGroup}
                   />
