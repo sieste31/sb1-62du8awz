@@ -13,6 +13,7 @@ import { ImageCropper } from '@/components/ImageCropper';
 import type { Database } from '@/lib/database.types';
 import {BatteryDetailImage} from './BatteryDetailImage';
 import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
+import {BatteryDetailElemType} from './BatteryDetailElemType';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -332,36 +333,13 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
               />
               <div className="flex-1">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">電池種別</dt>
-                    <dd className="mt-1">
-                      {isEditing ? (
-                        <div>
-                          <select
-                            value={editData.type}
-                            onChange={(e) => setEditData({ ...editData, type: e.target.value })}
-                            disabled={restrictTypeAndCountEditing}
-                            className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                              restrictTypeAndCountEditing ? 'bg-gray-100 cursor-not-allowed' : ''
-                            }`}
-                          >
-                            <option value="単1形">単1形</option>
-                            <option value="単2形">単2形</option>
-                            <option value="単3形">単3形</option>
-                            <option value="単4形">単4形</option>
-                            <option value="9V形">9V形</option>
-                          </select>
-                          {restrictTypeAndCountEditing && (
-                            <p className="mt-1 text-xs text-amber-600">
-                              使用中の電池があるため変更できません
-                            </p>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-900">{batteryGroup.type}</span>
-                      )}
-                    </dd>
-                  </div>
+                  <BatteryDetailElemType
+                    isEditing={isEditing}
+                    editData={editData}
+                    setEditData={(e: String) => {setEditData({ ...editData, ...e })}}
+                    restrictTypeAndCountEditing={restrictTypeAndCountEditing}
+                    batteryGroup={batteryGroup}
+                  />
 
                   <div>
                     <dt className="text-sm font-medium text-gray-500">電池タイプ</dt>
