@@ -32,11 +32,11 @@ interface BatteryDetailState {
   saving: boolean;
   deleting: boolean;
   showDeleteConfirm: boolean;
-  
+
   // 計算された値
   installedCount: number;
   restrictTypeAndCountEditing: boolean;
-  
+
   // アクション
   setIsEditing: (isEditing: boolean) => void;
   setEditData: (data: Partial<EditData>) => void;
@@ -47,11 +47,11 @@ interface BatteryDetailState {
   setShowDeleteConfirm: (show: boolean) => void;
   setBatteryGroup: (batteryGroup: BatteryGroup | null) => void;
   setBatteries: (batteries: Battery[]) => void;
-  
+
   // 初期化
   initializeEditData: (batteryGroup: BatteryGroup) => void;
   resetEditData: () => void;
-  
+
   // 操作
   handleSave: () => Promise<void>;
   handleDelete: () => Promise<void>;
@@ -69,19 +69,17 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
   saving: false,
   deleting: false,
   showDeleteConfirm: false,
-  
+
   // 計算された値
   get installedCount() {
-    return get().batteries.filter(b => b.device_id).length;
+    return get().batteries.filter(b => b.device_id !== null && b.device_id !== undefined).length;
   },
-  get restrictTypeAndCountEditing() {
-    return get().installedCount > 0;
-  },
-  
+  restrictTypeAndCountEditing: false,
+
   // アクション
   setIsEditing: (isEditing) => set({ isEditing }),
-  setEditData: (data) => set(state => ({ 
-    editData: state.editData ? { ...state.editData, ...data } : null 
+  setEditData: (data) => set(state => ({
+    editData: state.editData ? { ...state.editData, ...data } : null
   })),
   setError: (error) => set({ error }),
   setImageUrl: (imageUrl) => set({ imageUrl }),
@@ -89,8 +87,13 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
   setDeleting: (deleting) => set({ deleting }),
   setShowDeleteConfirm: (showDeleteConfirm) => set({ showDeleteConfirm }),
   setBatteryGroup: (batteryGroup) => set({ batteryGroup }),
-  setBatteries: (batteries) => set({ batteries }),
-  
+  setBatteries: (batteries) => {
+    console.log("setBatteries");
+    const installedCount = batteries.filter(b => b.device_id !== null && b.device_id !== undefined).length;
+    console.log(installedCount);
+    set({ batteries,  restrictTypeAndCountEditing: installedCount > 0 })
+  },
+
   // 初期化
   initializeEditData: (batteryGroup) => set({
     editData: {
@@ -102,7 +105,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       notes: batteryGroup.notes ?? '',
     }
   }),
-  
+
   resetEditData: () => {
     const { batteryGroup } = get();
     if (batteryGroup) {
@@ -119,7 +122,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       });
     }
   },
-  
+
   // 操作
   handleSave: async () => {
     const { batteryGroup, editData, batteries } = get();
@@ -136,7 +139,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       const newCount = editData.count;
 
       // デバイスに設定されている電池の数を確認
-      const installedCount = batteries.filter(b => b.device_id).length;
+      const installedCount = batteries.filter(b => b.device_id !== null && b.device_id !== undefined).length;
 
       // 本数を減らす場合は、デバイスに設定されている電池がないことを確認
       if (newCount < currentCount && installedCount > 0) {
@@ -180,8 +183,8 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
         const batteriesToKeep = batteries
           .sort((a, b) => {
             // デバイスに設定されている電池を優先
-            if (a.device_id && !b.device_id) return -1;
-            if (!a.device_id && b.device_id) return 1;
+            if ((a.device_id !== null && a.device_id !== undefined) && (b.device_id === null || b.device_id === undefined)) return -1;
+            if ((a.device_id === null || a.device_id === undefined) && (b.device_id !== null && b.device_id !== undefined)) return 1;
             // 次にスロット番号の小さい順
             return a.slot_number - b.slot_number;
           })
@@ -204,13 +207,13 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       set({ isEditing: false, saving: false });
       window.location.reload();
     } catch (err) {
-      set({ 
+      set({
         error: err instanceof Error ? err.message : '保存に失敗しました',
         saving: false
       });
     }
   },
-  
+
   handleDelete: async () => {
     const { batteryGroup } = get();
     if (!batteryGroup) return;
@@ -243,14 +246,14 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       // 一覧ページに戻る
       window.location.href = '/batteries';
     } catch (err) {
-      set({ 
+      set({
         error: err instanceof Error ? err.message : '削除に失敗しました',
         deleting: false,
         showDeleteConfirm: false
       });
     }
   },
-  
+
   handleCancelEdit: () => {
     get().resetEditData();
   }
