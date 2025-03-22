@@ -12,7 +12,7 @@ import {
   invalidateQueries,
 } from '@/lib/hooks';
 import { useQueryClient } from '@tanstack/react-query';
-import { BatteryStatusBadge } from '@/components/BatteryStatusBadge';
+import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
 import { DeviceUsageHistory } from './DeviceUsageHistory';
 import type { Database } from '@/lib/database.types';
 
