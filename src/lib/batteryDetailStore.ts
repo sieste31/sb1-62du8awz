@@ -75,7 +75,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
     return get().batteries.filter(b => b.device_id).length;
   },
   get restrictTypeAndCountEditing() {
-    return get().batteries.some(b => b.status === 'in_use' || b.device_id);
+    return get().installedCount > 0;
   },
   
   // アクション
