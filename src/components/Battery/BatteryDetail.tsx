@@ -44,12 +44,13 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
       setBatteryGroup(batteryGroup);
       setBatteries(batteries);
       initializeEditData(batteryGroup);
+      setIsEditing(false); // 編集モードをリセット
 
       // 画像URLを取得
       getBatteryImage(batteryGroup.type as keyof typeof defaultBatteryImages, batteryGroup.image_url)
         .then(url => setImageUrl(url));
     }
-  }, [batteryGroup, batteries, setBatteryGroup, setBatteries, initializeEditData, setImageUrl]);
+  }, [id, batteryGroup, batteries, setBatteryGroup, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
 
   if (loading || !batteryGroup || !editData) {
     return (
