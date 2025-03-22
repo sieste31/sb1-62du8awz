@@ -1,3 +1,5 @@
+// 電池詳細画面を表示するコンポーネント
+
 import React, { useEffect } from 'react';
 import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';

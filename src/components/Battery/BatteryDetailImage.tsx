@@ -1,3 +1,5 @@
+// 電池詳細画面の画像を表示・アップロードするコンポーネント
+
 'use client';
 
 import React, { useRef, useState } from 'react';

@@ -1,3 +1,5 @@
+// 電池詳細画面の状態管理
+
 'use client';
 
 import { create } from 'zustand';

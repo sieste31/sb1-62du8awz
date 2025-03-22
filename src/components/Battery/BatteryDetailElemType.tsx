@@ -1,3 +1,5 @@
+// 電池詳細画面の電池種別の表示・編集を行うコンポーネント
+
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 

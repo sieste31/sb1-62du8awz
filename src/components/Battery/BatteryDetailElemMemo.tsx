@@ -1,3 +1,5 @@
+// 電池詳細画面のメモを表示するコンポーネント
+
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
