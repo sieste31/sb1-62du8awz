@@ -8,13 +8,14 @@ import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { BatteryDetailItem } from './BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
-import {BatteryDetailImage} from './BatteryDetailImage';
+import { BatteryDetailImage } from './BatteryDetailImage';
 import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
-import {BatteryDetailElemType} from './BatteryDetailElemType';
-import {BatteryDetailElemKind} from './BatteryDetailElemKind';
-import {BatteryDetailElemCount} from './BatteryDetailElemCount';
-import {BatteryDetailElemVolt} from './BatteryDetailElemVolt';
-import {BatteryDetailElemMemo} from './BatteryDetailElemMemo';
+import { BatteryDetailElemType } from './BatteryDetailElemType';
+import { BatteryDetailElemKind } from './BatteryDetailElemKind';
+import { BatteryDetailElemCount } from './BatteryDetailElemCount';
+import { BatteryDetailElemVolt } from './BatteryDetailElemVolt';
+import { BatteryDetailElemMemo } from './BatteryDetailElemMemo';
+import { BatteryDetailElemHead } from './BatteryDetailElemHead';
 
 
 interface BatteryDetailProps {
@@ -24,7 +25,7 @@ interface BatteryDetailProps {
 export function BatteryDetail({ id }: BatteryDetailProps) {
   const router = useRouter();
   const { batteryGroup, batteries, loading } = useBatteryGroup(id);
-  
+
   // Zustandストアから状態と関数を取得
   const {
     isEditing, setIsEditing,
@@ -79,53 +80,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
         </div>
 
         <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
-          <div className="px-4 py-5 sm:px-6 bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Battery className="h-6 w-6 text-gray-400 mr-3" />  
-                <BatteryDetailElemTitle />
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-500">
-                  登録日: {new Date(batteryGroup.created_at).toLocaleDateString()}
-                </div>
-                {isEditing ? (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={handleCancelEdit}
-                      className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-gray-500"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      disabled={saving}
-                      className="inline-flex items-center p-2 border border-transparent rounded-full text-green-600 hover:text-green-700 disabled:opacity-50"
-                    >
-                      <Check className="h-5 w-5" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-gray-500"
-                    >
-                      <Pencil className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => setShowDeleteConfirm(true)}
-                      disabled={installedCount > 0}
-                      title={installedCount > 0 ? 'デバイスに設定されている電池があるため削除できません' : '電池グループを削除'}
-                      className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-red-500 disabled:opacity-50 disabled:hover:text-gray-400"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <BatteryDetailElemHead />
 
           <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
             <div className="flex space-x-6">

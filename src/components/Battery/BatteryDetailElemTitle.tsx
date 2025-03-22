@@ -16,13 +16,13 @@ export function BatteryDetailElemTitle(){
             type="text"
             value={editData.name}
             onChange={(e) => setEditData({ name: e.target.value })}
-            className="text-xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent"
+            className="text-xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent w-full truncate"
             />);
     }
     else
     {
         return (
-            <h2 className="text-xl font-bold text-gray-900">{editData.name}</h2>
+            <h2 className="text-xl font-bold text-gray-900 truncate">{editData.name}</h2>
         );
     }
 }
