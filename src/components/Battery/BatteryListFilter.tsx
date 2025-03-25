@@ -1,3 +1,5 @@
+// 電池一覧画面のフィルターを表示するコンポーネント
+
 'use client';
 
 import React, { useState } from 'react';

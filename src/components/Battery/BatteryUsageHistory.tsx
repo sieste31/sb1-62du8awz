@@ -1,3 +1,6 @@
+// 電池の使用履歴を表示するモーダルコンポーネント
+// 使用履歴はSupabaseのbattery_usage_historyテーブルから取得
+
 import React from 'react';
 import { X, Calendar } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';

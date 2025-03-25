@@ -1,3 +1,5 @@
+// デバイス作成画面のコンポーネント
+
 'use client';
 
 import React, { useState } from 'react';

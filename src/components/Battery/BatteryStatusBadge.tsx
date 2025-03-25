@@ -1,3 +1,5 @@
+// 電池の状態を表すバッジを表示するコンポーネント
+
 'use client';
 
 import React from 'react';

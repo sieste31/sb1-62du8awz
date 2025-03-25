@@ -1,3 +1,5 @@
+// デバイス一覧画面の各デバイスを表示するコンポーネント
+
 'use client';
 
 import React, { useState, useEffect } from 'react';

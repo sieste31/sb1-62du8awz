@@ -1,3 +1,5 @@
+// 電池一覧画面のコンポーネント
+
 'use client';
 
 import React, { useState } from 'react';

@@ -1,4 +1,5 @@
 // 電池詳細画面の電圧を表示するコンポーネント
+// 編集モード時は入力フォームを表示し、非編集モード時はテキストを表示する
 
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';

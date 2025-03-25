@@ -1,3 +1,5 @@
+// デバイスの電池交換履歴を表示するモーダルコンポーネント
+
 import React from 'react';
 import { X, Battery, Calendar } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';

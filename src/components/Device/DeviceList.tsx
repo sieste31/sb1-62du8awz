@@ -1,3 +1,5 @@
+// デバイス一覧画面のコンポーネント
+
 'use client';
 
 import React, { useState, useEffect } from 'react';

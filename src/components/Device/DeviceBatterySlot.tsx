@@ -1,3 +1,5 @@
+//  デバイスの電池スロットを表示するコンポーネント
+
 import React from 'react';
 import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';

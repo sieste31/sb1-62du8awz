@@ -1,3 +1,5 @@
+// 電池一覧画面の各電池グループの表示を担当するコンポーネント
+
 'use client';
 
 import React, { useEffect, useState } from 'react';

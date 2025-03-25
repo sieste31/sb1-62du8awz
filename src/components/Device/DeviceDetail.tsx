@@ -1,3 +1,5 @@
+// デバイス詳細画面を表示するコンポーネント
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
