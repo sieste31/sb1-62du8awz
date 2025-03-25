@@ -1,3 +1,5 @@
+// デバイス作成画面
+
 'use client';
 
 import { DeviceForm } from '@/components/Device/DeviceForm';

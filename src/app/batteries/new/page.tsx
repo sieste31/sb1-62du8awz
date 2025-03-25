@@ -1,3 +1,5 @@
+// 電池作成画面
+
 'use client';
 
 import { BatteryForm } from '@/components/Battery/BatteryForm';

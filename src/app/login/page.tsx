@@ -1,3 +1,5 @@
+// ログイン画面
+
 'use client';
 
 import { Login } from '@/components/Login';

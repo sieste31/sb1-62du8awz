@@ -1,3 +1,5 @@
+// 電池選択画面
+
 'use client';
 
 import { SelectBattery } from '@/components/Device/SelectBattery';

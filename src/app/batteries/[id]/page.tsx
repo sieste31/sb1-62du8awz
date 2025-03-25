@@ -1,3 +1,5 @@
+// 電池詳細画面
+
 'use client';
 
 import { BatteryDetail } from '@/components/Battery/BatteryDetail';

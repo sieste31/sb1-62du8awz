@@ -1,3 +1,5 @@
+// 電池一覧画面
+
 'use client';
 
 import { BatteryList } from '@/components/Battery/BatteryList';

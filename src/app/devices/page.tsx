@@ -1,3 +1,5 @@
+// デバイス一覧画面
+
 'use client';
 
 import { DeviceList } from '@/components/Device/DeviceList';

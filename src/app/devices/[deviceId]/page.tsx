@@ -1,3 +1,5 @@
+// デバイス詳細画面
+
 'use client';
 
 import { DeviceDetail } from '@/components/Device/DeviceDetail';
