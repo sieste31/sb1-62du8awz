@@ -7,8 +7,8 @@ interface CompressImageOptions {
 }
 
 const defaultOptions: CompressImageOptions = {
-  maxSizeMB: 0.5, // 500KB
-  maxWidthOrHeight: 800, // 800px
+  maxSizeMB: 0.03, // 30KB
+  maxWidthOrHeight: 100, // 100px
   useWebWorker: true,
 };
 

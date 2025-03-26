@@ -57,8 +57,8 @@ export function BatteryDetailImage({
         try {
             // 圧縮処理
             const compressedFile = await compressImage(croppedBlob, {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1024,
+                maxSizeMB: 0.05,
+                maxWidthOrHeight: 200,
             });
 
             const fileExt = compressedFile.name.split('.').pop();
