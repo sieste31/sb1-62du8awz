@@ -61,43 +61,19 @@ export function BatteryList() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
           <h2 className="text-xl font-semibold text-gray-900">電池一覧</h2>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="relative flex-grow max-w-xs">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="電池名を検索..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div className="relative">
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value as typeof SORT_OPTIONS[number])}
-                className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <SortDesc className="h-4 w-4 text-gray-400" />
-              </div>
-            </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <Filter className="h-4 w-4 mr-2" />
               フィルター
-              {(selectedType !== 'すべて' || selectedKind !== 'すべて') && (
+              {(selectedType !== 'すべて' || selectedKind !== 'すべて' || searchTerm !== '') && (
                 <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  {selectedType !== 'すべて' && selectedKind !== 'すべて' ? '2' : '1'}
+                  {[
+                    selectedType !== 'すべて' ? 1 : 0,
+                    selectedKind !== 'すべて' ? 1 : 0,
+                    searchTerm !== '' ? 1 : 0
+                  ].reduce((a, b) => a + b, 0)}
                 </span>
               )}
             </button>
@@ -113,13 +89,46 @@ export function BatteryList() {
 
         {showFilters && (
           <div className="mb-4">
-            <BatteryListFilter 
-              selectedType={selectedType} 
-              setSelectedType={setSelectedType} 
-              selectedKind={selectedKind} 
-              setSelectedKind={setSelectedKind} 
-            />
-            <div className="mt-2 flex justify-end">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <div className="relative flex-grow">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="電池名・コメントを検索..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="relative">
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value as typeof SORT_OPTIONS[number])}
+                    className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  >
+                    {SORT_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                    <SortDesc className="h-4 w-4 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+              
+              <BatteryListFilter 
+                selectedType={selectedType} 
+                setSelectedType={setSelectedType} 
+                selectedKind={selectedKind} 
+                setSelectedKind={setSelectedKind} 
+              />
+            </div>
+            <div className="flex justify-end">
               <button
                 onClick={() => {
                   setSelectedType('すべて');
