@@ -103,15 +103,17 @@ export function BatteryDetail() {
           <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
             <h3 className="text-lg font-medium text-gray-900">個別設定</h3>
           </div>
-          <div className="divide-y divide-gray-200">
-            {sortedBatteries.map((battery) => (
-              <BatteryDetailItem
-                key={battery.slot_number}
-                battery={battery}
-                batteryGroup={batteryGroup}
-                setError={setError}
-              />
-            ))}
+          <div className="p-4 bg-gray-50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sortedBatteries.map((battery) => (
+                <BatteryDetailItem
+                  key={battery.slot_number}
+                  battery={battery}
+                  batteryGroup={batteryGroup}
+                  setError={setError}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
