@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
@@ -247,7 +245,7 @@ export function useAvailableBatteries(batteryType: string) {
 
       if (groupsError) throw groupsError;
 
-      return groups as BatteryGroup[];
+      return groups as unknown as BatteryGroup[];
     },
     staleTime: 0,
     enabled: !!batteryType,

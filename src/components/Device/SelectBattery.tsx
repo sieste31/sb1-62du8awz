@@ -1,11 +1,8 @@
 // 電池選択画面のコンポーネント
 
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Battery, ArrowLeft, History, Filter, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import {
@@ -40,19 +37,16 @@ const batteryKindLabels: Record<BatteryKind, string> = {
   rechargeable: '充電池',
 };
 
-interface SelectBatteryProps {
-  deviceId: string;
-}
-
-export function SelectBattery({ deviceId }: SelectBatteryProps) {
-  const router = useRouter();
+export function SelectBattery() {
+  const { deviceId } = useParams<{ deviceId: string }>();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const {
     device,
     batteries: installedBatteries,
     loading: deviceLoading,
-  } = useDevice(deviceId);
+  } = useDevice(deviceId || '');
   const { availableBatteryGroups, loading: batteriesLoading } =
     useAvailableBatteries(device?.battery_type ?? '');
   const [selectedBatteries, setSelectedBatteries] = useState<
@@ -105,7 +99,7 @@ export function SelectBattery({ deviceId }: SelectBatteryProps) {
         <div className="text-center">
           <p className="text-xl text-gray-600">デバイスが見つかりません</p>
           <button
-            onClick={() => router.push('/devices')}
+            onClick={() => navigate('/devices')}
             className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -221,7 +215,7 @@ export function SelectBattery({ deviceId }: SelectBatteryProps) {
         invalidateQueries(queryClient);
       await Promise.all([invalidateBatteries(), invalidateDevices()]);
 
-      router.push(`/devices/${deviceId}`);
+      navigate(`/devices/${deviceId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : '電池の設定に失敗しました');
       setSaving(false);
@@ -245,7 +239,7 @@ export function SelectBattery({ deviceId }: SelectBatteryProps) {
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => router.push(`/devices/${deviceId}`)}
+              onClick={() => navigate(`/devices/${deviceId}`)}
               className="inline-flex items-center text-gray-600 hover:text-gray-800"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -483,7 +477,7 @@ export function SelectBattery({ deviceId }: SelectBatteryProps) {
         <DeviceUsageHistory
           isOpen={showHistory}
           onClose={() => setShowHistory(false)}
-          deviceId={deviceId}
+          deviceId={deviceId || ''}
           deviceName={device.name}
         />
       </div>

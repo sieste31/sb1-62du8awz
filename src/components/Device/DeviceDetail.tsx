@@ -1,11 +1,8 @@
 // デバイス詳細画面を表示するコンポーネント
 
-'use client';
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ArrowLeft, Battery, Pencil, X, Check, History, Upload, ToyBrick, Clock } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useDevice, invalidateQueries } from '@/lib/hooks';
@@ -31,15 +28,12 @@ const deviceTypeIcons = {
   toy: ToyBrick,
 };
 
-interface DeviceDetailProps {
-  id: string;
-}
-
-export function DeviceDetail({ id }: DeviceDetailProps) {
-  const router = useRouter();
+export function DeviceDetail() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { device, batteries, loading } = useDevice(id);
+  const { device, batteries, loading } = useDevice(id || '');
   const [isEditing, setIsEditing] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -209,7 +203,7 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
-            onClick={() => router.push('/devices')}
+            onClick={() => navigate('/devices')}
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -531,7 +525,7 @@ export function DeviceDetail({ id }: DeviceDetailProps) {
                   交換履歴
                 </button>
                 <Link
-                  href={`/devices/${device.id}/select-battery`}
+                  to={`/devices/${device.id}/select-battery`}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                 >
                   <Battery className="h-4 w-4 mr-2" />

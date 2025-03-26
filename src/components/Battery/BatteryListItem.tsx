@@ -1,10 +1,8 @@
 // 電池一覧画面の各電池グループの表示を担当するコンポーネント
 
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { Battery, Smartphone } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { supabase } from '@/lib/supabase';
 import type { Database } from '@/lib/database.types';
@@ -52,7 +50,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
     <div className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200">
       <div className="p-4">
         <div className="flex">
-          <Link href={`/batteries/${group.id}`} className="flex-shrink-0">
+          <Link to={`/batteries/${group.id}`} className="flex-shrink-0">
             <img
               src={imageUrl || ''}
               alt={`${group.type}の画像`}
@@ -61,7 +59,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
           </Link>
           <div className="ml-4 flex-1 min-w-0">
             <Link 
-              href={`/batteries/${group.id}`}
+              to={`/batteries/${group.id}`}
               className="block text-xl font-medium text-gray-900 hover:text-gray-700 mb-2"
             >
               {group.name}
@@ -95,7 +93,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                     .map(b => (
                       <Link
                         key={b.id}
-                        href={`/devices/${b.devices?.id}`}
+                        to={`/devices/${b.devices?.id}`}
                         className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-xs text-gray-700 hover:bg-gray-200"
                       >
                         {b.devices?.name}

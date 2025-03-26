@@ -22,8 +22,13 @@ export async function compressImage(
 
     const options = { ...defaultOptions, ...customOptions };
 
+    // Blobの場合はFileに変換
+    const fileToCompress = file instanceof File 
+      ? file 
+      : new File([file], 'image.jpg', { type: file.type });
+
     // 画像の圧縮を実行
-    const compressedFile = await imageCompression(file, options);
+    const compressedFile = await imageCompression(fileToCompress, options);
 
     // ファイル名を生成
     const fileName = file instanceof File ? file.name : 'cropped_image.jpg';

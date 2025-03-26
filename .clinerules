@@ -18,15 +18,16 @@ You have two modes of operation:
 
 # 技術スタック
 - React
-- Next.js
+- Vite
+- React Router Dom
 - TypeScript
 - Supabase
-- Tailwind CSSS
+- Tailwind CSS
 
 # プロジェクトの構成
-- プロジェクトはNext.jsで構築されています。
+- プロジェクトはVite+Reactで構築されています。
 - プロジェクトはTypeScriptで書かれています。
-- プロジェクトはReactで構築されています。
+- ルーティングにはReact Router Domを使用しています。
 
 # UI設計の原則
 - レスポンシブデザインを採用し、様々な画面サイズに対応します。

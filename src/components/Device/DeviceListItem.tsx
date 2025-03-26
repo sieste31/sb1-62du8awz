@@ -1,10 +1,8 @@
 // デバイス一覧画面の各デバイスを表示するコンポーネント
 
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
 
@@ -57,7 +55,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
     <div className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200">
       <div className="p-4">
         <div className="flex flex-col">
-          <Link href={`/devices/${device.id}`} className="flex-1">
+          <Link to={`/devices/${device.id}`} className="flex-1">
             <div className="flex items-start space-x-4">
               <img
                 src={imageUrl || ''}

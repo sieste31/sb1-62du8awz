@@ -1,10 +1,8 @@
 // 電池詳細画面の電池アイテムコンポーネント
 
-'use client';
-
 import React, { useState } from 'react';
 import { Smartphone, History } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { BatteryUsageHistory } from './BatteryUsageHistory';
 import type { Database } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
@@ -98,7 +96,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
           <dd className="text-sm">
             {battery.device_id && battery.devices ? (
               <Link 
-                href={`/devices/${battery.devices.id}`}
+                to={`/devices/${battery.devices.id}`}
                 className="flex items-center text-blue-600 hover:text-blue-800 group"
               >
                 <Smartphone className="h-4 w-4 mr-2" />

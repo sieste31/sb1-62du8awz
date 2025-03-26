@@ -1,9 +1,7 @@
 // 電池作成画面のコンポーネント
 
-'use client';
-
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { Battery, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
@@ -12,7 +10,7 @@ type BatteryKind = 'disposable' | 'rechargeable';
 type BatteryStatus = 'charged' | 'empty';
 
 export function BatteryForm() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +62,7 @@ export function BatteryForm() {
 
       if (batteriesError) throw batteriesError;
 
-      router.push('/batteries');
+      navigate('/batteries');
     } catch (err) {
       setError(err instanceof Error ? err.message : '電池の登録に失敗しました');
       setLoading(false);
@@ -76,7 +74,7 @@ export function BatteryForm() {
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
-            onClick={() => router.push('/batteries')}
+            onClick={() => navigate('/batteries')}
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

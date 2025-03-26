@@ -1,18 +1,16 @@
-'use client';
-
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth-provider';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/auth-provider';
 
 export function AuthRequired({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      navigate('/login');
     }
-  }, [user, loading, router]);
+  }, [user, loading, navigate]);
 
   if (loading) {
     return (

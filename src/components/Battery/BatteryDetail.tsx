@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { BatteryDetailItem } from './BatteryDetailItem';
@@ -18,13 +18,10 @@ import { BatteryDetailElemMemo } from './BatteryDetailElemMemo';
 import { BatteryDetailElemHead } from './BatteryDetailElemHead';
 
 
-interface BatteryDetailProps {
-  id: string;
-}
-
-export function BatteryDetail({ id }: BatteryDetailProps) {
-  const router = useRouter();
-  const { batteryGroup, batteries, loading } = useBatteryGroup(id);
+export function BatteryDetail() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { batteryGroup, batteries, loading } = useBatteryGroup(id || '');
 
   // Zustandストアから状態と関数を取得
   const {
@@ -71,7 +68,7 @@ export function BatteryDetail({ id }: BatteryDetailProps) {
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
-            onClick={() => router.push('/batteries')}
+            onClick={() => navigate('/batteries')}
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

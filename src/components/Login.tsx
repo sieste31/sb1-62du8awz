@@ -1,12 +1,10 @@
-'use client';
-
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/lib/auth-provider';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/auth-provider';
 
 export function Login() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,9 +14,9 @@ export function Login() {
   // ユーザーが既にログインしている場合はリダイレクト
   useEffect(() => {
     if (user) {
-      router.push('/');
+      navigate('/');
     }
-  }, [user, router]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +38,7 @@ export function Login() {
         throw signInError;
       }
 
-      router.push('/');
+      navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
     } finally {

@@ -2,6 +2,8 @@
 
 電池とデバイスを効率的に管理するためのウェブアプリケーションです。
 
+> **注意**: このプロジェクトは元々Next.jsで構築されていましたが、Vite+ReactのSPAアプリに移行されました。
+
 ## 機能
 
 - 電池の登録・管理（充電池/使い切り）
@@ -11,7 +13,7 @@
 
 ## 技術スタック
 
-- Next.js
+- Vite
 - React
 - TypeScript
 - Tailwind CSS
@@ -58,18 +60,32 @@ cp .env.example .env
 npm run dev
 ```
 
-ブラウザで http://localhost:3000 を開いてアプリケーションにアクセスできます。
+ブラウザで http://localhost:5173 を開いてアプリケーションにアクセスできます。
 
 ## デプロイ
 
-このアプリケーションは Vercel や Netlify などのサービスに簡単にデプロイできます。デプロイ時には、環境変数を適切に設定してください。
+このアプリケーションは Netlify などのサービスに簡単にデプロイできます。デプロイ時には、環境変数を適切に設定してください。
+
+## 移行情報
+
+このプロジェクトは元々Next.jsで構築されていましたが、以下の理由でVite+ReactのSPAアプリに移行されました：
+
+- より高速な開発環境
+- シンプルなSPA構成への移行
+- クライアントサイドのみの実装に焦点を当てる
+
+主な変更点：
+- Next.jsのルーティングからReact Router Domへの移行
+- サーバーサイドコンポーネントの削除
+- ミドルウェアの削除
+- ビルド設定の更新
 
 ## 環境変数
 
 このプロジェクトでは以下の環境変数を使用しています：
 
-- `NEXT_PUBLIC_SUPABASE_URL`: Supabase プロジェクトの URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase の匿名キー
+- `VITE_SUPABASE_URL`: Supabase プロジェクトの URL
+- `VITE_SUPABASE_ANON_KEY`: Supabase の匿名キー
 
 ## ライセンス
 

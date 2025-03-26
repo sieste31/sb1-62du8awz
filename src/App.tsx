@@ -11,7 +11,7 @@ import { DeviceForm } from './components/Device/DeviceForm';
 import { SelectBattery } from './components/Device/SelectBattery';
 import { Login } from './components/Login';
 import { AuthRequired } from './components/AuthRequired';
-import { useAuth } from './lib/auth';
+import { useAuth } from './lib/auth-provider';
 
 function App() {
   const { user, loading } = useAuth();

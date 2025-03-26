@@ -1,9 +1,7 @@
 // デバイス作成画面のコンポーネント
 
-'use client';
-
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { Smartphone, Speaker, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
@@ -21,7 +19,7 @@ const deviceTypeOptions = [
 ];
 
 export function DeviceForm() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +56,7 @@ export function DeviceForm() {
 
       if (insertError) throw insertError;
 
-      router.push('/devices');
+      navigate('/devices');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'デバイスの登録に失敗しました');
       setLoading(false);
@@ -70,7 +68,7 @@ export function DeviceForm() {
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
-            onClick={() => router.push('/devices')}
+            onClick={() => navigate('/devices')}
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

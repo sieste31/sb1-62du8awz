@@ -1,12 +1,10 @@
-'use client';
-
 import { useState } from 'react';
 import { Battery, Smartphone, Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, useLocation } from 'react-router-dom';
 
 export function Navigation() {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isRoot = pathname === '/';
   const activeTab = isRoot || pathname.startsWith('/batteries') ? 'batteries' : 'devices';
@@ -21,7 +19,7 @@ export function Navigation() {
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                href="/batteries"
+                to="/batteries"
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   activeTab === 'batteries'
                     ? 'border-blue-500 text-gray-900'
@@ -32,7 +30,7 @@ export function Navigation() {
                 電池管理
               </Link>
               <Link
-                href="/devices"
+                to="/devices"
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   activeTab === 'devices'
                     ? 'border-blue-500 text-gray-900'
@@ -63,7 +61,7 @@ export function Navigation() {
       <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
           <Link
-            href="/batteries"
+            to="/batteries"
             className={`${
               activeTab === 'batteries'
                 ? 'bg-blue-50 border-blue-500 text-blue-700'
@@ -77,7 +75,7 @@ export function Navigation() {
             </div>
           </Link>
           <Link
-            href="/devices"
+            to="/devices"
             className={`${
               activeTab === 'devices'
                 ? 'bg-blue-50 border-blue-500 text-blue-700'

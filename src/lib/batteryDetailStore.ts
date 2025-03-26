@@ -1,10 +1,7 @@
 // 電池詳細画面の状態管理
 
-'use client';
-
 import { create } from 'zustand';
 import { supabase } from './supabase';
-import { useRouter } from 'next/navigation';
 import type { Database } from './database.types';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];

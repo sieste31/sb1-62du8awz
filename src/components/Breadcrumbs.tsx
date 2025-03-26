@@ -1,7 +1,5 @@
-'use client';
-
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +9,8 @@ interface BreadcrumbItem {
 }
 
 export function Breadcrumbs() {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   useEffect(() => {
@@ -53,14 +52,14 @@ export function Breadcrumbs() {
 
   return (
     <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-      <Link href="/" className="hover:text-gray-700">
+      <Link to="/" className="hover:text-gray-700">
         <Home className="w-4 h-4" />
       </Link>
       {breadcrumbs.map((item, index) => (
         <div key={item.href} className="flex items-center">
           <ChevronRight className="w-4 h-4 text-gray-400" />
           <Link
-            href={item.href}
+            to={item.href}
             className={`hover:text-gray-700 ${
               index === breadcrumbs.length - 1 ? 'text-gray-900 font-medium' : ''
             }`}
