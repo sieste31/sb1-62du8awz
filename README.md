@@ -19,15 +19,68 @@
 - Tailwind CSS
 - Supabase (認証・データベース・ストレージ)
 
-## 画面構成
+## 画面構成と機能
 
-- 電池一覧画面
-  - 電池作成画面
-  - 電池詳細画面
-- デバイス一覧画面
-  - デバイス作成画面
-  - デバイス詳細画面
-  - 電池選択画面
+### 電池管理
+- **電池一覧画面** (`/batteries`)
+  - 電池グループの一覧表示
+  - 電池タイプと種類によるフィルタリング
+  - 新規電池登録画面へのリンク
+- **電池作成画面** (`/batteries/new`)
+  - 電池グループの新規登録
+  - 電池の種類、本数、電圧などの設定
+- **電池詳細画面** (`/batteries/:id`)
+  - 電池グループの詳細情報表示
+  - 電池グループの編集・削除
+  - 個々の電池の状態表示
+
+### デバイス管理
+- **デバイス一覧画面** (`/devices`)
+  - デバイスの一覧表示（電池設定済み/未設定で分類）
+  - デバイス種別、電池種別によるフィルタリング
+  - 交換予定日や交換日による並び替え
+  - 新規デバイス登録画面へのリンク
+- **デバイス作成画面** (`/devices/new`)
+  - デバイスの新規登録
+  - デバイスタイプ、使用電池、必要本数などの設定
+- **デバイス詳細画面** (`/devices/:id`)
+  - デバイスの詳細情報表示
+  - デバイスの編集
+  - デバイスに設定されている電池の表示
+  - 電池交換履歴の表示
+  - 電池選択画面へのリンク
+- **電池選択画面** (`/devices/:deviceId/select-battery`)
+  - デバイスに設定する電池の選択
+  - 電池の状態や種類によるフィルタリング
+  - 選択した電池の確定
+
+### 認証
+- **ログイン画面** (`/login`)
+  - Supabaseを使用した認証
+
+## 画面遷移
+
+```mermaid
+flowchart TD
+    Login[ログイン画面 /login] --> Batteries
+    
+    Batteries[電池一覧画面 /batteries] --> BatteryNew
+    Batteries --> BatteryDetail
+    BatteryNew[電池作成画面 /batteries/new] --> Batteries
+    BatteryDetail[電池詳細画面 /batteries/:id] --> Batteries
+    
+    Batteries --> Devices
+    Devices[デバイス一覧画面 /devices] --> DeviceNew
+    Devices --> DeviceDetail
+    DeviceNew[デバイス作成画面 /devices/new] --> Devices
+    DeviceDetail[デバイス詳細画面 /devices/:id] --> Devices
+    DeviceDetail --> SelectBattery
+    SelectBattery[電池選択画面 /devices/:deviceId/select-battery] --> DeviceDetail
+    
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    classDef active fill:#d4e6f1,stroke:#2874a6,stroke-width:2px;
+    class Login,Batteries,Devices active;
+```
 
 ## 開発環境のセットアップ
 
