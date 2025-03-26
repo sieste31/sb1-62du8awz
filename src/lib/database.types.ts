@@ -43,7 +43,8 @@ export interface Database {
         Row: {
           id: string                           // 電池グループの一意識別子
           name: string                         // 電池グループの名前
-          type: string                         // 電池の種類（例: AA, AAA, 18650など）
+          shape: string                        // 電池の形状（例: 単1形, 単2形, 単3形など）
+          type: string                         // 互換性のために残す（非推奨）
           kind: 'disposable' | 'rechargeable'  // 電池の種別（使い捨てか充電式か）
           count: number                        // グループ内の電池数
           voltage: number                      // 電池の電圧
@@ -58,7 +59,8 @@ export interface Database {
         Insert: {
           id?: string                          // 自動生成可能なID
           name: string                         // 必須: 電池グループ名
-          type: string                         // 必須: 電池タイプ
+          shape: string                        // 必須: 電池形状
+          type?: string                        // 互換性のために残す（非推奨）
           kind: 'disposable' | 'rechargeable'  // 必須: 電池種別
           count: number                        // 必須: 電池数
           voltage: number                      // 必須: 電圧
@@ -74,7 +76,8 @@ export interface Database {
         Update: {
           id?: string                          // 更新対象のID
           name?: string                        // 電池グループ名
-          type?: string                        // 電池タイプ
+          shape?: string                       // 電池形状
+          type?: string                        // 互換性のために残す（非推奨）
           kind?: 'disposable' | 'rechargeable' // 電池種別
           count?: number                       // 電池数
           voltage?: number                     // 電圧

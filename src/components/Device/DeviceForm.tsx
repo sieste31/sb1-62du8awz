@@ -26,7 +26,7 @@ export function DeviceForm() {
   const [formData, setFormData] = useState({
     name: '',
     type: 'smartphone' as DeviceType,
-    batteryType: '単3形',
+    batteryShape: '単3形',
     batteryCount: 1,
     batteryLifeWeeks: '' as string | number,
     purchaseDate: '',
@@ -46,7 +46,7 @@ export function DeviceForm() {
         .insert({
           name: formData.name,
           type: formData.type,
-          battery_type: formData.batteryType,
+          battery_type: formData.batteryShape,
           battery_count: formData.batteryCount,
           battery_life_weeks: formData.batteryLifeWeeks ? Number(formData.batteryLifeWeeks) : null,
           purchase_date: formData.purchaseDate || null,
@@ -129,13 +129,13 @@ export function DeviceForm() {
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label htmlFor="batteryType" className="block text-sm font-medium text-gray-700">
-                  使用電池
+                <label htmlFor="batteryShape" className="block text-sm font-medium text-gray-700">
+                  電池形状
                 </label>
                 <select
-                  id="batteryType"
-                  value={formData.batteryType}
-                  onChange={(e) => setFormData({ ...formData, batteryType: e.target.value })}
+                  id="batteryShape"
+                  value={formData.batteryShape}
+                  onChange={(e) => setFormData({ ...formData, batteryShape: e.target.value })}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
                   <option value="単1形">単1形</option>

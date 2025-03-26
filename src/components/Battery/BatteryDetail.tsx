@@ -10,7 +10,7 @@ import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { BatteryDetailImage } from './BatteryDetailImage';
 import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
-import { BatteryDetailElemType } from './BatteryDetailElemType';
+import { BatteryDetailElemShape } from './BatteryDetailElemShape';
 import { BatteryDetailElemKind } from './BatteryDetailElemKind';
 import { BatteryDetailElemCount } from './BatteryDetailElemCount';
 import { BatteryDetailElemVolt } from './BatteryDetailElemVolt';
@@ -45,7 +45,7 @@ export function BatteryDetail() {
       setIsEditing(false); // 編集モードをリセット
 
       // 画像URLを取得
-      getBatteryImage(batteryGroup.type as keyof typeof defaultBatteryImages, batteryGroup.image_url)
+      getBatteryImage((batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages, batteryGroup.image_url)
         .then(url => setImageUrl(url));
     }
   }, [id, batteryGroup, batteries, setBatteryGroup, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
@@ -88,7 +88,7 @@ export function BatteryDetail() {
               />
               <div className="flex-1">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                  <BatteryDetailElemType />
+                  <BatteryDetailElemShape />
                   <BatteryDetailElemKind />
                   <BatteryDetailElemCount />
                   <BatteryDetailElemVolt />

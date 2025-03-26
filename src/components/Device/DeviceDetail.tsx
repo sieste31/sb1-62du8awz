@@ -45,7 +45,7 @@ export function DeviceDetail() {
   const [editData, setEditData] = useState<{
     name: string;
     type: Device['type'];
-    batteryType: string;
+    batteryShape: string;
     batteryCount: number;
     batteryLifeWeeks: string | number;
     purchaseDate: string;
@@ -57,7 +57,7 @@ export function DeviceDetail() {
       setEditData({
         name: device.name,
         type: device.type,
-        batteryType: device.battery_type,
+        batteryShape: device.battery_type,
         batteryCount: device.battery_count,
         batteryLifeWeeks: device.battery_life_weeks || '',
         purchaseDate: device.purchase_date || '',
@@ -161,7 +161,7 @@ export function DeviceDetail() {
         .update({
           name: editData.name,
           type: editData.type,
-          battery_type: editData.batteryType,
+          battery_type: editData.batteryShape,
           battery_count: editData.batteryCount,
           battery_life_weeks: editData.batteryLifeWeeks ? Number(editData.batteryLifeWeeks) : null,
           purchase_date: editData.purchaseDate || null,
@@ -186,7 +186,7 @@ export function DeviceDetail() {
     setEditData({
       name: device.name,
       type: device.type,
-      batteryType: device.battery_type,
+      batteryShape: device.battery_type,
       batteryCount: device.battery_count,
       batteryLifeWeeks: device.battery_life_weeks || '',
       purchaseDate: device.purchase_date || '',
@@ -333,16 +333,16 @@ export function DeviceDetail() {
                   </div>
 
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">使用電池</dt>
+                    <dt className="text-sm font-medium text-gray-500">電池形状</dt>
                     <dd className="mt-1">
                       {isEditing ? (
                         <div>
                           <select
-                            value={editData.batteryType}
+                            value={editData.batteryShape}
                             onChange={(e) =>
                               setEditData({
                                 ...editData,
-                                batteryType: e.target.value,
+                                batteryShape: e.target.value,
                               })
                             }
                             disabled={hasBatteriesInstalled}

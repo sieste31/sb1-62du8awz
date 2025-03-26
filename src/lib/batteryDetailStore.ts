@@ -11,7 +11,7 @@ type Battery = Database['public']['Tables']['batteries']['Row'] & {
 
 interface EditData {
   name: string;
-  type: string;
+  shape: string;
   kind: 'disposable' | 'rechargeable';
   count: number;
   voltage: number;
@@ -95,7 +95,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
   initializeEditData: (batteryGroup) => set({
     editData: {
       name: batteryGroup.name,
-      type: batteryGroup.type,
+      shape: batteryGroup.shape || batteryGroup.type, // 互換性のために両方サポート
       kind: batteryGroup.kind,
       count: batteryGroup.count,
       voltage: batteryGroup.voltage,
@@ -109,7 +109,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       set({
         editData: {
           name: batteryGroup.name,
-          type: batteryGroup.type,
+          shape: batteryGroup.shape || batteryGroup.type, // 互換性のために両方サポート
           kind: batteryGroup.kind,
           count: batteryGroup.count,
           voltage: batteryGroup.voltage,
@@ -148,7 +148,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
         .from('battery_groups')
         .update({
           name: editData.name,
-          type: editData.type,
+          shape: editData.shape,
           kind: editData.kind,
           count: editData.count,
           voltage: editData.voltage,

@@ -1,9 +1,9 @@
-// 電池詳細画面の電池種別の表示・編集を行うコンポーネント
+// 電池詳細画面の電池形状の表示・編集を行うコンポーネント
 
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
-export function BatteryDetailElemType() {
+export function BatteryDetailElemShape() {
   const isEditing = useBatteryDetailStore(state => state.isEditing);
   const editData = useBatteryDetailStore(state => state.editData);
   const setEditData = useBatteryDetailStore(state => state.setEditData);
@@ -14,12 +14,12 @@ export function BatteryDetailElemType() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電池種別</dt>
+        <dt className="text-sm font-medium text-gray-500">電池形状</dt>
         <dd className="mt-1">
           <div>
             <select
-              value={editData.type}
-              onChange={(e) => setEditData({ type: e.target.value })}
+              value={editData.shape}
+              onChange={(e) => setEditData({ shape: e.target.value })}
               disabled={restrictTypeAndCountEditing}
               className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${restrictTypeAndCountEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                 }`}
@@ -43,9 +43,9 @@ export function BatteryDetailElemType() {
   else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電池種別</dt>
+        <dt className="text-sm font-medium text-gray-500">電池形状</dt>
         <dd className="mt-1">
-          <span className="text-sm text-gray-900">{batteryGroup.type}</span>
+          <span className="text-sm text-gray-900">{batteryGroup.shape}</span>
         </dd>
       </div>
     );

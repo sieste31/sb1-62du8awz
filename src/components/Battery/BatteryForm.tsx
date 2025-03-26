@@ -16,7 +16,7 @@ export function BatteryForm() {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    type: '単3形',
+    shape: '単3形',
     kind: 'disposable' as BatteryKind,
     status: 'charged' as BatteryStatus,
     count: 1,
@@ -37,7 +37,7 @@ export function BatteryForm() {
         .from('battery_groups')
         .insert({
           name: formData.name,
-          type: formData.type,
+          shape: formData.shape,
           kind: formData.kind,
           count: formData.count,
           voltage: formData.voltage,
@@ -107,13 +107,13 @@ export function BatteryForm() {
             </div>
 
             <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-                電池種別
+              <label htmlFor="shape" className="block text-sm font-medium text-gray-700">
+                電池形状
               </label>
               <select
-                id="type"
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                id="shape"
+                value={formData.shape}
+                onChange={(e) => setFormData({ ...formData, shape: e.target.value })}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
                 <option value="単1形">単1形</option>

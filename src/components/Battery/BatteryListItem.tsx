@@ -24,7 +24,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
   const shortId = group.id.slice(0, 8);
 
   useEffect(() => {
-    getBatteryImage(group.type as keyof typeof defaultBatteryImages, group.image_url)
+    getBatteryImage((group.shape || group.type) as keyof typeof defaultBatteryImages, group.image_url)
       .then(url => setImageUrl(url));
     
     // Fetch the actual installed count from the database
@@ -53,7 +53,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
           <Link to={`/batteries/${group.id}`} className="flex-shrink-0">
             <img
               src={imageUrl || ''}
-              alt={`${group.type}の画像`}
+              alt={`${group.shape || group.type}の画像`}
               className="w-24 h-24 rounded-lg object-cover"
             />
           </Link>
@@ -65,7 +65,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
               {group.name}
             </Link>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium text-gray-500">{group.type}</span>
+              <span className="text-sm font-medium text-gray-500">{group.shape || group.type}</span>
               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                 group.kind === 'rechargeable' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
               }`}>
