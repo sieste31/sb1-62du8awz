@@ -11,7 +11,12 @@ export function DeviceDetailElemLastChange() {
   if (!device) return null;
 
   const batteryEndDate = calculateBatteryEndDate();
-  const isNearingEnd = batteryEndDate && (new Date(batteryEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 7;
+  const today = new Date();
+  const daysUntilEnd = batteryEndDate 
+    ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    : null;
+  const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
+  const isNearingEnd = daysUntilEnd !== null && daysUntilEnd > 0 && daysUntilEnd <= 7;
 
   return (
     <div>
@@ -25,11 +30,16 @@ export function DeviceDetailElemLastChange() {
           </span>
           {batteryEndDate && (
             <div className={`flex items-center text-sm ${
-              isNearingEnd ? 'text-red-600' : 'text-gray-500'
+              isOverdue 
+                ? 'text-red-600' 
+                : isNearingEnd 
+                  ? 'text-yellow-600' 
+                  : 'text-gray-500'
             }`}>
               <Clock className="h-4 w-4 mr-1" />
               <span>
                 交換予定: {batteryEndDate.toLocaleDateString()}
+                {isOverdue && ' (交換時期超過)'}
                 {isNearingEnd && ' (まもなく交換時期)'}
               </span>
             </div>

@@ -1,7 +1,7 @@
 // デバイス一覧画面の各デバイスを表示するコンポーネント
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock } from 'lucide-react';
+import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock, Hash, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
@@ -37,7 +37,12 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
 
   // 電池切れ予想日を計算
   const batteryEndDate = calculateBatteryEndDate(device);
-  const isNearingEnd = batteryEndDate && (new Date(batteryEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 7;
+  const today = new Date();
+  const daysUntilEnd = batteryEndDate 
+    ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    : null;
+  const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
+  const isNearingEnd = daysUntilEnd !== null && daysUntilEnd > 0 && daysUntilEnd <= 7;
 
   useEffect(() => {
     getDeviceImage(device.type as keyof typeof iconMap, device.image_url)
@@ -52,85 +57,110 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
       : BatteryWarning;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200">
-      <div className="p-4">
-        <div className="flex flex-col">
-          <Link to={`/devices/${device.id}`} className="flex-1">
-            <div className="flex items-start space-x-4">
-              <img
-                src={imageUrl || ''}
-                alt={device.name}
-                className="w-24 h-24 rounded-lg object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center">
-                  <Icon className="h-5 w-5 text-gray-400 mr-2" />
-                  <p className="text-lg font-medium text-gray-900">{device.name}</p>
-                </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span className="text-sm text-gray-500">
-                    {device.battery_type} × {device.battery_count}本
-                  </span>
-                  <span className="text-xs text-gray-400 font-mono">#{shortId}</span>
+    <Link 
+      to={`/devices/${device.id}`}
+      className="block bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 hover:scale-[1.01] transition-all duration-200"
+    >
+      <div className="p-5">
+        <div className="flex flex-col sm:flex-row">
+          <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
+            <img
+              src={imageUrl || ''}
+              alt={device.name}
+              className="w-full sm:w-24 h-24 rounded-lg object-cover shadow-sm"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            {/* ヘッダー情報（名前、タイプ） */}
+            <div className="flex flex-wrap items-start justify-between mb-2">
+              <span className="text-xl font-medium text-gray-900">
+                {device.name}
+              </span>
+              <div className="flex items-center mt-1 sm:mt-0">
+                <Hash className="h-3 w-3 text-gray-400 mr-1" />
+                <span className="text-xs text-gray-400 font-mono">{shortId}</span>
+              </div>
+            </div>
+            
+            {/* デバイス情報 */}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
+                <Icon className="h-4 w-4 mr-1 text-gray-500" />
+                {device.type === 'smartphone' ? 'スマホ/リモコン' : 
+                 device.type === 'speaker' ? 'スピーカー' : 
+                 device.type === 'camera' ? 'カメラ' : 
+                 device.type === 'gadget' ? 'ガジェット' : 
+                 device.type === 'light' ? 'ライト' : 'おもちゃ'}
+              </span>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
+                {device.battery_type}
+                <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
+                  {device.battery_count}本
+                </span>
+              </span>
+              {device.purchase_date && (
+                <span className="text-xs text-gray-500 flex items-center">
+                  <Clock className="h-3 w-3 mr-1" />
+                  購入: {new Date(device.purchase_date).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+            
+            {/* 電池状態の表示 */}
+            <div className="mt-3">
+              <div className="flex justify-between text-xs text-gray-500 mb-2">
+                <span>電池状態:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${
+                  device.has_batteries
+                    ? 'bg-green-50 text-green-700'
+                    : device.last_battery_change
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-red-50 text-red-700'
+                }`}>
+                  <BatteryIcon className="h-4 w-4 mr-1" />
+                  {device.has_batteries
+                    ? '電池設定完了'
+                    : device.last_battery_change
+                      ? '電池設定不足'
+                      : '電池未設定'}
                 </div>
                 
-                {/* Battery status indicator */}
-                <div className="mt-2 flex items-center">
-                  <BatteryIcon 
-                    className={`h-5 w-5 mr-2 ${
-                      device.has_batteries
-                        ? 'text-green-500'
-                        : device.last_battery_change
-                          ? 'text-amber-500'
-                          : 'text-red-500'
-                    }`} 
-                  />
-                  <span className={`text-sm ${
-                    device.has_batteries
-                      ? 'text-green-600'
-                      : device.last_battery_change
-                        ? 'text-amber-600'
-                        : 'text-red-600'
-                  }`}>
-                    {device.has_batteries
-                      ? '電池設定完了'
-                      : device.last_battery_change
-                        ? '電池設定不足'
-                        : '電池未設定'}
-                  </span>
-                </div>
-
-                {/* Battery end date */}
-                {batteryEndDate && (
-                  <div className={`mt-2 flex items-center ${
-                    isNearingEnd ? 'text-red-600' : 'text-gray-500'
-                  }`}>
+                {device.last_battery_change && (
+                  <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-xs text-blue-700">
                     <Clock className="h-4 w-4 mr-1" />
-                    <span className="text-sm">
-                      電池交換予定: {batteryEndDate.toLocaleDateString()}
-                      {isNearingEnd && ' (まもなく交換時期)'}
-                    </span>
+                    交換: {new Date(device.last_battery_change).toLocaleDateString()}
                   </div>
                 )}
                 
-                {device.notes && (
-                  <p className="mt-2 text-sm text-gray-500 truncate">{device.notes}</p>
-                )}
-                {device.purchase_date && (
-                  <p className="mt-1 text-sm text-gray-500">
-                    購入日: {new Date(device.purchase_date).toLocaleDateString()}
-                  </p>
-                )}
-                {device.last_battery_change && (
-                  <p className="mt-1 text-sm text-gray-500">
-                    前回電池交換: {new Date(device.last_battery_change).toLocaleDateString()}
-                  </p>
+                {batteryEndDate && (
+                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${
+                    isOverdue 
+                      ? 'bg-red-50 text-red-700' 
+                      : isNearingEnd 
+                        ? 'bg-yellow-50 text-yellow-700' 
+                        : 'bg-blue-50 text-blue-700'
+                  }`}>
+                    <Clock className="h-4 w-4 mr-1" />
+                    予定: {batteryEndDate.toLocaleDateString()}
+                    {isOverdue && ' (超過)'}
+                    {isNearingEnd && ' (まもなく)'}
+                  </div>
                 )}
               </div>
             </div>
-          </Link>
+            
+            {/* メモ（ある場合） */}
+            {device.notes && (
+              <div className="mt-3 flex items-start">
+                <Info className="h-3.5 w-3.5 text-gray-400 mt-0.5 mr-1.5 flex-shrink-0" />
+                <p className="text-sm text-gray-500 line-clamp-2">{device.notes}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

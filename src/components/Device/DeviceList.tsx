@@ -1,7 +1,7 @@
 // デバイス一覧画面のコンポーネント
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Plus, Filter, ArrowDownAZ, ArrowUpAZ, X, Clock, ChevronDown, ChevronRight } from 'lucide-react';
+import { Smartphone, Plus, Filter, ArrowDownAZ, ArrowUpAZ, X, Clock, ChevronDown, ChevronRight, Search, SortDesc } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useDevices } from '@/lib/hooks';
@@ -11,7 +11,7 @@ import type { Database } from '@/lib/database.types';
 type Device = Database['public']['Tables']['devices']['Row'];
 type DeviceType = 'all' | 'smartphone' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy';
 type BatteryType = 'all' | '単1形' | '単2形' | '単3形' | '単4形' | '9V形';
-type SortOrder = 'none' | 'asc' | 'desc' | 'battery-end-asc' | 'battery-end-desc';
+type SortOrder = 'none' | 'asc' | 'desc' | 'battery-end-asc' | 'battery-end-desc' | 'name-asc' | 'name-desc';
 
 const deviceTypeLabels: Record<DeviceType, string> = {
   all: 'すべて',
@@ -73,22 +73,31 @@ export function DeviceList() {
   const [deviceTypeFilter, setDeviceTypeFilter] = useState<DeviceType>('all');
   const [batteryTypeFilter, setBatteryTypeFilter] = useState<BatteryType>('all');
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');
-  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const [showWithBatteries, setShowWithBatteries] = useState(true);
   const [showWithoutBatteries, setShowWithoutBatteries] = useState(true);
 
   // Calculate active filters count
-  useEffect(() => {
+  const activeFiltersCount = React.useMemo(() => {
     let count = 0;
     if (deviceTypeFilter !== 'all') count++;
     if (batteryTypeFilter !== 'all') count++;
     if (sortOrder !== 'none') count++;
-    setActiveFiltersCount(count);
-  }, [deviceTypeFilter, batteryTypeFilter, sortOrder]);
+    if (searchTerm !== '') count++;
+    return count;
+  }, [deviceTypeFilter, batteryTypeFilter, sortOrder, searchTerm]);
 
   // Apply filters and sorting
   const filteredAndSortedDevices = React.useMemo(() => {
     let result = [...devices];
+    
+    // Apply search filter
+    if (searchTerm !== '') {
+      result = result.filter(device => 
+        device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (device.notes && device.notes.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
     
     // Apply device type filter
     if (deviceTypeFilter !== 'all') {
@@ -116,6 +125,11 @@ export function DeviceList() {
           return sortOrder === 'battery-end-asc'
             ? dateA.getTime() - dateB.getTime()
             : dateB.getTime() - dateA.getTime();
+        } else if (sortOrder === 'name-asc' || sortOrder === 'name-desc') {
+          // Handle name sorting
+          return sortOrder === 'name-asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
         } else {
           // Handle last_battery_change sorting
           if (!a.last_battery_change && !b.last_battery_change) return 0;
@@ -130,7 +144,7 @@ export function DeviceList() {
     }
     
     return result;
-  }, [devices, deviceTypeFilter, batteryTypeFilter, sortOrder]);
+  }, [devices, searchTerm, deviceTypeFilter, batteryTypeFilter, sortOrder]);
 
   // デバイスを電池の有無で分類
   const { withBatteries, withoutBatteries } = React.useMemo(() => {
@@ -153,6 +167,7 @@ export function DeviceList() {
     setDeviceTypeFilter('all');
     setBatteryTypeFilter('all');
     setSortOrder('none');
+    setSearchTerm('');
   };
 
   if (loading) {
@@ -166,9 +181,9 @@ export function DeviceList() {
   return (
     <div>
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-900">デバイス一覧</h2>
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">デバイス一覧</h2>
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -192,127 +207,105 @@ export function DeviceList() {
         </div>
 
         {showFilters && (
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-medium text-gray-700">フィルターとソート</h3>
-              {activeFiltersCount > 0 && (
-                <button
-                  onClick={resetFilters}
-                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 hover:text-gray-900"
-                >
-                  <X className="h-3 w-3 mr-1" />
-                  リセット
-                </button>
-              )}
+          <div className="mb-4">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <div className="relative flex-grow">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="デバイス名・メモを検索..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="relative">
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                    className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                  >
+                    <option value="none">並び替え</option>
+                    <option value="battery-end-asc">交換予定日が近い順</option>
+                    <option value="battery-end-desc">交換予定日が遠い順</option>
+                    <option value="asc">交換日が古い順</option>
+                    <option value="desc">交換日が新しい順</option>
+                    <option value="name-asc">名前（昇順）</option>
+                    <option value="name-desc">名前（降順）</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                    <SortDesc className="h-4 w-4 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* デバイス種別フィルター */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    デバイス種別
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {(Object.keys(deviceTypeLabels) as DeviceType[]).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setDeviceTypeFilter(type)}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                          deviceTypeFilter === type
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        }`}
+                      >
+                        {deviceTypeLabels[type]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 電池種別フィルター */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    電池種別
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {(['all', '単1形', '単2形', '単3形', '単4形', '9V形'] as BatteryType[]).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setBatteryTypeFilter(type)}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                          batteryTypeFilter === type
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        }`}
+                      >
+                        {type === 'all' ? 'すべて' : type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* デバイス種別フィルター */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  デバイス種別
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {(Object.keys(deviceTypeLabels) as DeviceType[]).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setDeviceTypeFilter(type)}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                        deviceTypeFilter === type
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                      }`}
-                    >
-                      {deviceTypeLabels[type]}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* 電池種別フィルター */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  電池種別
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {(['all', '単1形', '単2形', '単3形', '単4形', '9V形'] as BatteryType[]).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setBatteryTypeFilter(type)}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                        batteryTypeFilter === type
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                      }`}
-                    >
-                      {type === 'all' ? 'すべて' : type}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* ソート */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  並び替え
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'battery-end-asc' ? 'none' : 'battery-end-asc')}
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                      sortOrder === 'battery-end-asc'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                  >
-                    <Clock className="h-4 w-4 mr-1" />
-                    交換予定日が近い順
-                  </button>
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'battery-end-desc' ? 'none' : 'battery-end-desc')}
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                      sortOrder === 'battery-end-desc'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                  >
-                    <Clock className="h-4 w-4 mr-1" />
-                    交換予定日が遠い順
-                  </button>
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'none' : 'asc')}
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                      sortOrder === 'asc'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                  >
-                    <ArrowUpAZ className="h-4 w-4 mr-1" />
-                    交換日が古い順
-                  </button>
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'desc' ? 'none' : 'desc')}
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                      sortOrder === 'desc'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                  >
-                    <ArrowDownAZ className="h-4 w-4 mr-1" />
-                    交換日が新しい順
-                  </button>
-                </div>
-              </div>
+            <div className="flex justify-end">
+              <button
+                onClick={resetFilters}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                フィルターをリセット
+              </button>
             </div>
           </div>
         )}
       </div>
 
       {devices.length === 0 ? (
-        <div className="bg-white shadow rounded-lg">
-          <div className="text-center py-12">
+        <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="text-center py-16">
             <Smartphone className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">デバイスがありません</h3>
-            <p className="mt-1 text-sm text-gray-500">新しいデバイスを登録してください。</p>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">デバイスがありません</h3>
+            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">新しいデバイスを登録して、効率的に管理を始めましょう。</p>
             <div className="mt-6">
               <Link
                 to="/devices/new"
@@ -325,11 +318,11 @@ export function DeviceList() {
           </div>
         </div>
       ) : filteredAndSortedDevices.length === 0 ? (
-        <div className="bg-white shadow rounded-lg">
-          <div className="text-center py-12">
+        <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="text-center py-16">
             <Filter className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">条件に一致するデバイスがありません</h3>
-            <p className="mt-1 text-sm text-gray-500">フィルター条件を変更してください。</p>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">条件に一致するデバイスがありません</h3>
+            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">検索条件やフィルター設定を変更して、再度お試しください。</p>
             <div className="mt-6">
               <button
                 onClick={resetFilters}
@@ -342,7 +335,7 @@ export function DeviceList() {
           </div>
         </div>
       ) : (
-        <>
+        <div className="bg-white shadow rounded-xl overflow-hidden">
           <DeviceListSection
             title="電池設定済みのデバイス"
             devices={withBatteries}
@@ -357,7 +350,7 @@ export function DeviceList() {
             onToggle={() => setShowWithoutBatteries(!showWithoutBatteries)}
             isDesktop={isDesktop}
           />
-        </>
+        </div>
       )}
     </div>
   );
