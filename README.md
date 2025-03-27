@@ -55,6 +55,9 @@
   - デバイスに設定されている電池の表示
   - 電池交換履歴の表示
   - 電池選択画面へのリンク
+  - コンポーネント構成:
+    - 状態管理: `deviceDetailStore.ts` (Zustand)
+    - UI: 複数の小コンポーネントに分割（ヘッダー、画像、各種情報表示、電池セクションなど）
 - **電池選択画面** (`/devices/:deviceId/select-battery`)
   - デバイスに設定する電池の選択
   - 電池の状態や種類によるフィルタリング
@@ -63,6 +66,32 @@
 ### 認証
 - **ログイン画面** (`/login`)
   - Supabaseを使用した認証
+
+## コンポーネント設計
+
+このプロジェクトでは、大きなコンポーネントを適切に分割し、保守性と再利用性を高めています。
+
+### コンポーネント分割の例
+
+#### 電池詳細画面
+- `BatteryDetail.tsx` - メインコンポーネント
+- `BatteryDetailElemHead.tsx` - ヘッダー部分
+- `BatteryDetailImage.tsx` - 画像表示部分
+- `BatteryDetailElemShape.tsx` - 形状表示部分
+- その他の情報表示コンポーネント
+
+#### デバイス詳細画面
+- `DeviceDetail.tsx` - メインコンポーネント
+- `DeviceDetailElemHead.tsx` - ヘッダー部分
+- `DeviceDetailImage.tsx` - 画像表示部分
+- `DeviceDetailElemType.tsx` - デバイスタイプ表示部分
+- `DeviceDetailElemBatteryShape.tsx` - 電池形状表示部分
+- その他の情報表示コンポーネント
+
+### 状態管理
+- Zustandを使用した状態管理ストア
+  - `batteryDetailStore.ts` - 電池詳細画面の状態管理
+  - `deviceDetailStore.ts` - デバイス詳細画面の状態管理
 
 ## 画面遷移
 

@@ -28,6 +28,10 @@ You have two modes of operation:
 - プロジェクトはVite+Reactで構築されています。
 - プロジェクトはTypeScriptで書かれています。
 - ルーティングにはReact Router Domを使用しています。
+- 大きなコンポーネントは適切に分割し、保守性と再利用性を高めています：
+  - 状態管理はZustandを使用し、コンポーネントから分離しています。
+  - UIコンポーネントは機能ごとに小さなコンポーネントに分割しています。
+  - 例: DeviceDetail.tsxは、DeviceDetailElemHead.tsx、DeviceDetailImage.tsxなど複数の小コンポーネントに分割されています。
 
 # UI設計の原則
 - レスポンシブデザインを採用し、様々な画面サイズに対応します。
