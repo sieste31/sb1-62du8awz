@@ -26,7 +26,7 @@ export function DeviceDetailImage() {
         <img
           src={imageUrl || ''}
           alt={`${device.name}の画像`}
-          className="w-32 h-32 rounded-lg object-cover"
+          className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg object-cover"
         />
         <button
           onClick={() => fileInputRef.current?.click()}

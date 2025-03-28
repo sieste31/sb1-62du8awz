@@ -20,9 +20,12 @@ export function DeviceBatterySlot({
   if (!battery) {
     return (
       <div className="px-4 py-4 sm:px-6 bg-gray-50">
-        <div className="flex items-center justify-between">
-          <div>
-            <h4 className="text-sm font-medium text-gray-900">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+          <div className="mb-2 sm:mb-0">
+            <h4 className="text-sm font-medium text-gray-900 flex items-center">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-700 text-xs mr-2 flex-shrink-0">
+                {slotNumber}
+              </span>
               スロット #{slotNumber}
             </h4>
             <p className="mt-1 text-sm text-gray-500">
@@ -40,31 +43,37 @@ export function DeviceBatterySlot({
   }
 
   return (
-    <div className="px-4 py-4 sm:px-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-sm font-medium text-gray-900">
-            スロット #{slotNumber}: {battery.battery_groups?.name} #
-            {battery.slot_number}
+    <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+        <div className="mb-2 sm:mb-0">
+          <h4 className="text-sm font-medium text-gray-900 flex items-center">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs mr-2 flex-shrink-0">
+              {slotNumber}
+            </span>
+            {battery.battery_groups?.name} #{battery.slot_number}
           </h4>
-          <div className="mt-1 space-y-1">
-            <p className="text-sm text-gray-500">
-              最終チェック日:{' '}
-              {battery.last_checked
-                ? new Date(battery.last_checked).toLocaleDateString()
-                : '---'}
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+            <p className="text-sm text-gray-500 flex items-center">
+              <span className="w-24 inline-block flex-shrink-0">最終チェック日:</span>
+              <span className="font-medium">
+                {battery.last_checked
+                  ? new Date(battery.last_checked).toLocaleDateString()
+                  : '---'}
+              </span>
             </p>
-            <p className="text-sm text-gray-500">
-              最終交換日:{' '}
-              {battery.last_changed_at
-                ? new Date(battery.last_changed_at).toLocaleDateString()
-                : '---'}
+            <p className="text-sm text-gray-500 flex items-center">
+              <span className="w-24 inline-block flex-shrink-0">最終交換日:</span>
+              <span className="font-medium">
+                {battery.last_changed_at
+                  ? new Date(battery.last_changed_at).toLocaleDateString()
+                  : '---'}
+              </span>
             </p>
           </div>
         </div>
         <div className="flex items-center">
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
               battery.status === 'charged'
                 ? 'bg-green-100 text-green-800'
                 : battery.status === 'in_use'

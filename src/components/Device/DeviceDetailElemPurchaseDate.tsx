@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { Calendar } from 'lucide-react';
 
 export function DeviceDetailElemPurchaseDate() {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
@@ -13,7 +14,7 @@ export function DeviceDetailElemPurchaseDate() {
 
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">購入日</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">購入日</dt>
       <dd className="mt-1">
         {isEditing ? (
           <input
@@ -27,11 +28,16 @@ export function DeviceDetailElemPurchaseDate() {
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
         ) : (
-          <span className="text-sm text-gray-900">
-            {device.purchase_date
-              ? new Date(device.purchase_date).toLocaleDateString()
-              : '---'}
-          </span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center justify-center p-1.5 bg-amber-50 rounded-md text-amber-700 mr-2">
+              <Calendar className="h-4 w-4" />
+            </span>
+            <span className="text-base font-medium text-gray-900">
+              {device.purchase_date
+                ? new Date(device.purchase_date).toLocaleDateString()
+                : '---'}
+            </span>
+          </div>
         )}
       </dd>
     </div>

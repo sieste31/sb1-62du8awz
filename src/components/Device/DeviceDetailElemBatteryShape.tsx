@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { Battery } from 'lucide-react';
 
 export function DeviceDetailElemBatteryShape() {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
@@ -14,7 +15,7 @@ export function DeviceDetailElemBatteryShape() {
 
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">電池形状</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">電池形状</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div>
@@ -43,9 +44,14 @@ export function DeviceDetailElemBatteryShape() {
             )}
           </div>
         ) : (
-          <span className="text-sm text-gray-900">
-            {device.battery_type}
-          </span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center justify-center p-1.5 bg-green-50 rounded-md text-green-700 mr-2">
+              <Battery className="h-4 w-4" />
+            </span>
+            <span className="text-base font-medium text-gray-900">
+              {device.battery_type}
+            </span>
+          </div>
         )}
       </dd>
     </div>

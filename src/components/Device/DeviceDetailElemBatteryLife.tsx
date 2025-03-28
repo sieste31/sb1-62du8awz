@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { Clock } from 'lucide-react';
 
 export function DeviceDetailElemBatteryLife() {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
@@ -13,7 +14,7 @@ export function DeviceDetailElemBatteryLife() {
 
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">電池寿命（週）</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">電池寿命</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div className="relative rounded-md shadow-sm">
@@ -34,9 +35,14 @@ export function DeviceDetailElemBatteryLife() {
             </div>
           </div>
         ) : (
-          <span className="text-sm text-gray-900">
-            {device.battery_life_weeks ? `${device.battery_life_weeks}週` : '---'}
-          </span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center justify-center p-1.5 bg-indigo-50 rounded-md text-indigo-700 mr-2">
+              <Clock className="h-4 w-4" />
+            </span>
+            <span className="text-base font-medium text-gray-900">
+              {device.battery_life_weeks ? `${device.battery_life_weeks}週` : '---'}
+            </span>
+          </div>
         )}
       </dd>
     </div>

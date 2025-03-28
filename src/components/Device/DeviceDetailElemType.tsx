@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick } from 'lucide-react';
 
 export function DeviceDetailElemType() {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
@@ -11,9 +12,31 @@ export function DeviceDetailElemType() {
 
   if (!editData || !device) return null;
 
+  // デバイスタイプに対応するアイコンとラベルを取得
+  const getDeviceTypeInfo = (type: string) => {
+    switch (type) {
+      case 'smartphone':
+        return { icon: <Smartphone className="h-4 w-4" />, label: 'スマートフォン/リモコン' };
+      case 'speaker':
+        return { icon: <Speaker className="h-4 w-4" />, label: 'スピーカー' };
+      case 'camera':
+        return { icon: <Camera className="h-4 w-4" />, label: 'カメラ' };
+      case 'gadget':
+        return { icon: <Gamepad className="h-4 w-4" />, label: 'ガジェット' };
+      case 'light':
+        return { icon: <Lightbulb className="h-4 w-4" />, label: 'ライト' };
+      case 'toy':
+        return { icon: <ToyBrick className="h-4 w-4" />, label: 'おもちゃ' };
+      default:
+        return { icon: <Camera className="h-4 w-4" />, label: 'カメラ' };
+    }
+  };
+
+  const deviceTypeInfo = getDeviceTypeInfo(device.type);
+
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
         デバイスタイプ
       </dt>
       <dd className="mt-1">
@@ -37,19 +60,14 @@ export function DeviceDetailElemType() {
             <option value="toy">おもちゃ</option>
           </select>
         ) : (
-          <span className="text-sm text-gray-900">
-            {device.type === 'smartphone'
-              ? 'スマートフォン/リモコン'
-              : device.type === 'speaker'
-              ? 'スピーカー'
-              : device.type === 'gadget'
-              ? 'ガジェット'
-              : device.type === 'light'
-              ? 'ライト'
-              : device.type === 'toy'
-              ? 'おもちゃ'
-              : 'カメラ'}
-          </span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center justify-center p-1.5 bg-blue-50 rounded-md text-blue-700 mr-2">
+              {deviceTypeInfo.icon}
+            </span>
+            <span className="text-base font-medium text-gray-900">
+              {deviceTypeInfo.label}
+            </span>
+          </div>
         )}
       </dd>
     </div>

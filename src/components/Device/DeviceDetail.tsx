@@ -73,19 +73,29 @@ export function DeviceDetail() {
           <DeviceDetailElemHead />
 
           <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
-            <div className="flex space-x-6">
-              <DeviceDetailImage />
-              <div className="flex-1">
+            <div className="flex flex-row space-x-4">
+              <div className="flex-shrink-0">
+                <DeviceDetailImage />
+              </div>
+              <div className="flex-1 min-w-0">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                   <DeviceDetailElemType />
                   <DeviceDetailElemBatteryShape />
                   <DeviceDetailElemBatteryCount />
-                  <DeviceDetailElemBatteryLife />
                   <DeviceDetailElemPurchaseDate />
-                  <DeviceDetailElemLastChange />
-                  <DeviceDetailElemNotes />
                 </dl>
               </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-100 pl-0">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <DeviceDetailElemBatteryLife />
+                <DeviceDetailElemLastChange />
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <DeviceDetailElemNotes />
             </div>
           </div>
         </div>

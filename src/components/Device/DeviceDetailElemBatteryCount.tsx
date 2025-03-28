@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { Hash } from 'lucide-react';
 
 export function DeviceDetailElemBatteryCount() {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
@@ -14,7 +15,7 @@ export function DeviceDetailElemBatteryCount() {
 
   return (
     <div>
-      <dt className="text-sm font-medium text-gray-500">必要本数</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">必要本数</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div>
@@ -39,9 +40,14 @@ export function DeviceDetailElemBatteryCount() {
             )}
           </div>
         ) : (
-          <span className="text-sm text-gray-900">
-            {device.battery_count}本
-          </span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center justify-center p-1.5 bg-purple-50 rounded-md text-purple-700 mr-2">
+              <Hash className="h-4 w-4" />
+            </span>
+            <span className="text-base font-medium text-gray-900">
+              {device.battery_count}本
+            </span>
+          </div>
         )}
       </dd>
     </div>

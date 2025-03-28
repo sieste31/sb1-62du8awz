@@ -17,13 +17,15 @@ export function DeviceDetailBatterySection() {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">電池の設定</h3>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <h3 className="text-lg font-medium text-gray-900">電池の設定</h3>
+            <span className="ml-4 text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
               設置済み: {installedCount}本 / 未設置:{' '}
               {device.battery_count - installedCount}本
             </span>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             <button
               onClick={() => setShowHistory(true)}
               className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
