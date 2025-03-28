@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, Pencil, X, Check, ToyBrick } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const deviceTypeIcons = {
   smartphone: Smartphone,
@@ -14,6 +15,7 @@ const deviceTypeIcons = {
 };
 
 export function DeviceDetailElemHead() {
+  const queryClient = useQueryClient();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -60,7 +62,7 @@ export function DeviceDetailElemHead() {
                 <X className="h-5 w-5" />
               </button>
               <button
-                onClick={handleSave}
+                onClick={() => handleSave(queryClient)}
                 disabled={saving}
                 className="inline-flex items-center p-2 border border-transparent rounded-full text-green-600 hover:text-green-700 disabled:opacity-50"
               >

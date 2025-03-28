@@ -4,8 +4,10 @@ import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
 import { BatteryDetailElemTitle } from '@/components/Battery/BatteryDetailElemTitle'; // Adjust the import path as necessary
+import { useQueryClient } from '@tanstack/react-query';
 
 export function BatteryDetailElemHead() {
+    const queryClient = useQueryClient();
     const isEditing = useBatteryDetailStore(state => state.isEditing);
     const editData = useBatteryDetailStore(state => state.editData);
     const setEditData = useBatteryDetailStore(state => state.setEditData);
@@ -40,7 +42,7 @@ export function BatteryDetailElemHead() {
                             <X className="h-5 w-5" />
                         </button>
                         <button
-                            onClick={handleSave}
+                            onClick={() => handleSave(queryClient)}
                             disabled={saving}
                             className="inline-flex items-center p-2 border border-transparent rounded-full text-green-600 hover:text-green-700 disabled:opacity-50"
                         >

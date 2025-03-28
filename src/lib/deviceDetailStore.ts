@@ -56,7 +56,7 @@ interface DeviceDetailState {
   resetEditData: () => void;
 
   // 操作
-  handleSave: () => Promise<void>;
+  handleSave: (queryClient?: any) => Promise<void>;
   handleCancelEdit: () => void;
   handleImageSelect: (file: File, userId: string) => Promise<void>;
   handleCropComplete: (croppedBlob: Blob) => Promise<void>;
@@ -130,7 +130,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   },
 
   // 操作
-  handleSave: async () => {
+  handleSave: async (queryClient) => {
     const { device, editData } = get();
     if (!device || !editData) return;
 
@@ -153,9 +153,10 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
       if (updateError) throw updateError;
 
       // React Queryのキャッシュを無効化
-      const queryClient = useQueryClient();
-      const { invalidateDevices } = invalidateQueries(queryClient);
-      await invalidateDevices();
+      if (queryClient) {
+        const { invalidateDevices } = invalidateQueries(queryClient);
+        await invalidateDevices();
+      }
 
       set({ isEditing: false, saving: false });
     } catch (err) {

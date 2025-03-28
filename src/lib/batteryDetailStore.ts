@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import { supabase } from './supabase';
 import type { Database } from './database.types';
+import { invalidateQueries } from './hooks';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -50,7 +51,7 @@ interface BatteryDetailState {
   resetEditData: () => void;
 
   // 操作
-  handleSave: () => Promise<void>;
+  handleSave: (queryClient?: any) => Promise<void>;
   handleDelete: () => Promise<void>;
   handleCancelEdit: () => void;
 }
@@ -121,7 +122,7 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
   },
 
   // 操作
-  handleSave: async () => {
+  handleSave: async (queryClient) => {
     const { batteryGroup, editData, batteries } = get();
     if (!batteryGroup || !editData) return;
 
@@ -202,7 +203,12 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
       }
 
       set({ isEditing: false, saving: false });
-      window.location.reload();
+      
+      // React Queryのキャッシュを無効化
+      if (queryClient) {
+        const { invalidateBatteries } = invalidateQueries(queryClient);
+        await invalidateBatteries();
+      }
     } catch (err) {
       set({
         error: err instanceof Error ? err.message : '保存に失敗しました',
