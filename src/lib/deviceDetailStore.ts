@@ -35,9 +35,6 @@ interface DeviceDetailState {
   saving: boolean;
   showHistory: boolean;
 
-  // 計算された値
-  installedCount: number;
-  hasBatteriesInstalled: boolean;
 
   // アクション
   setIsEditing: (isEditing: boolean) => void;
@@ -76,13 +73,6 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   saving: false,
   showHistory: false,
 
-  // 計算された値
-  get installedCount() {
-    return get().batteries.length;
-  },
-  get hasBatteriesInstalled() {
-    return get().batteries.length > 0;
-  },
 
   // アクション
   setIsEditing: (isEditing) => set({ isEditing }),

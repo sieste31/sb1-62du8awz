@@ -32,21 +32,33 @@ export function DeviceDetail() {
     showHistory,
     selectedImage, showCropper,
     handleCropComplete,
-    setDevice, setBatteries
+    setDevice, setBatteries,
+    setIsEditing
   } = useDeviceDetailStore();
 
   // 初期データをセット
   useEffect(() => {
     if (device) {
+      console.log('useDevice batteries:', batteries);
       setDevice(device);
-      setBatteries(batteries);
+      
+      // batteriesが存在し、空でない場合のみ設定
+      if (batteries && batteries.length > 0) {
+        setBatteries(batteries);
+        console.log('After setBatteries, store batteries:', useDeviceDetailStore.getState().batteries);
+      } else {
+        console.log('batteries is empty or undefined');
+      }
+      
       initializeEditData(device);
+      // 編集モードをリセット
+      setIsEditing(false);
 
       // 画像URLを取得
       getDeviceImage(device.type, device.image_url)
         .then(url => setImageUrl(url));
     }
-  }, [id, device, batteries, setDevice, setBatteries, initializeEditData, setImageUrl]);
+  }, [id, device, batteries, setDevice, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
 
   if (loading || !device || !editData) {
     return (

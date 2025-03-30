@@ -18,7 +18,7 @@ export function DeviceDetailElemLastChange() {
     : null;
   const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
   const isNearingEnd = daysUntilEnd !== null && daysUntilEnd > 0 && daysUntilEnd <= 7;
-  const hasBatteriesInstalled = device.battery_count > 0 && batteries.length === device.battery_count;
+  const hasBatteriesFullInstalled = device.battery_count > 0 && batteries.length === device.battery_count;
 
   return (
     <div>
@@ -35,7 +35,7 @@ export function DeviceDetailElemLastChange() {
           </span>
         </div>
         
-        {batteryEndDate && hasBatteriesInstalled && (
+        {batteryEndDate && hasBatteriesFullInstalled && (
           <div className="mt-2 text-sm">
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
               isOverdue 

@@ -1,7 +1,7 @@
 // 電池詳細画面を表示するコンポーネント
 
 import React, { useEffect } from 'react';
-import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
@@ -9,7 +9,6 @@ import { BatteryDetailItem } from './BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { BatteryDetailImage } from './BatteryDetailImage';
-import { BatteryDetailElemTitle } from './BatteryDetailElemTitle';
 import { BatteryDetailElemShape } from './BatteryDetailElemShape';
 import { BatteryDetailElemKind } from './BatteryDetailElemKind';
 import { BatteryDetailElemCount } from './BatteryDetailElemCount';
@@ -33,7 +32,7 @@ export function BatteryDetail() {
     saving, deleting,
     handleSave, handleDelete, handleCancelEdit,
     setBatteryGroup, setBatteries,
-    installedCount, restrictTypeAndCountEditing
+    restrictTypeAndCountEditing
   } = useBatteryDetailStore();
 
   // 初期データをセット

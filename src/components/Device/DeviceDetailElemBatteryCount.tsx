@@ -9,7 +9,9 @@ export function DeviceDetailElemBatteryCount() {
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
   const device = useDeviceDetailStore(state => state.device);
-  const hasBatteriesInstalled = useDeviceDetailStore(state => state.hasBatteriesInstalled);
+  const batteries = useDeviceDetailStore(state => state.batteries);
+  const installedCount = batteries.length 
+  const hasBatteriesInstalled = installedCount > 0;
 
   if (!editData || !device) return null;
 

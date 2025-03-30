@@ -9,9 +9,16 @@ export function DeviceDetailElemBatteryShape() {
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
   const device = useDeviceDetailStore(state => state.device);
-  const hasBatteriesInstalled = useDeviceDetailStore(state => state.hasBatteriesInstalled);
+  const batteries  = useDeviceDetailStore(state => state.batteries);
 
-  if (!editData || !device) return null;
+  const installedCount = batteries.length 
+  const hasBatteriesInstalled = installedCount> 0;
+
+  if (!editData || !device　|| !batteries) return null;
+  console.log('batteries:', batteries);
+  console.log('lenght:', batteries.length);
+  console.log('hasBatteriesInstalled:', hasBatteriesInstalled);
+  console.log('installedCount:', installedCount);
 
   return (
     <div>
@@ -21,11 +28,12 @@ export function DeviceDetailElemBatteryShape() {
           <div>
             <select
               value={editData.batteryShape}
-              onChange={(e) =>
+              onChange={(e) => {
+
                 setEditData({
                   batteryShape: e.target.value,
-                })
-              }
+                });
+              }}
               disabled={hasBatteriesInstalled}
               className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
                 hasBatteriesInstalled ? 'bg-gray-100 cursor-not-allowed' : ''
