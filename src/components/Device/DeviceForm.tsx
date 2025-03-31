@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Smartphone, Speaker, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick, AlertCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useDevices, useUserPlan } from '@/lib/hooks';
+import { createDevice } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
 
 type DeviceType = Database['public']['Tables']['devices']['Row']['type'];
@@ -61,20 +61,16 @@ export function DeviceForm() {
     setError(null);
 
     try {
-      const { error: insertError } = await supabase
-        .from('devices')
-        .insert({
-          name: formData.name,
-          type: formData.type,
-          battery_type: formData.batteryShape,
-          battery_count: formData.batteryCount,
-          battery_life_weeks: formData.batteryLifeWeeks ? Number(formData.batteryLifeWeeks) : null,
-          purchase_date: formData.purchaseDate || null,
-          notes: formData.notes || null,
-          user_id: user.id,
-        });
-
-      if (insertError) throw insertError;
+      await createDevice({
+        name: formData.name,
+        type: formData.type,
+        battery_type: formData.batteryShape,
+        battery_count: formData.batteryCount,
+        battery_life_weeks: formData.batteryLifeWeeks ? Number(formData.batteryLifeWeeks) : null,
+        purchase_date: formData.purchaseDate || null,
+        notes: formData.notes || null,
+        user_id: user.id,
+      });
 
       navigate('/devices');
     } catch (err) {

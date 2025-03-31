@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import { BatteryUsageHistory } from './BatteryUsageHistory';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import type { Database } from '@/lib/database.types';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
+import { updateBatteryStatus } from '@/lib/api';
 
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
   devices?: Database['public']['Tables']['devices']['Row'] | null;
@@ -78,28 +78,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
     }
 
     try {
-      const now = new Date().toISOString();
-      const updates: {
-        status: string;
-        last_checked: string;
-        last_changed_at?: string;
-      } = {
-        status: newStatus,
-        last_checked: now,
-      };
-
-      // 充電済みまたは使用中に変更する場合は交換日も更新
-      if (newStatus === 'charged' || newStatus === 'in_use') {
-        updates.last_changed_at = now;
-      }
-
-      const { error: updateError } = await supabase
-        .from('batteries')
-        .update(updates)
-        .eq('id', batteryId);
-
-      if (updateError) throw updateError;
-
+      await updateBatteryStatus(batteryId, newStatus);
       window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : '電池の状態の更新に失敗しました');

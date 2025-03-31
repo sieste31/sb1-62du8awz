@@ -1,11 +1,13 @@
 // デバイス詳細画面の状態管理
 
 import { create } from 'zustand';
-import { supabase } from './supabase';
 import type { Database } from './database.types';
-import { compressImage, validateImage } from './imageUtils';
+import { validateImage } from './imageUtils';
 import { invalidateQueries } from './hooks';
 import { useQueryClient } from '@tanstack/react-query';
+import { updateDevice } from './api/devices';
+import { uploadDeviceImage } from './api/storage';
+import { getCurrentUser } from './api/auth';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -127,20 +129,15 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     set({ saving: true, error: null });
 
     try {
-      const { error: updateError } = await supabase
-        .from('devices')
-        .update({
-          name: editData.name,
-          type: editData.type,
-          battery_type: editData.batteryShape,
-          battery_count: editData.batteryCount,
-          battery_life_weeks: editData.batteryLifeWeeks ? Number(editData.batteryLifeWeeks) : null,
-          purchase_date: editData.purchaseDate || null,
-          notes: editData.notes || null,
-        })
-        .eq('id', device.id);
-
-      if (updateError) throw updateError;
+      await updateDevice(device.id, {
+        name: editData.name,
+        type: editData.type,
+        battery_type: editData.batteryShape,
+        battery_count: editData.batteryCount,
+        battery_life_weeks: editData.batteryLifeWeeks ? Number(editData.batteryLifeWeeks) : null,
+        purchase_date: editData.purchaseDate || null,
+        notes: editData.notes || null,
+      });
 
       // React Queryのキャッシュを無効化
       if (queryClient) {
@@ -187,36 +184,16 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
 
     try {
       // ユーザー情報を取得
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = await getCurrentUser();
       if (!user) throw new Error('ユーザー情報が取得できませんでした');
 
-      const compressedFile = await compressImage(croppedBlob, {
-        maxSizeMB: 0.05,
-        maxWidthOrHeight: 200,
-      });
-
-      const fileExt = compressedFile.name.split('.').pop();
-      const filePath = `${user.id}/${device.id}/image.${fileExt}`;
-
-      if (device.image_url) {
-        const existingPath = device.image_url.split('/').slice(-3).join('/');
-        await supabase.storage
-          .from('device-images')
-          .remove([existingPath]);
-      }
-
-      const { error: uploadError } = await supabase.storage
-        .from('device-images')
-        .upload(filePath, compressedFile, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { error: updateError } = await supabase
-        .from('devices')
-        .update({ image_url: filePath })
-        .eq('id', device.id);
-
-      if (updateError) throw updateError;
+      // 画像をアップロード
+      await uploadDeviceImage(
+        user.id,
+        device.id,
+        croppedBlob,
+        device.image_url || null
+      );
 
       set({
         showCropper: false,

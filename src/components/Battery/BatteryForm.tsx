@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Battery, ArrowLeft, AlertCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
+import { createBatteryGroupWithBatteries } from '@/lib/api';
 
 type BatteryKind = 'disposable' | 'rechargeable';
 type BatteryStatus = 'charged' | 'empty';
@@ -52,10 +52,9 @@ export function BatteryForm() {
     setError(null);
 
     try {
-      // 1. 電池グループを作成
-      const { data: groupData, error: groupError } = await supabase
-        .from('battery_groups')
-        .insert({
+      // 電池グループと電池を一括で作成
+      await createBatteryGroupWithBatteries(
+        {
           name: formData.name,
           shape: formData.shape,
           kind: formData.kind,
@@ -63,24 +62,11 @@ export function BatteryForm() {
           voltage: formData.voltage,
           notes: formData.notes || null,
           user_id: user.id,
-        })
-        .select()
-        .single();
-
-      if (groupError) throw groupError;
-
-      // 2. 個々の電池を作成
-      const batteries = Array.from({ length: formData.count }, () => ({
-        group_id: groupData.id,
-        status: formData.kind === 'disposable' ? 'empty' : formData.status,
-        user_id: user.id,
-      }));
-
-      const { error: batteriesError } = await supabase
-        .from('batteries')
-        .insert(batteries);
-
-      if (batteriesError) throw batteriesError;
+        },
+        formData.count,
+        formData.status,
+        user.id
+      );
 
       navigate('/batteries');
     } catch (err) {

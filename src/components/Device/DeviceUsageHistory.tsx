@@ -3,7 +3,7 @@
 import React from 'react';
 import { X, Battery, Calendar } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { getDeviceUsageHistory } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
 
 type UsageHistory = Database['public']['Tables']['battery_usage_history']['Row'] & {
@@ -23,19 +23,7 @@ export function DeviceUsageHistory({ isOpen, onClose, deviceId, deviceName }: De
   const { data: history, isLoading } = useQuery({
     queryKey: ['deviceUsageHistory', deviceId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('battery_usage_history')
-        .select(`
-          *,
-          batteries (
-            *,
-            battery_groups (*)
-          )
-        `)
-        .eq('device_id', deviceId)
-        .order('started_at', { ascending: false });
-
-      if (error) throw error;
+      const data = await getDeviceUsageHistory(deviceId);
       return data as UsageHistory[];
     },
     enabled: isOpen,

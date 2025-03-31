@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from './supabase';
 import { useStore } from './store';
 import { useAuth } from './auth-provider';
 import type { Database } from './database.types';
+import { getUserPlan, isLimitReached } from './api/userPlans';
+import { getDevices, getDevice, getDeviceBatteries } from './api/devices';
+import { getBatteryGroups, getBatteryGroup, getBatteries, getAvailableBatteries } from './api/batteries';
 
 type UserPlan = Database['public']['Tables']['user_plans']['Row'];
 
@@ -41,29 +43,7 @@ export function useUserPlan() {
     queryKey: [QUERY_KEYS.USER_PLAN, user?.id],
     queryFn: async () => {
       if (!user) return null;
-      
-      const { data, error } = await supabase
-        .from('user_plans')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-        
-      if (error) {
-        // ユーザープランが見つからない場合は、デフォルト値を返す
-        if (error.code === 'PGRST116') {
-          return {
-            id: '',
-            user_id: user.id,
-            plan_type: 'free' as const,
-            max_battery_groups: 5,
-            max_devices: 5,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-        }
-        throw error;
-      }
-      return data as UserPlan;
+      return await getUserPlan(user.id);
     },
     enabled: !!user,
     staleTime: 60 * 1000, // 1分間キャッシュ
@@ -74,9 +54,9 @@ export function useUserPlan() {
     loading,
     isLimitReached: {
       batteryGroups: (currentCount: number) => 
-        data ? currentCount >= data.max_battery_groups : false,
+        data ? isLimitReached(data, 'batteryGroups', currentCount) : false,
       devices: (currentCount: number) => 
-        data ? currentCount >= data.max_devices : false,
+        data ? isLimitReached(data, 'devices', currentCount) : false,
     }
   };
 }
@@ -89,22 +69,7 @@ export function useBatteryGroups() {
   const { data, isLoading: loading } = useQuery({
     queryKey: [QUERY_KEYS.BATTERY_GROUPS],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('battery_groups')
-        .select(`
-          *,
-          batteries (
-            *,
-            devices (
-              id,
-              name
-            )
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data as BatteryGroup[];
+      return await getBatteryGroups();
     },
     staleTime: 0,
   });
@@ -122,44 +87,33 @@ export function useBatteryGroup(id: string) {
   const queryClient = useQueryClient();
   const updateBatteryGroup = useStore((state) => state.updateBatteryGroup);
 
-  const { data, isLoading: loading } = useQuery({
+  const { data: batteryGroup, isLoading: loadingGroup } = useQuery({
     queryKey: [QUERY_KEYS.BATTERY_GROUP, id],
     queryFn: async () => {
-      const { data: groupData, error: groupError } = await supabase
-        .from('battery_groups')
-        .select(`
-          *,
-          batteries (
-            *,
-            devices (
-              *
-            )
-          )
-        `)
-        .eq('id', id)
-        .single();
-
-      if (groupError) throw groupError;
-
-      const batteries = groupData.batteries || [];
-      const batteryGroup = { ...groupData };
-      delete batteryGroup.batteries;
-
-      return { batteryGroup, batteries };
+      return await getBatteryGroup(id);
     },
     staleTime: 0,
   });
 
+  const { data: batteries, isLoading: loadingBatteries } = useQuery({
+    queryKey: ['batteries', id],
+    queryFn: async () => {
+      return await getBatteries(id);
+    },
+    staleTime: 0,
+    enabled: !!batteryGroup,
+  });
+
   useEffect(() => {
-    if (data?.batteryGroup) {
-      updateBatteryGroup(id, data.batteryGroup);
+    if (batteryGroup) {
+      updateBatteryGroup(id, batteryGroup);
     }
-  }, [data, id, updateBatteryGroup]);
+  }, [batteryGroup, id, updateBatteryGroup]);
 
   return {
-    batteryGroup: data?.batteryGroup ?? null,
-    batteries: data?.batteries ?? [],
-    loading,
+    batteryGroup: batteryGroup ?? null,
+    batteries: batteries ?? [],
+    loading: loadingGroup || loadingBatteries,
   };
 }
 
@@ -171,13 +125,7 @@ export function useDevices() {
   const { data, isLoading: loading } = useQuery({
     queryKey: [QUERY_KEYS.DEVICES],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('devices')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data as Device[];
+      return await getDevices();
     },
     staleTime: 0,
   });
@@ -198,28 +146,12 @@ export function useDevice(id: string) {
   const { data, isLoading: loading } = useQuery({
     queryKey: [QUERY_KEYS.DEVICE, id],
     queryFn: async () => {
-      const { data: deviceData, error: deviceError } = await supabase
-        .from('devices')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (deviceError) throw deviceError;
-
-      const { data: batteriesData, error: batteriesError } = await supabase
-        .from('batteries')
-        .select(`
-          *,
-          battery_groups (*)
-        `)
-        .eq('device_id', id)
-        .order('slot_number', { ascending: true });
-
-      if (batteriesError) throw batteriesError;
-
+      const device = await getDevice(id);
+      const batteries = await getDeviceBatteries(id);
+      
       return {
-        device: deviceData as Device,
-        batteries: batteriesData as Battery[],
+        device,
+        batteries,
       };
     },
     staleTime: 0,
@@ -242,13 +174,7 @@ export function useDeviceBatteries(deviceId: string) {
   const { data, isLoading: loading } = useQuery({
     queryKey: [QUERY_KEYS.DEVICE_BATTERIES, deviceId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('batteries')
-        .select('*')
-        .eq('device_id', deviceId);
-
-      if (error) throw error;
-      return data as Battery[];
+      return await getDeviceBatteries(deviceId);
     },
     staleTime: 0,
   });
@@ -266,41 +192,7 @@ export function useAvailableBatteries(batteryType: string) {
   const { data, isLoading: loading } = useQuery({
     queryKey: [QUERY_KEYS.AVAILABLE_BATTERIES, batteryType],
     queryFn: async () => {
-      const { data: groups, error: groupsError } = await supabase
-        .from('battery_groups')
-        .select(`
-          id,
-          name,
-          type,
-          kind,
-          count,
-          voltage,
-          notes,
-          image_url,
-          created_at,
-          user_id,
-          batteries!inner (
-            id,
-            group_id,
-            slot_number,
-            status,
-            last_checked,
-            last_changed_at,
-            device_id,
-            created_at,
-            user_id,
-            devices:device_id (
-              id,
-              name
-            )
-          )
-        `)
-        .eq('type', batteryType)
-        .order('created_at', { ascending: false });
-
-      if (groupsError) throw groupsError;
-
-      return groups as unknown as BatteryGroup[];
+      return await getAvailableBatteries(batteryType);
     },
     staleTime: 0,
     enabled: !!batteryType,

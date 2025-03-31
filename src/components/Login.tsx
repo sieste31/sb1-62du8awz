@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth-provider';
+import { signInWithEmail, signUpWithEmail } from '../lib/api';
 
 export function Login() {
   const navigate = useNavigate();
@@ -26,18 +26,7 @@ export function Login() {
     setError(null);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-
-      if (signInError) {
-        if (signInError.message === 'Invalid login credentials') {
-          throw new Error('メールアドレスまたはパスワードが正しくありません');
-        }
-        throw signInError;
-      }
-
+      await signInWithEmail(email, password);
       navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'ログインに失敗しました');
@@ -54,28 +43,7 @@ export function Login() {
     setError(null);
 
     try {
-      if (password.length < 6) {
-        throw new Error('パスワードは最低6文字以上必要です');
-      }
-
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
-      });
-
-      if (signUpError) {
-        if (signUpError.message.includes('Password')) {
-          throw new Error('パスワードは最低6文字以上必要です');
-        }
-        if (signUpError.message.includes('Email')) {
-          throw new Error('有効なメールアドレスを入力してください');
-        }
-        throw signUpError;
-      }
-
+      await signUpWithEmail(email, password);
       setError('アカウントが作成されました。ログインしてください。');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'アカウント作成に失敗しました');

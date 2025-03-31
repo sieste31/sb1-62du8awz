@@ -5,10 +5,10 @@
 import React, { useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
-import { validateImage, compressImage } from '@/lib/imageUtils';
-import { supabase } from '@/lib/supabase';
+import { validateImage } from '@/lib/imageUtils';
 import { ImageCropper } from '@/components/ImageCropper';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
+import { uploadBatteryGroupImage } from '@/lib/api';
 
 interface BatteryDetailImageProps {
     imageUrl: string | null;
@@ -55,36 +55,13 @@ export function BatteryDetailImage({
         if (!user) return;
 
         try {
-            // 圧縮処理
-            const compressedFile = await compressImage(croppedBlob, {
-                maxSizeMB: 0.05,
-                maxWidthOrHeight: 200,
-            });
-
-            const fileExt = compressedFile.name.split('.').pop();
-            const filePath = `${user.id}/${batteryGroup.id}/image.${fileExt}`;
-
-            // まず既存の画像を削除
-            if (batteryGroup.image_url) {
-                const existingPath = batteryGroup.image_url.split('/').slice(-3).join('/');
-                await supabase.storage
-                    .from('battery-images')
-                    .remove([existingPath]);
-            }
-
-            // 新しい画像をアップロード
-            const { error: uploadError } = await supabase.storage
-                .from('battery-images')
-                .upload(filePath, compressedFile, { upsert: true });
-
-            if (uploadError) throw uploadError;
-
-            const { error: updateError } = await supabase
-                .from('battery_groups')
-                .update({ image_url: filePath })
-                .eq('id', batteryGroup.id);
-
-            if (updateError) throw updateError;
+            // 画像をアップロード
+            await uploadBatteryGroupImage(
+                user.id,
+                batteryGroup.id,
+                croppedBlob,
+                batteryGroup.image_url || null
+            );
 
             // クロッパーを閉じて画面を更新
             setShowCropper(false);

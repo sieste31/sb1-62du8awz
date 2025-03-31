@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Battery, ArrowLeft, History, Filter, X } from 'lucide-react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
 import {
   useDevice,
   useAvailableBatteries,
   invalidateQueries,
 } from '@/lib/hooks';
+import { assignBatteriesToDevice } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
 import { DeviceUsageHistory } from './DeviceUsageHistory';
@@ -127,88 +127,18 @@ export function SelectBattery() {
   };
 
   const handleConfirm = async () => {
-    if (!user) return;
+    if (!user || !deviceId) return;
 
     setSaving(true);
     setError(null);
 
     try {
-      const now = new Date().toISOString();
-
-      // 既存の電池を取り外し
-      if (installedBatteries.length > 0) {
-        // 使用履歴を更新
-        const { data: historyData } = await supabase
-          .from('battery_usage_history')
-          .select('id')
-          .eq('device_id', deviceId)
-          .is('ended_at', null);
-
-        if (historyData && historyData.length > 0) {
-          await supabase
-            .from('battery_usage_history')
-            .update({ ended_at: now })
-            .in(
-              'id',
-              historyData.map((h) => h.id)
-            );
-        }
-
-        // 電池を取り外し
-        const { error: removeError } = await supabase
-          .from('batteries')
-          .update({
-            device_id: null,
-            status: 'empty',
-            last_checked: now,
-          })
-          .eq('device_id', deviceId);
-
-        if (removeError) throw removeError;
-      }
-
-      // 選択された電池を設定
-      if (selectedBatteries.length > 0) {
-        // デバイスの最終電池交換日を更新
-        const { error: deviceUpdateError } = await supabase
-          .from('devices')
-          .update({
-            last_battery_change: now,
-          })
-          .eq('id', deviceId);
-
-        if (deviceUpdateError) throw deviceUpdateError;
-
-        // 電池を設定
-        const { error: updateError } = await supabase
-          .from('batteries')
-          .update({
-            device_id: deviceId,
-            status: 'in_use',
-            last_checked: now,
-            last_changed_at: now,
-          })
-          .in(
-            'id',
-            selectedBatteries.map((b) => b.batteryId)
-          );
-
-        if (updateError) throw updateError;
-
-        // 使用履歴を記録
-        const historyRecords = selectedBatteries.map((battery) => ({
-          battery_id: battery.batteryId,
-          device_id: deviceId,
-          started_at: now,
-          user_id: user.id,
-        }));
-
-        const { error: historyError } = await supabase
-          .from('battery_usage_history')
-          .insert(historyRecords);
-
-        if (historyError) throw historyError;
-      }
+      // 電池の割り当て処理
+      await assignBatteriesToDevice(
+        deviceId,
+        selectedBatteries.map(b => b.batteryId),
+        user.id
+      );
 
       // キャッシュを無効化
       const { invalidateBatteries, invalidateDevices } =

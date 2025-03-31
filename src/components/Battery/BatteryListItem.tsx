@@ -5,7 +5,7 @@ import { Battery, Smartphone, Info, Calendar, Hash } from 'lucide-react';
 import { BatteryStatusBadge } from './BatteryStatusBadge';
 import { Link } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
-import { supabase } from '@/lib/supabase';
+import { getBatteryStatusCounts } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
@@ -37,30 +37,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
     // 電池の状態別カウントと設置状況を取得
     async function fetchBatteryStatusCounts() {
       try {
-        const { data, error } = await supabase
-          .from('batteries')
-          .select('status, device_id')
-          .eq('group_id', group.id);
-        
-        if (error) throw error;
-        
-        // 状態別のカウントを計算
-        const counts = {
-          charged: 0,
-          in_use: 0,
-          empty: 0,
-          disposed: 0
-        };
-        
-        data?.forEach(battery => {
-          if (battery.status in counts) {
-            counts[battery.status as keyof typeof counts]++;
-          }
-        });
-        
-        // 設置済み電池数も計算
-        const installed = data?.filter(b => b.device_id !== null).length || 0;
-        
+        const { counts, installed } = await getBatteryStatusCounts(group.id);
         setBatteryStatusCounts(counts);
         setInstalledCount(installed);
       } catch (err) {
