@@ -352,7 +352,7 @@ export function SelectBattery() {
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <h2 className="text-xl font-bold text-gray-900">電池の設定</h2>
             <p className="mt-1 text-sm text-gray-500">
-              {device.name}に設定する電池を選択してください（最大
+              {device.name}に設定する電池({device.battery_type})を選択してください（最大
               {device.battery_count}本）
             </p>
           </div>
