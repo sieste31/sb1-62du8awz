@@ -1,12 +1,14 @@
 // 電池詳細画面の電池アイテムコンポーネント
 
 import React, { useState } from 'react';
-import { Smartphone, History, Battery, ChevronDown, Check } from 'lucide-react';
+import { Smartphone, History, Battery, ChevronDown, Check, Unplug } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BatteryUsageHistory } from './BatteryUsageHistory';
+import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import type { Database } from '@/lib/database.types';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
+import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
   devices?: Database['public']['Tables']['devices']['Row'] | null;
@@ -47,7 +49,27 @@ interface BatteryItemProps {
 export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryItemProps) {
   const [showHistory, setShowHistory] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const { user } = useAuth();
+  const removeBatteryFromDevice = useBatteryDetailStore(state => state.removeBatteryFromDevice);
+  
+  // 電池取り外し処理
+  const handleRemoveBattery = async () => {
+    if (!battery.device_id) return;
+    
+    try {
+      setRemoving(true);
+      await removeBatteryFromDevice(battery.id);
+      setShowRemoveConfirm(false);
+      // 成功後の処理
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '電池の取り外しに失敗しました');
+    } finally {
+      setRemoving(false);
+    }
+  };
   
   const handleBatteryStatusChange = async (batteryId: string, newStatus: BatteryStatus) => {
     if (!user) return;
@@ -110,29 +132,39 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <dt className="text-sm font-medium text-gray-500 mr-2">設置状況:</dt>
-            <dd className="text-sm flex-1 truncate max-w-[150px]">
+            <dd className="text-sm flex-1 truncate max-w-[150px] flex items-center">
               {battery.device_id && battery.devices ? (
-                <Link 
-                  to={`/devices/${battery.devices.id}`}
-                  className="flex items-center text-blue-600 hover:text-blue-800 group"
-                >
-                  <Smartphone className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <span className="group-hover:underline truncate">{battery.devices.name}</span>
-                </Link>
+                <>
+                  <Link 
+                    to={`/devices/${battery.devices.id}`}
+                    className="flex items-center text-blue-600 hover:text-blue-800 group"
+                  >
+                    <Smartphone className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="group-hover:underline truncate">{battery.devices.name}</span>
+                  </Link>
+                  <button
+                    onClick={() => setShowRemoveConfirm(true)}
+                    className="ml-2 inline-flex items-center p-1 rounded-full text-red-600 hover:bg-red-50"
+                    title="デバイスから取り外す"
+                  >
+                    <Unplug className="h-4 w-4" />
+                  </button>
+                </>
               ) : (
                 <span className="text-gray-500">未設置</span>
               )}
             </dd>
           </div>
           
-          {/* 状態変更ボタン */}
-          <button
+
+        </div>
+                  {/* 状態変更ボタン */}
+                  <button
             onClick={() => setShowStatusDropdown(!showStatusDropdown)}
             className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
             状態変更
           </button>
-        </div>
       </div>
       
       {/* 状態変更ダイアログ */}
@@ -215,6 +247,18 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         onClose={() => setShowHistory(false)}
         batteryId={battery.id}
         batteryName={`${batteryGroup.name} #${battery.slot_number}`}
+      />
+      
+      {/* 電池取り外し確認ダイアログ */}
+      <DeleteConfirmDialog
+        isOpen={showRemoveConfirm}
+        onClose={() => setShowRemoveConfirm(false)}
+        onConfirm={handleRemoveBattery}
+        title="電池の取り外し"
+        message={`${battery.devices?.name}から電池を取り外しますか？`}
+        confirmText="取り外す"
+        cancelText="キャンセル"
+        loading={removing}
       />
     </div>
   );

@@ -8,6 +8,8 @@ interface DeleteConfirmDialogProps {
   title: string;
   message: string;
   loading?: boolean;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 export function DeleteConfirmDialog({
@@ -17,6 +19,8 @@ export function DeleteConfirmDialog({
   title,
   message,
   loading = false,
+  confirmText = '削除する',
+  cancelText = 'キャンセル',
 }: DeleteConfirmDialogProps) {
   if (!isOpen) return null;
 
@@ -59,7 +63,7 @@ export function DeleteConfirmDialog({
               onClick={onConfirm}
               disabled={loading}
             >
-              {loading ? '削除中...' : '削除する'}
+              {loading ? `${confirmText}中...` : confirmText}
             </button>
             <button
               type="button"
@@ -67,7 +71,7 @@ export function DeleteConfirmDialog({
               onClick={onClose}
               disabled={loading}
             >
-              キャンセル
+              {cancelText}
             </button>
           </div>
         </div>

@@ -36,6 +36,7 @@ interface BatteryDetailState {
   restrictTypeAndCountEditing: boolean;
 
   // アクション
+  removeBatteryFromDevice: (batteryId: string) => Promise<boolean>;
   setIsEditing: (isEditing: boolean) => void;
   setEditData: (data: Partial<EditData>) => void;
   setError: (error: string | null) => void;
@@ -75,6 +76,82 @@ export const useBatteryDetailStore = create<BatteryDetailState>((set, get) => ({
   restrictTypeAndCountEditing: false,
 
   // アクション
+  removeBatteryFromDevice: async (batteryId: string) => {
+    try {
+      // 現在時刻を取得
+      const now = new Date().toISOString();
+      
+      // 電池情報を取得
+      const { data: batteryData, error: batteryError } = await supabase
+        .from('batteries')
+        .select('device_id')
+        .eq('id', batteryId)
+        .single();
+        
+      if (batteryError) throw batteryError;
+      if (!batteryData.device_id) return false; // すでにデバイスに設定されていない場合は何もしない
+      
+      const deviceId = batteryData.device_id;
+      
+      // 1. 電池の状態を更新
+      const { error: updateBatteryError } = await supabase
+        .from('batteries')
+        .update({
+          device_id: null,
+          status: 'empty',
+          last_changed_at: now
+        })
+        .eq('id', batteryId);
+        
+      if (updateBatteryError) throw updateBatteryError;
+      
+      // 2. 使用履歴を更新
+      const { error: updateHistoryError } = await supabase
+        .from('battery_usage_history')
+        .update({
+          ended_at: now
+        })
+        .eq('battery_id', batteryId)
+        .is('ended_at', null);
+        
+      if (updateHistoryError) throw updateHistoryError;
+      
+      // 3. デバイスの電池装着状態を確認・更新
+      const { data: deviceBatteries, error: deviceBatteriesError } = await supabase
+        .from('batteries')
+        .select('id')
+        .eq('device_id', deviceId);
+        
+      if (deviceBatteriesError) throw deviceBatteriesError;
+      
+      // 取り外し後の電池数が0の場合、デバイスのhas_batteriesをfalseに更新
+      if (deviceBatteries.length <= 1) { // 現在の電池を含めて1以下なら、取り外し後は0になる
+        const { error: updateDeviceError } = await supabase
+          .from('devices')
+          .update({
+            has_batteries: false
+          })
+          .eq('id', deviceId);
+          
+        if (updateDeviceError) throw updateDeviceError;
+      }
+      
+      // 4. ストアの状態を更新
+      const { batteries } = get();
+      const updatedBatteries = batteries.map(b => 
+        b.id === batteryId 
+          ? { ...b, device_id: null, status: 'empty' as const, last_changed_at: now, devices: null } 
+          : b
+      );
+      set({ batteries: updatedBatteries });
+      
+      return true;
+    } catch (err) {
+      console.error('電池取り外しエラー:', err);
+      throw err;
+    }
+  },
+  
   setIsEditing: (isEditing) => set({ isEditing }),
   setEditData: (data) => set(state => ({
     editData: state.editData ? { ...state.editData, ...data } : null
