@@ -5,7 +5,6 @@ import { Battery, History } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { DeviceBatterySlot } from './DeviceBatterySlot';
-import { useDeviceBatteries } from '@/lib/hooks';
 
 export function DeviceDetailBatterySection() {
   const device = useDeviceDetailStore(state => state.device);
@@ -14,16 +13,9 @@ export function DeviceDetailBatterySection() {
   // Zustandストアからbatteriesを取得
   const storeBatteries = useDeviceDetailStore(state => state.batteries);
   
-  // useDeviceBatteriesフックからも直接batteriesを取得（デバッグ用）
-  const { batteries: hookBatteries, installedCount: hookInstalledCount } = 
-    device ? useDeviceBatteries(device.id) : { batteries: [], installedCount: 0 };
-  
-  console.log('DeviceDetailBatterySection - storeBatteries:', storeBatteries);
-  console.log('DeviceDetailBatterySection - hookBatteries:', hookBatteries);
-  
   // 両方のbatteriesを比較し、hookBatteriesが存在する場合はそちらを使用
-  const batteries = hookBatteries.length > 0 ? hookBatteries : storeBatteries;
-  const installedCount = hookBatteries.length > 0 ? hookInstalledCount : storeBatteries.length;
+  const batteries = storeBatteries;
+  const installedCount = storeBatteries.length;
 
   if (!device) return null;
 

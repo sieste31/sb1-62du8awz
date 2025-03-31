@@ -17,6 +17,8 @@ export function DeviceBatterySlot({
   slotNumber,
   battery,
 }: DeviceBatterySlotProps) {
+  console.log('battery:', battery);
+  console.log('battery_groups:', battery?.battery_groups);
   if (!battery) {
     return (
       <div className="px-4 py-4 sm:px-6 bg-gray-50">
