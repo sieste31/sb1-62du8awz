@@ -53,11 +53,11 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
   const [removing, setRemoving] = useState(false);
   const { user } = useAuth();
   const removeBatteryFromDevice = useBatteryDetailStore(state => state.removeBatteryFromDevice);
-  
+
   // 電池取り外し処理
   const handleRemoveBattery = async () => {
     if (!battery.device_id) return;
-    
+
     try {
       setRemoving(true);
       await removeBatteryFromDevice(battery.id);
@@ -70,7 +70,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
       setRemoving(false);
     }
   };
-  
+
   const handleBatteryStatusChange = async (batteryId: string, newStatus: BatteryStatus) => {
     if (!user) return;
     if (batteryGroup.kind === 'disposable' && newStatus === 'charged') {
@@ -125,6 +125,13 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         <div className={`px-2 py-1 rounded-full text-xs font-medium ${batteryStatusColors[battery.status as BatteryStatus]}`}>
           {batteryStatusLabels[battery.status as BatteryStatus]}
         </div>
+        {/* 状態変更ボタン */}
+        <button
+          onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+        >
+          状態変更
+        </button>
       </div>
 
       {/* メイン情報 */}
@@ -135,38 +142,21 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
             <dd className="text-sm flex-1 truncate max-w-[150px] flex items-center">
               {battery.device_id && battery.devices ? (
                 <>
-                  <Link 
+                  <Link
                     to={`/devices/${battery.devices.id}`}
                     className="flex items-center text-blue-600 hover:text-blue-800 group"
                   >
-                    <Smartphone className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="group-hover:underline truncate">{battery.devices.name}</span>
                   </Link>
-                  <button
-                    onClick={() => setShowRemoveConfirm(true)}
-                    className="ml-2 inline-flex items-center p-1 rounded-full text-red-600 hover:bg-red-50"
-                    title="デバイスから取り外す"
-                  >
-                    <Unplug className="h-4 w-4" />
-                  </button>
                 </>
               ) : (
                 <span className="text-gray-500">未設置</span>
               )}
             </dd>
           </div>
-          
-
         </div>
-                  {/* 状態変更ボタン */}
-                  <button
-            onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-            className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
-          >
-            状態変更
-          </button>
       </div>
-      
+
       {/* 状態変更ダイアログ */}
       {showStatusDropdown && (
         <div className="fixed inset-0 z-50 overflow-y-auto" onClick={() => setShowStatusDropdown(false)}>
@@ -174,8 +164,8 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-            
-            <div 
+
+            <div
               className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
               onClick={(e) => e.stopPropagation()}
             >
@@ -187,7 +177,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                   {Object.entries(batteryStatusLabels).map(([status, label]) => {
                     const isDisabled = batteryGroup.kind === 'disposable' && status === 'charged';
                     const isSelected = battery.status === status;
-                    
+
                     return (
                       <button
                         key={status}
@@ -198,13 +188,12 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                           }
                         }}
                         disabled={isDisabled}
-                        className={`px-4 py-3 rounded-md text-sm font-medium flex items-center justify-center ${
-                          isDisabled 
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                            : isSelected
-                              ? batteryStatusColors[status as BatteryStatus]
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
+                        className={`px-4 py-3 rounded-md text-sm font-medium flex items-center justify-center ${isDisabled
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : isSelected
+                            ? batteryStatusColors[status as BatteryStatus]
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
                       >
                         {label}
                         {isSelected && <Check className="h-4 w-4 ml-2" />}
@@ -233,6 +222,15 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
           <div>最終チェック: {battery.last_checked ? new Date(battery.last_checked).toLocaleDateString() : '---'}</div>
           <div>最終交換: {battery.last_changed_at ? new Date(battery.last_changed_at).toLocaleDateString() : '---'}</div>
         </div>
+        {battery.device_id && battery.devices ? (
+          <button
+            onClick={() => setShowRemoveConfirm(true)}
+            className="ml-2 inline-flex items-center p-1 rounded-full text-red-600 hover:bg-red-50"
+            title="デバイスから取り外す"
+          >
+            <Unplug className="h-4 w-4" />
+          </button>
+        ) : (<></>)}
         <button
           onClick={() => setShowHistory(true)}
           className="inline-flex items-center p-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -248,7 +246,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         batteryId={battery.id}
         batteryName={`${batteryGroup.name} #${battery.slot_number}`}
       />
-      
+
       {/* 電池取り外し確認ダイアログ */}
       <DeleteConfirmDialog
         isOpen={showRemoveConfirm}
