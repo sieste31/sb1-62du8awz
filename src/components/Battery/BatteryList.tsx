@@ -1,58 +1,38 @@
 // 電池一覧画面のコンポーネント
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Battery, Plus, Filter, Search, SortDesc, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
 import type { Database } from '@/lib/database.types';
+import { BatteryListItem } from './BatteryListItem';
+import { BatteryListFilter } from './BatteryListFilter';
+import { BatteryListFilterButton } from './BatteryListFilterButton';
+import { 
+  useBatteryFilterStore, 
+  SORT_OPTIONS 
+} from '@/lib/batteryFilterStore';
+
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
     devices?: Database['public']['Tables']['devices']['Row'] | null;
   })[];
 };
-import { BatteryListItem } from './BatteryListItem';
-import { BatteryListFilter } from './BatteryListFilter';
-
-const BATTERY_TYPES = ['すべて', '単1形', '単2形', '単3形', '単4形', '9V形'] as const;
-const BATTERY_KINDS = ['すべて', 'disposable', 'rechargeable'] as const;
-const SORT_OPTIONS = ['登録日（新しい順）', '登録日（古い順）', '名前（昇順）', '名前（降順）'] as const;
 
 
 export function BatteryList() {
   const { batteryGroups, loading } = useBatteryGroups();
   const isDesktop = useMediaQuery({ minWidth: 768 });
-  const [selectedType, setSelectedType] = useState<typeof BATTERY_TYPES[number]>('すべて');
-  const [selectedKind, setSelectedKind] = useState<typeof BATTERY_KINDS[number]>('すべて');
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortOption, setSortOption] = useState<typeof SORT_OPTIONS[number]>('登録日（新しい順）');
+  
+  // Zustandストアから状態と関数を取得
+  const {
+    getFilteredAndSortedGroups
+  } = useBatteryFilterStore();
 
   // フィルタリングとソート
-  const filteredAndSortedGroups = batteryGroups
-    .filter(group => {
-      const matchesType = selectedType === 'すべて' || group.shape === selectedType || group.type === selectedType;
-      const matchesKind = selectedKind === 'すべて' || group.kind === selectedKind;
-      const matchesSearch = searchTerm === '' || 
-        group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (group.notes && group.notes.toLowerCase().includes(searchTerm.toLowerCase()));
-      return matchesType && matchesKind && matchesSearch;
-    })
-    .sort((a, b) => {
-      switch (sortOption) {
-        case '登録日（新しい順）':
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        case '登録日（古い順）':
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        case '名前（昇順）':
-          return a.name.localeCompare(b.name);
-        case '名前（降順）':
-          return b.name.localeCompare(a.name);
-        default:
-          return 0;
-      }
-    });
+  const filteredAndSortedGroups = getFilteredAndSortedGroups(batteryGroups);
 
   if (loading) {
     return (
@@ -68,84 +48,13 @@ export function BatteryList() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
           <h2 className="text-xl font-semibold text-gray-900">電池一覧</h2>
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              フィルター
-              {(selectedType !== 'すべて' || selectedKind !== 'すべて' || searchTerm !== '') && (
-                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  {[
-                    selectedType !== 'すべて' ? 1 : 0,
-                    selectedKind !== 'すべて' ? 1 : 0,
-                    searchTerm !== '' ? 1 : 0
-                  ].reduce((a, b) => a + b, 0)}
-                </span>
-              )}
-            </button>
+            <BatteryListFilterButton />
             <BatteryAddButton batteryGroups={batteryGroups} />
           </div>
         </div>
-
         {/* ユーザープラン情報表示 */}
         <UserPlanInfo batteryGroups={batteryGroups} />
-
-        {showFilters && (
-          <div className="mb-4">
-            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 mb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                <div className="relative flex-grow">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="電池名・コメントを検索..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div className="relative">
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as typeof SORT_OPTIONS[number])}
-                    className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                  >
-                    {SORT_OPTIONS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <SortDesc className="h-4 w-4 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-              
-              <BatteryListFilter 
-                selectedType={selectedType} 
-                setSelectedType={setSelectedType} 
-                selectedKind={selectedKind} 
-                setSelectedKind={setSelectedKind} 
-              />
-            </div>
-            <div className="flex justify-end">
-              <button
-                onClick={() => {
-                  setSelectedType('すべて');
-                  setSelectedKind('すべて');
-                  setSearchTerm('');
-                }}
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                フィルターをリセット
-              </button>
-            </div>
-          </div>
-        )}
+        <BatteryListFilter />
       </div>
 
       <div className="bg-white shadow rounded-xl overflow-hidden">
