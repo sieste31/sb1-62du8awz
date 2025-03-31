@@ -33,6 +33,48 @@ export interface Database {
      */
     Tables: {
       /**
+       * user_plans テーブル
+       * ユーザーごとのプラン情報と制限を管理します。
+       */
+      user_plans: {
+        /**
+         * テーブルから取得される行の型定義
+         */
+        Row: {
+          id: string                           // プランの一意識別子
+          user_id: string                      // ユーザーの一意識別子
+          plan_type: 'free' | 'premium' | 'business'  // プランタイプ
+          max_battery_groups: number           // 最大電池グループ数
+          max_devices: number                  // 最大デバイス数
+          created_at: string                   // 作成日時
+          updated_at: string                   // 更新日時
+        }
+        /**
+         * テーブルに新規レコードを挿入する際の型定義
+         */
+        Insert: {
+          id?: string                          // 自動生成可能なID
+          user_id: string                      // 必須: ユーザーID
+          plan_type?: 'free' | 'premium' | 'business'  // オプション: プランタイプ（デフォルト値あり）
+          max_battery_groups?: number          // オプション: 最大電池グループ数（デフォルト値あり）
+          max_devices?: number                 // オプション: 最大デバイス数（デフォルト値あり）
+          created_at?: string                  // オプション: 作成日時（デフォルト値あり）
+          updated_at?: string                  // オプション: 更新日時（デフォルト値あり）
+        }
+        /**
+         * テーブルの既存レコードを更新する際の型定義
+         */
+        Update: {
+          id?: string                          // 更新対象のID
+          user_id?: string                     // ユーザーID
+          plan_type?: 'free' | 'premium' | 'business'  // プランタイプ
+          max_battery_groups?: number          // 最大電池グループ数
+          max_devices?: number                 // 最大デバイス数
+          created_at?: string                  // 作成日時
+          updated_at?: string                  // 更新日時
+        }
+      }
+      /**
        * battery_groups テーブル
        * 電池グループ（同じ種類の電池の集まり）の情報を管理します。
        */

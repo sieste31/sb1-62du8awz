@@ -1,10 +1,11 @@
 // デバイス作成画面のコンポーネント
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Smartphone, Speaker, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick } from 'lucide-react';
+import { Smartphone, Speaker, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
+import { useDevices, useUserPlan } from '@/lib/hooks';
 import type { Database } from '@/lib/database.types';
 
 type DeviceType = Database['public']['Tables']['devices']['Row']['type'];
@@ -21,8 +22,21 @@ const deviceTypeOptions = [
 export function DeviceForm() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { devices } = useDevices();
+  const { userPlan, isLimitReached } = useUserPlan();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
+  
+  // 制限チェック
+  const isDeviceLimitReached = isLimitReached.devices(devices.length);
+  
+  useEffect(() => {
+    // ページ読み込み時に制限チェック
+    if (isDeviceLimitReached) {
+      setShowLimitWarning(true);
+    }
+  }, [isDeviceLimitReached]);
   const [formData, setFormData] = useState({
     name: '',
     type: 'smartphone' as DeviceType,
@@ -36,6 +50,12 @@ export function DeviceForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    
+    // 制限チェック
+    if (isDeviceLimitReached) {
+      setError('デバイスの上限に達しています。プランをアップグレードしてください。');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -80,6 +100,27 @@ export function DeviceForm() {
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <h2 className="text-xl font-bold text-gray-900">デバイスの新規登録</h2>
           </div>
+          
+          {showLimitWarning && (
+            <div className="px-4 py-3 bg-amber-50 border-b border-amber-100">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="h-5 w-5 text-amber-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-amber-700">
+                    デバイスの上限に達しています（{devices.length}/{userPlan?.max_devices || 5}）。
+                    <button 
+                      className="ml-2 font-medium text-amber-700 underline"
+                      onClick={() => alert('この機能は現在開発中です。')}
+                    >
+                      プランをアップグレード
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>

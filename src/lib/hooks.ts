@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import { useStore } from './store';
+import { useAuth } from './auth-provider';
 import type { Database } from './database.types';
+
+type UserPlan = Database['public']['Tables']['user_plans']['Row'];
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
@@ -24,7 +27,59 @@ export const QUERY_KEYS = {
   DEVICE: 'device',
   AVAILABLE_BATTERIES: 'availableBatteries',
   DEVICE_BATTERIES: 'deviceBatteries',
+  USER_PLAN: 'userPlan',
 } as const;
+
+/**
+ * ユーザープラン情報を取得するフック
+ * ユーザーの現在のプラン情報と制限を取得します
+ */
+export function useUserPlan() {
+  const { user } = useAuth();
+  
+  const { data, isLoading: loading } = useQuery({
+    queryKey: [QUERY_KEYS.USER_PLAN, user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      
+      const { data, error } = await supabase
+        .from('user_plans')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (error) {
+        // ユーザープランが見つからない場合は、デフォルト値を返す
+        if (error.code === 'PGRST116') {
+          return {
+            id: '',
+            user_id: user.id,
+            plan_type: 'free' as const,
+            max_battery_groups: 5,
+            max_devices: 5,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+        }
+        throw error;
+      }
+      return data as UserPlan;
+    },
+    enabled: !!user,
+    staleTime: 60 * 1000, // 1分間キャッシュ
+  });
+  
+  return {
+    userPlan: data,
+    loading,
+    isLimitReached: {
+      batteryGroups: (currentCount: number) => 
+        data ? currentCount >= data.max_battery_groups : false,
+      devices: (currentCount: number) => 
+        data ? currentCount >= data.max_devices : false,
+    }
+  };
+}
 
 export function useBatteryGroups() {
   const queryClient = useQueryClient();
@@ -266,6 +321,9 @@ export function invalidateQueries(queryClient: ReturnType<typeof useQueryClient>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICES] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICE] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEVICE_BATTERIES] });
+    },
+    invalidateUserPlan: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_PLAN] });
     },
   };
 }

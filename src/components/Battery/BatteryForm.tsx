@@ -1,10 +1,11 @@
 // 電池作成画面のコンポーネント
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Battery, ArrowLeft } from 'lucide-react';
+import { Battery, ArrowLeft, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-provider';
+import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
 
 type BatteryKind = 'disposable' | 'rechargeable';
 type BatteryStatus = 'charged' | 'empty';
@@ -12,8 +13,21 @@ type BatteryStatus = 'charged' | 'empty';
 export function BatteryForm() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { batteryGroups } = useBatteryGroups();
+  const { userPlan, isLimitReached } = useUserPlan();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
+  
+  // 制限チェック
+  const isBatteryGroupLimitReached = isLimitReached.batteryGroups(batteryGroups.length);
+  
+  useEffect(() => {
+    // ページ読み込み時に制限チェック
+    if (isBatteryGroupLimitReached) {
+      setShowLimitWarning(true);
+    }
+  }, [isBatteryGroupLimitReached]);
   const [formData, setFormData] = useState({
     name: '',
     shape: '単3形',
@@ -27,6 +41,12 @@ export function BatteryForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    
+    // 制限チェック
+    if (isBatteryGroupLimitReached) {
+      setError('電池グループの上限に達しています。プランをアップグレードしてください。');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -89,6 +109,27 @@ export function BatteryForm() {
               <h2 className="text-xl font-bold text-gray-900">電池グループの新規登録</h2>
             </div>
           </div>
+          
+          {showLimitWarning && (
+            <div className="px-4 py-3 bg-amber-50 border-b border-amber-100">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="h-5 w-5 text-amber-400" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-amber-700">
+                    電池グループの上限に達しています（{batteryGroups.length}/{userPlan?.max_battery_groups || 5}）。
+                    <button 
+                      className="ml-2 font-medium text-amber-700 underline"
+                      onClick={() => alert('この機能は現在開発中です。')}
+                    >
+                      プランをアップグレード
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>
