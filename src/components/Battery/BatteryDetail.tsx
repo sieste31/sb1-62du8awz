@@ -37,7 +37,7 @@ export function BatteryDetail() {
 
   // 初期データをセット
   useEffect(() => {
-    if (batteryGroup) {
+    if (batteryGroup && !loading) {
       setBatteryGroup(batteryGroup);
       setBatteries(batteries);
       initializeEditData(batteryGroup);
@@ -47,7 +47,7 @@ export function BatteryDetail() {
       getBatteryImage((batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages, batteryGroup.image_url)
         .then(url => setImageUrl(url));
     }
-  }, [id, batteryGroup, batteries, setBatteryGroup, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
+  }, [id, loading]); // idまたはloadingが変わった時だけ実行
 
   if (loading || !batteryGroup || !editData) {
     return (
@@ -103,7 +103,7 @@ export function BatteryDetail() {
             <h3 className="text-lg font-medium text-gray-900">個別設定</h3>
           </div>
           <div className="p-4 bg-gray-50">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
               {sortedBatteries.map((battery) => (
                 <BatteryDetailItem
                   key={battery.slot_number}
