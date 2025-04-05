@@ -25,9 +25,6 @@ export function DeviceDetailElemLastChange() {
       <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">最終電池交換日</dt>
       <dd className="mt-1">
         <div className="flex items-center">
-          <span className="inline-flex items-center justify-center p-1.5 bg-teal-50 rounded-md text-teal-700 mr-2">
-            <Clock className="h-4 w-4" />
-          </span>
           <span className="text-base font-medium text-gray-900">
             {device.last_battery_change
               ? new Date(device.last_battery_change).toLocaleDateString()

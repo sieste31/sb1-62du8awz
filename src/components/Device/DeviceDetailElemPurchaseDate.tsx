@@ -29,9 +29,6 @@ export function DeviceDetailElemPurchaseDate() {
           />
         ) : (
           <div className="flex items-center">
-            <span className="inline-flex items-center justify-center p-1.5 bg-amber-50 rounded-md text-amber-700 mr-2">
-              <Calendar className="h-4 w-4" />
-            </span>
             <span className="text-base font-medium text-gray-900">
               {device.purchase_date
                 ? new Date(device.purchase_date).toLocaleDateString()

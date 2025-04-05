@@ -16,19 +16,19 @@ export function DeviceDetailElemType() {
   const getDeviceTypeInfo = (type: string) => {
     switch (type) {
       case 'smartphone':
-        return { icon: <Smartphone className="h-4 w-4" />, label: 'スマートフォン/リモコン' };
+        return { label: 'スマートフォン/リモコン' };
       case 'speaker':
-        return { icon: <Speaker className="h-4 w-4" />, label: 'スピーカー' };
+        return { label: 'スピーカー' };
       case 'camera':
-        return { icon: <Camera className="h-4 w-4" />, label: 'カメラ' };
+        return { label: 'カメラ' };
       case 'gadget':
-        return { icon: <Gamepad className="h-4 w-4" />, label: 'ガジェット' };
+        return { label: 'ガジェット' };
       case 'light':
-        return { icon: <Lightbulb className="h-4 w-4" />, label: 'ライト' };
+        return { label: 'ライト' };
       case 'toy':
-        return { icon: <ToyBrick className="h-4 w-4" />, label: 'おもちゃ' };
+        return { label: 'おもちゃ' };
       default:
-        return { icon: <Camera className="h-4 w-4" />, label: 'カメラ' };
+        return { label: 'カメラ' };
     }
   };
 
@@ -61,9 +61,6 @@ export function DeviceDetailElemType() {
           </select>
         ) : (
           <div className="flex items-center">
-            <span className="inline-flex items-center justify-center p-1.5 bg-blue-50 rounded-md text-blue-700 mr-2">
-              {deviceTypeInfo.icon}
-            </span>
             <span className="text-base font-medium text-gray-900">
               {deviceTypeInfo.label}
             </span>

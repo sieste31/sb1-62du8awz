@@ -43,9 +43,6 @@ export function DeviceDetailElemBatteryCount() {
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="inline-flex items-center justify-center p-1.5 bg-purple-50 rounded-md text-purple-700 mr-2">
-              <Hash className="h-4 w-4" />
-            </span>
             <span className="text-base font-medium text-gray-900">
               {device.battery_count}本
             </span>

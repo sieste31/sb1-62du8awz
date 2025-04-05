@@ -86,14 +86,16 @@ export function BatteryDetail() {
                 setError={setError}
               />
               <div className="flex-1">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                <dl className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-3 sm:grid-cols-2">
                   <BatteryDetailElemShape />
                   <BatteryDetailElemKind />
                   <BatteryDetailElemCount />
                   <BatteryDetailElemVolt />
-                  <BatteryDetailElemMemo />
                 </dl>
               </div>
+            </div>
+            <div className="mt-6">
+              <BatteryDetailElemMemo />
             </div>
           </div>
         </div>

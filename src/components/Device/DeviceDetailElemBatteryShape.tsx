@@ -53,9 +53,6 @@ export function DeviceDetailElemBatteryShape() {
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="inline-flex items-center justify-center p-1.5 bg-green-50 rounded-md text-green-700 mr-2">
-              <Battery className="h-4 w-4" />
-            </span>
             <span className="text-base font-medium text-gray-900">
               {device.battery_type}
             </span>
