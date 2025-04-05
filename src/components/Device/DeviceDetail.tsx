@@ -40,23 +40,30 @@ export function DeviceDetail() {
   useEffect(() => {
     if (device) {
       console.log('useDevice batteries:', batteries);
-      setDevice(device);
       
-      // batteriesが存在し、空でない場合のみ設定
+      // 常にeditDataを初期化して、編集モードをリセット
+      initializeEditData(device);
+      setIsEditing(false);
+      
+      // deviceの更新
+      const currentDevice = useDeviceDetailStore.getState().device;
+      if (!currentDevice || currentDevice.id !== device.id) {
+        setDevice(device);
+        
+        // 画像URLを取得
+        getDeviceImage(device.type, device.image_url)
+          .then(url => setImageUrl(url));
+      }
+      
+      // batteriesの更新（deviceが変更されなくても常に最新のbatteriesを反映）
       if (batteries && batteries.length > 0) {
         setBatteries(batteries);
         console.log('After setBatteries, store batteries:', useDeviceDetailStore.getState().batteries);
       } else {
         console.log('batteries is empty or undefined');
+        // 空の場合も明示的に空の配列を設定
+        setBatteries([]);
       }
-      
-      initializeEditData(device);
-      // 編集モードをリセット
-      setIsEditing(false);
-
-      // 画像URLを取得
-      getDeviceImage(device.type, device.image_url)
-        .then(url => setImageUrl(url));
     }
   }, [id, device, batteries, setDevice, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
 
