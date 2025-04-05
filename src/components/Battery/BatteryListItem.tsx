@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Battery, Smartphone, Info, Calendar, Hash } from 'lucide-react';
 import { BatteryStatusBadge } from './BatteryStatusBadge';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { getBatteryStatusCounts } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
@@ -19,6 +19,7 @@ interface BatteryListItemProps {
 }
 
 export function BatteryListItem({ group }: BatteryListItemProps) {
+  const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [installedCount, setInstalledCount] = useState(0);
   const [batteryStatusCounts, setBatteryStatusCounts] = useState({
@@ -170,17 +171,19 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                     
                     // デバイスごとにまとめて表示
                     return Object.values(deviceCounts).map(device => (
-                      <Link
+                      <button
                         key={device.id}
-                        to={`/devices/${device.id}`}
                         className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-xs text-blue-700 hover:bg-blue-100 transition-colors"
-                        onClick={(e) => e.stopPropagation()} // クリックイベントの伝播を停止
+                        onClick={(e) => {
+                          e.stopPropagation(); // クリックイベントの伝播を停止
+                          navigate(`/devices/${device.id}`);
+                        }}
                       >
                         <span className="max-w-[120px] truncate">{device.name}</span>
                         <span className="ml-1 bg-blue-200 text-blue-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
                           {device.count}本
                         </span>
-                      </Link>
+                      </button>
                     ));
                   })()}
                 </div>
