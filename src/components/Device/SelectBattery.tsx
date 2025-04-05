@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth-provider';
 import {
   useDevice,
   useAvailableBatteries,
-  invalidateQueries,
+  invalidateQueriesCompat,
 } from '@/lib/hooks';
 import { assignBatteriesToDevice } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
@@ -15,10 +15,13 @@ import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
 import { DeviceUsageHistory } from './DeviceUsageHistory';
 import type { Database } from '@/lib/database.types';
 
+type Battery = Database['public']['Tables']['batteries']['Row'] & {
+  devices?: Database['public']['Tables']['devices']['Row'] | null;
+  slot_number: number;
+};
+
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
-  batteries?: (Database['public']['Tables']['batteries']['Row'] & {
-    devices?: Database['public']['Tables']['devices']['Row'] | null;
-  })[];
+  batteries?: Battery[];
 };
 
 type BatteryStatus = 'charged' | 'in_use' | 'empty' | 'disposed';
@@ -142,7 +145,7 @@ export function SelectBattery() {
 
       // キャッシュを無効化
       const { invalidateBatteries, invalidateDevices } =
-        invalidateQueries(queryClient);
+      invalidateQueriesCompat(queryClient);
       await Promise.all([invalidateBatteries(), invalidateDevices()]);
 
       navigate(`/devices/${deviceId}`);
