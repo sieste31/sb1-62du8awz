@@ -110,6 +110,48 @@
   - `batteryDetailStore.ts` - 電池詳細画面の状態管理
   - `deviceDetailStore.ts` - デバイス詳細画面の状態管理
 
+## コード構造
+
+このプロジェクトでは、データフェッチングと状態管理の責任を明確に分離しています。
+
+### ファイル構造
+
+```
+src/lib/
+├── query.ts     - データフェッチング (React Query)
+├── store.ts     - 状態管理 (Zustand)
+└── hooks.ts     - UIロジック + 後方互換性
+```
+
+### 各ファイルの役割
+
+#### query.ts
+- React Queryを使ったデータフェッチングのみを担当
+- 各APIエンドポイントに対応するクエリフックを提供
+- 例: `useBatteryGroupsQuery`, `useDeviceQuery`など
+
+#### store.ts
+- Zustandを使った状態管理を担当
+- クエリ結果をストアに反映するロジックを提供
+- 例: `useBatteryGroupsStore`, `useDeviceStore`など
+
+#### hooks.ts
+- UIロジックに特化したフックを提供
+- 後方互換性のために既存のフック名をエクスポート
+- 実際の実装はstore.tsに移動
+
+### データフロー
+
+1. `query.ts` - APIからデータをフェッチ
+2. `store.ts` - フェッチしたデータをZustandストアに保存
+3. コンポーネント - `hooks.ts`経由でデータにアクセス
+
+### 命名規則
+
+- データフェッチング: `use〇〇Query`
+- Zustandストア: `use〇〇Store`
+- 後方互換性: `use〇〇`（内部的にはStoreを使用）
+
 ## 画面遷移
 
 ```mermaid

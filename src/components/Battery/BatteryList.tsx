@@ -4,7 +4,9 @@ import React from 'react';
 import { Battery, Plus, Filter, Search, SortDesc, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+// 新しい構造を使用
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
+// 注: 上記のインポートは内部的に store.ts の useBatteryGroupsStore と useUserPlanStore を使用しています
 import type { Database } from '@/lib/database.types';
 import { BatteryListItem } from './BatteryListItem';
 import { BatteryListFilter } from './BatteryListFilter';

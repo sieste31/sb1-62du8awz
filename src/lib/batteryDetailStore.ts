@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import type { Database } from './database.types';
-import { invalidateQueries } from './hooks';
+import { invalidateQueries } from './query';
 import { 
   updateBatteryGroup, 
   createBatteries, 

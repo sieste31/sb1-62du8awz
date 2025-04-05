@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import type { Database } from './database.types';
 import { validateImage } from './imageUtils';
-import { invalidateQueries } from './hooks';
+import { invalidateQueries } from './query';
 import { useQueryClient } from '@tanstack/react-query';
 import { updateDevice } from './api/devices';
 import { uploadDeviceImage } from './api/storage';
