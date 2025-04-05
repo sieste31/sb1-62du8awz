@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Battery, Smartphone, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Navigation() {
+  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,9 +17,9 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">電池＆デバイス管理</h1>
-            </div>
+          <div className="flex-shrink-0 flex items-center">
+            <h1 className="text-xl font-bold text-gray-900">{t('app.title')}</h1>
+          </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
                 to="/batteries"
@@ -27,7 +30,7 @@ export function Navigation() {
                 }`}
               >
                 <Battery className="mr-2 h-5 w-5" />
-                電池管理
+                {t('nav.batteries')}
               </Link>
               <Link
                 to="/devices"
@@ -38,11 +41,13 @@ export function Navigation() {
                 }`}
               >
                 <Smartphone className="mr-2 h-5 w-5" />
-                デバイス管理
+                {t('nav.devices')}
               </Link>
             </div>
           </div>
-          <div className="-mr-2 flex items-center sm:hidden">
+          <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
+            <div className="-mr-2 flex items-center sm:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
@@ -53,6 +58,7 @@ export function Navigation() {
                 <Menu className="block h-6 w-6" />
               )}
             </button>
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +77,7 @@ export function Navigation() {
           >
             <div className="flex items-center">
               <Battery className="mr-2 h-5 w-5" />
-              電池管理
+              {t('nav.batteries')}
             </div>
           </Link>
           <Link
@@ -85,7 +91,7 @@ export function Navigation() {
           >
             <div className="flex items-center">
               <Smartphone className="mr-2 h-5 w-5" />
-              デバイス管理
+              {t('nav.devices')}
             </div>
           </Link>
         </div>

@@ -1,10 +1,12 @@
 // デバイス詳細画面のデバイスタイプの表示と編集を担当するコンポーネント
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick } from 'lucide-react';
 
 export function DeviceDetailElemType() {
+  const { t } = useTranslation();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -16,19 +18,19 @@ export function DeviceDetailElemType() {
   const getDeviceTypeInfo = (type: string) => {
     switch (type) {
       case 'smartphone':
-        return { label: 'スマートフォン/リモコン' };
+        return { label: t('device.types.smartphone') };
       case 'speaker':
-        return { label: 'スピーカー' };
+        return { label: t('device.types.speaker') };
       case 'camera':
-        return { label: 'カメラ' };
+        return { label: t('device.types.camera') };
       case 'gadget':
-        return { label: 'ガジェット' };
+        return { label: t('device.types.gadget') };
       case 'light':
-        return { label: 'ライト' };
+        return { label: t('device.types.light') };
       case 'toy':
-        return { label: 'おもちゃ' };
+        return { label: t('device.types.toy') };
       default:
-        return { label: 'カメラ' };
+        return { label: t('device.types.camera') };
     }
   };
 
@@ -37,7 +39,7 @@ export function DeviceDetailElemType() {
   return (
     <div>
       <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
-        デバイスタイプ
+        {t('device.detail.deviceType')}
       </dt>
       <dd className="mt-1">
         {isEditing ? (
@@ -51,13 +53,13 @@ export function DeviceDetailElemType() {
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="smartphone">
-              スマートフォン/リモコン
+              {t('device.types.smartphone')}
             </option>
-            <option value="speaker">スピーカー</option>
-            <option value="camera">カメラ</option>
-            <option value="gadget">ガジェット</option>
-            <option value="light">ライト</option>
-            <option value="toy">おもちゃ</option>
+            <option value="speaker">{t('device.types.speaker')}</option>
+            <option value="camera">{t('device.types.camera')}</option>
+            <option value="gadget">{t('device.types.gadget')}</option>
+            <option value="light">{t('device.types.light')}</option>
+            <option value="toy">{t('device.types.toy')}</option>
           </select>
         ) : (
           <div className="flex items-center">

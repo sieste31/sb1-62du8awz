@@ -2,9 +2,11 @@
 // 編集モード時は入力フォームを表示し、非編集モード時はテキストを表示する
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 
 export function BatteryDetailElemVolt() {
+  const { t } = useTranslation();
   const isEditing = useBatteryDetailStore(state => state.isEditing);
   const editData = useBatteryDetailStore(state => state.editData);
   const setEditData = useBatteryDetailStore(state => state.setEditData);
@@ -14,7 +16,7 @@ export function BatteryDetailElemVolt() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電圧</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.voltage')}</dt>
         <dd className="mt-1">
           <input
             type="number"
@@ -29,7 +31,7 @@ export function BatteryDetailElemVolt() {
   } else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電圧</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.voltage')}</dt>
         <dd className="mt-1">
           <span className="text-sm text-gray-900">{batteryGroup.voltage}V</span>
         </dd>

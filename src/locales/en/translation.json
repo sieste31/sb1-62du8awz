@@ -1,0 +1,56 @@
+{
+  "app": {
+    "title": "Battery & Device Management"
+  },
+  "nav": {
+    "batteries": "Battery Management",
+    "devices": "Device Management"
+  },
+  "battery": {
+    "voltage": "Voltage",
+    "detail": {
+      "memo": "Memo",
+      "count": "Quantity",
+      "shape": "Shape",
+      "kind": "Type",
+      "title": "Title"
+    },
+    "list": {
+      "filter": "Filter",
+      "status": "Status"
+    }
+  },
+  "device": {
+    "detail": {
+      "type": "Type",
+      "deviceType": "Device Type",
+      "batteryLife": "Battery Life",
+      "batteryShape": "Battery Shape",
+      "batteryCount": "Battery Count",
+      "purchaseDate": "Purchase Date",
+      "lastChange": "Last Change Date",
+      "notes": "Notes"
+    },
+    "types": {
+      "smartphone": "Smartphone/Remote",
+      "speaker": "Speaker",
+      "camera": "Camera",
+      "gadget": "Gadget",
+      "light": "Light",
+      "toy": "Toy"
+    },
+    "batterySection": "Battery Information",
+    "batterySlot": "Battery Slot",
+    "selectBattery": "Select Battery"
+  },
+  "common": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "app": {
+    "title": "電池＆デバイス管理"
+  },
+  "nav": {
+    "batteries": "電池管理",
+    "devices": "デバイス管理"
+  },
+  "battery": {
+    "voltage": "電圧",
+    "detail": {
+      "memo": "メモ",
+      "count": "数量",
+      "shape": "形状",
+      "kind": "種類",
+      "title": "タイトル"
+    },
+    "list": {
+      "filter": "フィルター",
+      "status": "ステータス"
+    }
+  },
+  "device": {
+    "detail": {
+      "type": "タイプ",
+      "deviceType": "デバイスタイプ",
+      "batteryLife": "電池寿命",
+      "batteryShape": "電池形状",
+      "batteryCount": "電池数",
+      "purchaseDate": "購入日",
+      "lastChange": "最終交換日",
+      "notes": "メモ"
+    },
+    "types": {
+      "smartphone": "スマートフォン/リモコン",
+      "speaker": "スピーカー",
+      "camera": "カメラ",
+      "gadget": "ガジェット",
+      "light": "ライト",
+      "toy": "おもちゃ"
+    },
+    "batterySection": "電池情報",
+    "batterySlot": "電池スロット",
+    "selectBattery": "電池を選択"
+  },
+  "common": {
+    "edit": "編集",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "loading": "読み込み中...",
+    "confirm": "確認",
+    "yes": "はい",
+    "no": "いいえ"
+  }
+}
