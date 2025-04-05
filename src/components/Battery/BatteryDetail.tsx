@@ -20,7 +20,7 @@ import { BatteryDetailElemHead } from './BatteryDetailElemHead';
 export function BatteryDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { batteryGroup, batteries, loading } = useBatteryGroup(id || '');
+  const { batteryGroup: loadBatteryGroup, batteries: loadBatteries, loading } = useBatteryGroup(id || '');
 
   // Zustandストアから状態と関数を取得
   const {
@@ -31,33 +31,44 @@ export function BatteryDetail() {
     showDeleteConfirm, setShowDeleteConfirm,
     saving, deleting,
     handleSave, handleDelete, handleCancelEdit,
-    setBatteryGroup, setBatteries,
+    batteryGroup, setBatteryGroup, batteries, setBatteries,
     restrictTypeAndCountEditing
   } = useBatteryDetailStore();
 
-  // 初期データをセット
+  // 1. 基本データの同期
+  useEffect(() => {
+    if (loadBatteryGroup && !loading) {
+      setBatteryGroup(loadBatteryGroup);
+      setBatteries(loadBatteries);
+    }
+  }, [loadBatteryGroup, loadBatteries, loading, setBatteryGroup, setBatteries]);
+
+  // 2. 編集状態の初期化
   useEffect(() => {
     if (batteryGroup && !loading) {
-      setBatteryGroup(batteryGroup);
-      setBatteries(batteries);
       initializeEditData(batteryGroup);
       setIsEditing(false); // 編集モードをリセット
-
-      // 画像URLを取得
-      getBatteryImage((batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages, batteryGroup.image_url)
-        .then(url => setImageUrl(url));
     }
-  }, [id, loading]); // idまたはloadingが変わった時だけ実行
+  }, [batteryGroup, loading, initializeEditData, setIsEditing]);
 
-  if (loading || !batteryGroup || !editData) {
+  // 3. 画像URLの取得
+  useEffect(() => {
+    if (batteryGroup && !loading) {
+      getBatteryImage(
+        (batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages, 
+        batteryGroup.image_url
+      ).then(url => setImageUrl(url));
+    }
+  }, [batteryGroup, loading, setImageUrl]);
+
+  // supabaseから取得されるまでの間、loadingを表示
+  if (loading || !loadBatteryGroup || !loadBatteries || !batteryGroup || !batteries || !editData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
   }
-
-
 
   // 電池をslot_numberで昇順にソート
   const sortedBatteries = batteries ? [...batteries].sort((a, b) => a.slot_number - b.slot_number) : [];

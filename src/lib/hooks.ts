@@ -74,11 +74,12 @@ export function useBatteryGroups() {
     staleTime: 0,
   });
 
-  useEffect(() => {
-    if (data) {
-      setBatteryGroups(data);
-    }
-  }, [data, setBatteryGroups]);
+  if (loading){
+    return { batteryGroups: [], loading };
+  }
+
+  // データが取得できたら、ストアに保存
+  setBatteryGroups(data || []);
 
   return { batteryGroups: data || [], loading };
 }
