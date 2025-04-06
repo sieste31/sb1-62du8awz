@@ -4,6 +4,7 @@ import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Calendar } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -12,6 +13,7 @@ interface DeviceDetailElemPurchaseDateProps {
 }
 
 export function DeviceDetailElemPurchaseDate({ device }: DeviceDetailElemPurchaseDateProps) {
+  const { t } = useTranslation();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -20,7 +22,7 @@ export function DeviceDetailElemPurchaseDate({ device }: DeviceDetailElemPurchas
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">購入日</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.purchaseDate')}</dt>
       <dd className="mt-1">
         {isEditing ? (
           <input

@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
+import { useTranslation } from 'react-i18next';
 
 export function BatteryDetailElemCount() {
+  const { t } = useTranslation();
   const isEditing = useBatteryDetailStore(state => state.isEditing);
   const editData = useBatteryDetailStore(state => state.editData);
   const setEditData = useBatteryDetailStore(state => state.setEditData);
@@ -15,7 +17,7 @@ export function BatteryDetailElemCount() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">本数</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.count')}</dt>
         <dd className="mt-1">
           <div>
             <input
@@ -34,11 +36,11 @@ export function BatteryDetailElemCount() {
             />
             {restrictTypeAndCountEditing ? (
               <p className="mt-1 text-xs text-amber-600">
-                使用中の電池があるため変更できません
+                {t('battery.detail.cannotChangeCount')}
               </p>
             ) : editData.count < batteryGroup.count && installedCount > 0 && (
               <p className="mt-1 text-sm text-red-600">
-                デバイスに設定されている電池があるため、本数を減らすことはできません
+                {t('battery.detail.cannotReduceCount')}
               </p>
             )}
           </div>
@@ -48,9 +50,9 @@ export function BatteryDetailElemCount() {
   } else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">本数</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.count')}</dt>
         <dd className="mt-1">
-          <span className="text-sm text-gray-900">{batteryGroup.count}本</span>
+          <span className="text-sm text-gray-900">{batteryGroup.count}{t('common.unit')}</span>
         </dd>
       </div>
     );

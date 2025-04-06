@@ -6,11 +6,13 @@ import { Battery, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
 import { createBatteryGroupWithBatteries } from '@/lib/api';
+import { useTranslation } from 'react-i18next';
 
 type BatteryKind = 'disposable' | 'rechargeable';
 type BatteryStatus = 'charged' | 'empty';
 
 export function BatteryForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { batteryGroups } = useBatteryGroups();
@@ -44,7 +46,7 @@ export function BatteryForm() {
     
     // 制限チェック
     if (isBatteryGroupLimitReached) {
-      setError('電池グループの上限に達しています。プランをアップグレードしてください。');
+      setError(t('battery.form.limitReachedError'));
       return;
     }
 
@@ -70,7 +72,7 @@ export function BatteryForm() {
 
       navigate('/batteries');
     } catch (err) {
-      setError(err instanceof Error ? err.message : '電池の登録に失敗しました');
+      setError(err instanceof Error ? err.message : t('battery.form.createError'));
       setLoading(false);
     }
   };
@@ -84,7 +86,7 @@ export function BatteryForm() {
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            一覧に戻る
+            {t('battery.list.backToList')}
           </button>
         </div>
 
@@ -92,7 +94,7 @@ export function BatteryForm() {
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <div className="flex items-center">
               <Battery className="h-6 w-6 text-gray-400 mr-3" />
-              <h2 className="text-xl font-bold text-gray-900">電池グループの新規登録</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('battery.form.title')}</h2>
             </div>
           </div>
           
@@ -104,12 +106,12 @@ export function BatteryForm() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-amber-700">
-                    電池グループの上限に達しています（{batteryGroups.length}/{userPlan?.max_battery_groups || 5}）。
+                    {t('battery.form.limitReachedWarning', { current: batteryGroups.length, max: userPlan?.max_battery_groups || 5 })}
                     <button 
                       className="ml-2 font-medium text-amber-700 underline"
-                      onClick={() => alert('この機能は現在開発中です。')}
+                      onClick={() => alert(t('battery.form.upgradeInDevelopment'))}
                     >
-                      プランをアップグレード
+                      {t('battery.form.upgradePlan')}
                     </button>
                   </p>
                 </div>
@@ -120,7 +122,7 @@ export function BatteryForm() {
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                グループ名
+                {t('battery.form.nameLabel')}
               </label>
               <input
                 type="text"
@@ -129,13 +131,13 @@ export function BatteryForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="例: リモコン用単3電池"
+                placeholder={t('battery.form.namePlaceholder')}
               />
             </div>
 
             <div>
               <label htmlFor="shape" className="block text-sm font-medium text-gray-700">
-                電池形状
+                {t('battery.detail.shape')}
               </label>
               <select
                 id="shape"
@@ -143,17 +145,17 @@ export function BatteryForm() {
                 onChange={(e) => setFormData({ ...formData, shape: e.target.value })}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value="単1形">単1形</option>
-                <option value="単2形">単2形</option>
-                <option value="単3形">単3形</option>
-                <option value="単4形">単4形</option>
-                <option value="9V形">9V形</option>
+                <option value="単1形">{t('battery.shape.d')}</option>
+                <option value="単2形">{t('battery.shape.c')}</option>
+                <option value="単3形">{t('battery.shape.aa')}</option>
+                <option value="単4形">{t('battery.shape.aaa')}</option>
+                <option value="9V形">{t('battery.shape.9v')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                電池タイプ
+                {t('battery.detail.kind')}
               </label>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div
@@ -173,7 +175,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">使い切り</p>
+                        <p className="font-medium text-gray-900">{t('battery.kind.disposable')}</p>
                       </div>
                     </div>
                   </div>
@@ -189,7 +191,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">充電池</p>
+                        <p className="font-medium text-gray-900">{t('battery.kind.rechargeable')}</p>
                       </div>
                     </div>
                   </div>
@@ -199,7 +201,7 @@ export function BatteryForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                電池の状態
+                {t('battery.form.statusLabel')}
               </label>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div
@@ -221,7 +223,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">充電済み</p>
+                        <p className="font-medium text-gray-900">{t('battery.status.charged')}</p>
                       </div>
                     </div>
                   </div>
@@ -237,7 +239,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">空</p>
+                        <p className="font-medium text-gray-900">{t('battery.status.empty')}</p>
                       </div>
                     </div>
                   </div>
@@ -247,7 +249,7 @@ export function BatteryForm() {
 
             <div>
               <label htmlFor="count" className="block text-sm font-medium text-gray-700">
-                本数
+                {t('battery.detail.count')}
               </label>
               <input
                 type="number"
@@ -261,7 +263,7 @@ export function BatteryForm() {
 
             <div>
               <label htmlFor="voltage" className="block text-sm font-medium text-gray-700">
-                電圧 (V)
+                {t('battery.voltage')}
               </label>
               <input
                 type="number"
@@ -276,7 +278,7 @@ export function BatteryForm() {
 
             <div>
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                メモ
+                {t('battery.detail.memo')}
               </label>
               <textarea
                 id="notes"
@@ -297,7 +299,7 @@ export function BatteryForm() {
                 disabled={loading}
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {loading ? '登録中...' : '登録する'}
+                {loading ? t('battery.form.saving') : t('battery.form.submit')}
               </button>
             </div>
           </form>

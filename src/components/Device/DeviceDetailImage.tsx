@@ -5,6 +5,7 @@ import { Upload } from 'lucide-react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { useAuth } from '@/lib/auth-provider';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -13,6 +14,7 @@ interface DeviceDetailImageProps {
 }
 
 export function DeviceDetailImage({ device }: DeviceDetailImageProps) {
+  const { t } = useTranslation();
   const imageUrl = useDeviceDetailStore(state => state.imageUrl);
   const handleImageSelect = useDeviceDetailStore(state => state.handleImageSelect);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +31,7 @@ export function DeviceDetailImage({ device }: DeviceDetailImageProps) {
       <div className="relative group">
         <img
           src={imageUrl || ''}
-          alt={`${device.name}の画像`}
+          alt={t('device.detail.imageAlt', { name: device.name })}
           className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg object-cover"
         />
         <button

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Battery, BatteryCharging, BatteryMedium, BatteryLow, BatteryWarning } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type BatteryStatus = 'charged' | 'in_use' | 'empty' | 'disposed';
 
@@ -13,36 +14,38 @@ interface BatteryStatusBadgeProps {
 }
 
 export function BatteryStatusBadge({ status, className = '' }: BatteryStatusBadgeProps) {
+  const { t } = useTranslation();
+  
   const getStatusConfig = (status: BatteryStatus) => {
     switch (status) {
       case 'charged':
         return {
           icon: BatteryCharging,
-          text: '満充電',
+          text: t('battery.status.charged'),
           color: 'bg-green-100 text-green-800',
         };
       case 'in_use':
         return {
           icon: BatteryMedium,
-          text: '使用中',
+          text: t('battery.status.in_use'),
           color: 'bg-blue-100 text-blue-800',
         };
       case 'empty':
         return {
           icon: BatteryLow,
-          text: '使用済み',
+          text: t('battery.status.empty'),
           color: 'bg-yellow-100 text-yellow-800',
         };
       case 'disposed':
         return {
           icon: BatteryWarning,
-          text: '廃棄',
+          text: t('battery.status.disposed'),
           color: 'bg-red-100 text-red-800',
         };
       default:
         return {
           icon: Battery,
-          text: '不明',
+          text: t('battery.status.unknown'),
           color: 'bg-gray-100 text-gray-800',
         };
     }

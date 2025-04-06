@@ -5,6 +5,7 @@ import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle, Ba
 import { Link } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -32,6 +33,7 @@ interface DeviceListItemProps {
 }
 
 export function DeviceListItem({ device }: DeviceListItemProps) {
+  const { t } = useTranslation();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const Icon = iconMap[device.type as keyof typeof iconMap];
   const shortId = device.id.slice(0, 8);
@@ -87,23 +89,18 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
                 <Icon className="h-4 w-4 mr-1 text-gray-500" />
-                {device.type === 'remotecontroller' ? 'リモコン' : 
-                 device.type === 'speaker' ? 'ラジオ/スピーカー' : 
-                 device.type === 'camera' ? 'カメラ' : 
-                 device.type === 'gadget' ? 'ガジェット' : 
-                 device.type === 'light' ? 'ライト' : 
-                 device.type === 'toy' ? 'おもちゃ' : 'その他'}
+                {t(`device.types.${device.type}`)}
               </span>
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
                 {device.battery_type}
                 <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                  {device.battery_count}本
+                  {device.battery_count}{t('common.unit')}
                 </span>
               </span>
               {device.purchase_date && (
                 <span className="text-xs text-gray-500 flex items-center">
                   <Clock className="h-3 w-3 mr-1" />
-                  購入: {new Date(device.purchase_date).toLocaleDateString()}
+                  {t('common.purchase', { date: new Date(device.purchase_date).toLocaleDateString() })}
                 </span>
               )}
             </div>
@@ -111,7 +108,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
             {/* 電池状態の表示 */}
             <div className="mt-3">
               <div className="flex justify-between text-xs text-gray-500 mb-2">
-                <span>電池状態:</span>
+                <span>{t('device.status.batteryStatus')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${
@@ -123,16 +120,16 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 }`}>
                   <BatteryIcon className="h-4 w-4 mr-1" />
                   {device.has_batteries
-                    ? '電池設定完了'
+                    ? t('device.status.hasBatteries')
                     : device.last_battery_change
-                      ? '電池設定不足'
-                      : '電池未設定'}
+                      ? t('device.status.partiallySet')
+                      : t('device.status.notSet')}
                 </div>
                 
                 {device.last_battery_change && (
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-xs text-blue-700">
                     <Clock className="h-4 w-4 mr-1" />
-                    交換: {new Date(device.last_battery_change).toLocaleDateString()}
+                    {t('device.status.exchangeDate', { date: new Date(device.last_battery_change).toLocaleDateString() })}
                   </div>
                 )}
                 
@@ -145,9 +142,9 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                         : 'bg-blue-50 text-blue-700'
                   }`}>
                     <Clock className="h-4 w-4 mr-1" />
-                    予定: {batteryEndDate.toLocaleDateString()}
-                    {isOverdue && ' (超過)'}
-                    {isNearingEnd && ' (まもなく)'}
+                    {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
+                    {isOverdue && ` (${t('device.status.overdue')})`}
+                    {isNearingEnd && ` (${t('device.status.soon')})`}
                   </div>
                 )}
               </div>

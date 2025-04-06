@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { getBatteryStatusCounts } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
@@ -19,6 +20,7 @@ interface BatteryListItemProps {
 }
 
 export function BatteryListItem({ group }: BatteryListItemProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [installedCount, setInstalledCount] = useState(0);
@@ -80,13 +82,15 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
                 {group.shape || group.type}
                 <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                  {totalCount}本
+                  {totalCount}{t('battery.list.unit')}
                 </span>
               </span>
               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                 group.kind === 'rechargeable' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
               }`}>
-                {group.kind === 'rechargeable' ? '充電池' : '使い切り'}
+                {group.kind === 'rechargeable' 
+                  ? t('battery.kind.rechargeable') 
+                  : t('battery.kind.disposable')}
               </span>
               <span className="text-xs text-gray-500 flex items-center">
                 <Calendar className="h-3 w-3 mr-1" />
@@ -97,14 +101,14 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
             {/* 電池状態の表示 */}
             <div className="mt-3">
               <div className="flex justify-between text-xs text-gray-500 mb-2">
-                <span>電池状態:</span>
+                <span>{t('battery.list.batteryStatus')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {batteryStatusCounts.charged > 0 && (
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-green-50 text-xs text-green-700">
                     <BatteryStatusBadge status="charged" className="!bg-transparent !p-0" />
                     <span className="ml-1 bg-green-200 text-green-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                      {batteryStatusCounts.charged}本
+                      {batteryStatusCounts.charged}{t('battery.list.unit')}
                     </span>
                   </div>
                 )}
@@ -112,7 +116,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-xs text-blue-700">
                     <BatteryStatusBadge status="in_use" className="!bg-transparent !p-0" />
                     <span className="ml-1 bg-blue-200 text-blue-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                      {batteryStatusCounts.in_use}本
+                      {batteryStatusCounts.in_use}{t('battery.list.unit')}
                     </span>
                   </div>
                 )}
@@ -120,7 +124,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-yellow-50 text-xs text-yellow-700">
                     <BatteryStatusBadge status="empty" className="!bg-transparent !p-0" />
                     <span className="ml-1 bg-yellow-200 text-yellow-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                      {batteryStatusCounts.empty}本
+                      {batteryStatusCounts.empty}{t('battery.list.unit')}
                     </span>
                   </div>
                 )}
@@ -128,7 +132,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-red-50 text-xs text-red-700">
                     <BatteryStatusBadge status="disposed" className="!bg-transparent !p-0" />
                     <span className="ml-1 bg-red-200 text-red-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                      {batteryStatusCounts.disposed}本
+                      {batteryStatusCounts.disposed}{t('battery.list.unit')}
                     </span>
                   </div>
                 )}
@@ -148,7 +152,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
               <div className="mt-3 pt-3 border-t border-gray-100">
                 <p className="text-xs font-medium text-gray-600 flex items-center">
                   <Smartphone className="h-3 w-3 mr-1.5" />
-                  設置中のデバイス:
+                  {t('battery.list.installedDevices')}
                 </p>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {(() => {
@@ -181,7 +185,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                       >
                         <span className="max-w-[120px] truncate">{device.name}</span>
                         <span className="ml-1 bg-blue-200 text-blue-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                          {device.count}本
+                          {device.count}{t('battery.list.unit')}
                         </span>
                       </button>
                     ));

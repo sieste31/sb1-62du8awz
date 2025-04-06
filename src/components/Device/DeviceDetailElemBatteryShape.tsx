@@ -4,6 +4,7 @@ import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -16,6 +17,7 @@ interface DeviceDetailElemBatteryShapeProps {
 }
 
 export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceDetailElemBatteryShapeProps) {
+  const { t } = useTranslation();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -27,7 +29,7 @@ export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceD
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">電池形状</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.batteryShape')}</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div>
@@ -44,15 +46,15 @@ export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceD
                 hasBatteriesInstalled ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
             >
-              <option value="単1形">単1形</option>
-              <option value="単2形">単2形</option>
-              <option value="単3形">単3形</option>
-              <option value="単4形">単4形</option>
-              <option value="9V形">9V形</option>
+              <option value="単1形">{t('battery.shape.d')}</option>
+              <option value="単2形">{t('battery.shape.c')}</option>
+              <option value="単3形">{t('battery.shape.aa')}</option>
+              <option value="単4形">{t('battery.shape.aaa')}</option>
+              <option value="9V形">{t('battery.shape.9v')}</option>
             </select>
             {hasBatteriesInstalled && (
               <p className="mt-1 text-xs text-amber-600">
-                電池が設定されているため変更できません
+                {t('device.detail.cannotChangeBatteryShape')}
               </p>
             )}
           </div>

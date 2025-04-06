@@ -13,11 +13,71 @@
       "count": "数量",
       "shape": "形状",
       "kind": "種類",
-      "title": "タイトル"
+      "title": "タイトル",
+      "cannotChangeCount": "使用中の電池があるため変更できません",
+      "cannotReduceCount": "デバイスに設定されている電池があるため、本数を減らすことはできません",
+      "cannotChangeKind": "使用中の電池があるため変更できません",
+      "memoPlaceholder": "メモを入力してください",
+      "cannotChangeShape": "使用中の電池があるため変更できません",
+      "titlePlaceholder": "タイトルを入力してください",
+      "imageSelectError": "画像選択エラー:",
+      "imageSelectFailed": "画像の選択に失敗しました",
+      "imageUploadError": "画像アップロード処理エラー:",
+      "imageUploadFailed": "画像のアップロードに失敗しました",
+      "imageAlt": "{{type}}の画像"
+    },
+    "shape": {
+      "d": "単1形",
+      "c": "単2形",
+      "aa": "単3形",
+      "aaa": "単4形",
+      "9v": "9V形"
     },
     "list": {
       "filter": "フィルター",
-      "status": "ステータス"
+      "status": "ステータス",
+      "backToList": "一覧に戻る",
+      "individualSettings": "個別設定",
+      "deleteGroup": "電池グループの削除",
+      "deleteConfirmation": "「{{name}}」を削除してもよろしいですか？\n\n※この操作は取り消せません。",
+      "batteryStatus": "電池状態:",
+      "installedDevices": "設置中のデバイス:",
+      "unit": "本",
+      "total": "総数: {{count}}本",
+      "title": "電池一覧",
+      "noBatteries": "電池がありません",
+      "noMatchingBatteries": "条件に一致する電池がありません",
+      "emptyStateMessage": "新しい電池を登録して、効率的に管理を始めましょう。",
+      "noMatchingMessage": "検索条件やフィルター設定を変更して、再度お試しください。",
+      "addNew": "新規登録",
+      "groupCount": "電池グループ: {{current}} / {{max}}",
+      "limitReached": " (上限に達しています)",
+      "searchPlaceholder": "電池名・コメントを検索...",
+      "batteryType": "電池種別"
+    },
+    "status": {
+      "charged": "満充電",
+      "in_use": "使用中",
+      "empty": "使用済み",
+      "disposed": "廃棄",
+      "unknown": "不明"
+    },
+    "kind": {
+      "rechargeable": "充電池",
+      "disposable": "使い切り"
+    },
+    "form": {
+      "title": "電池グループの新規登録",
+      "nameLabel": "グループ名",
+      "namePlaceholder": "例: リモコン用単3電池",
+      "statusLabel": "電池の状態",
+      "saving": "登録中...",
+      "submit": "登録する",
+      "limitReachedError": "電池グループの上限に達しています。プランをアップグレードしてください。",
+      "createError": "電池の登録に失敗しました",
+      "limitReachedWarning": "電池グループの上限に達しています（{{current}}/{{max}}）。",
+      "upgradePlan": "プランをアップグレード",
+      "upgradeInDevelopment": "この機能は現在開発中です。"
     }
   },
   "device": {
@@ -29,7 +89,16 @@
       "batteryCount": "電池数",
       "purchaseDate": "購入日",
       "lastChange": "最終交換日",
-      "notes": "メモ"
+      "lastCheck": "最終チェック日",
+      "notes": "メモ",
+      "backToList": "一覧に戻る",
+      "imageAlt": "{{name}}の画像",
+      "cannotChangeBatteryShape": "電池が設定されているため変更できません",
+      "batteryLifePlaceholder": "例: 12",
+      "weeks": "週",
+      "weeksValue": "{{weeks}}週",
+      "notesPlaceholder": "メモを入力してください",
+      "installedBatteries": "設置済み: {{installed}}本 / 未設置: {{remaining}}本"
     },
     "types": {
       "remotecontroller": "リモコン",
@@ -42,7 +111,52 @@
     },
     "batterySection": "電池情報",
     "batterySlot": "電池スロット",
-    "selectBattery": "電池を選択"
+    "selectBattery": "電池を選択",
+    "status": {
+      "batteryStatus": "電池状態:",
+      "hasBatteries": "電池設定完了",
+      "partiallySet": "電池設定不足",
+      "notSet": "電池未設定",
+      "exchangeDate": "交換: {{date}}",
+      "scheduleDate": "予定: {{date}}",
+      "overdue": "超過",
+      "soon": "まもなく",
+      "installedIn": "{{deviceName}}に設置中"
+    },
+    "select": {
+      "backToDevice": "デバイス詳細に戻る",
+      "filter": "フィルター",
+      "history": "交換履歴",
+      "confirm": "選択を確定",
+      "saving": "設定中...",
+      "deviceNotFound": "デバイスが見つかりません",
+      "filterTitle": "フィルター",
+      "reset": "リセット",
+      "batteryStatus": "電池の状態",
+      "batteryType": "電池タイプ",
+      "settingTitle": "電池の設定",
+      "settingDescription": "{{deviceName}}に設定する電池({{batteryType}})を選択してください（最大{{count}}本）",
+      "noBatteries": "利用可能な電池がありません",
+      "registerNew": "{{batteryType}}の新しい電池を登録してください"
+    },
+    "form": {
+      "title": "デバイスの新規登録",
+      "nameLabel": "デバイス名",
+      "batteryCountLabel": "必要本数",
+      "batteryLifeHelp": "電池の予想寿命を週単位で設定します。空欄の場合は通知されません。",
+      "saving": "登録中...",
+      "submit": "登録する",
+      "limitReachedError": "デバイスの上限に達しています。プランをアップグレードしてください。",
+      "createError": "デバイスの登録に失敗しました",
+      "limitReachedWarning": "デバイスの上限に達しています（{{current}}/{{max}}）。",
+      "upgradePlan": "プランをアップグレード",
+      "upgradeInDevelopment": "この機能は現在開発中です。"
+    }
+  },
+  "plan": {
+    "free": "無料",
+    "premium": "プレミアム",
+    "business": "ビジネス"
   },
   "common": {
     "edit": "編集",
@@ -52,6 +166,10 @@
     "loading": "読み込み中...",
     "confirm": "確認",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "unit": "本",
+    "purchase": "購入: {{date}}",
+    "all": "すべて",
+    "registrationDate": "登録日: {{date}}"
   }
 }

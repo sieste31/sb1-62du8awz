@@ -4,6 +4,7 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -16,6 +17,7 @@ interface DeviceDetailElemLastChangeProps {
 }
 
 export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDetailElemLastChangeProps) {
+  const { t } = useTranslation();
   const calculateBatteryEndDate = useDeviceDetailStore(state => state.calculateBatteryEndDate);
 
   const batteryEndDate = calculateBatteryEndDate(device);
@@ -29,7 +31,7 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">最終電池交換日</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.lastChange')}</dt>
       <dd className="mt-1">
         <div className="flex items-center">
           <span className="text-base font-medium text-gray-900">
@@ -48,9 +50,9 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
                   ? 'bg-yellow-100 text-yellow-800' 
                   : 'bg-blue-100 text-blue-800'
             }`}>
-              交換予定: {batteryEndDate.toLocaleDateString()}
-              {isOverdue && ' (交換時期超過)'}
-              {isNearingEnd && ' (まもなく交換時期)'}
+              {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
+              {isOverdue && ` (${t('device.status.overdue')})`}
+              {isNearingEnd && ` (${t('device.status.soon')})`}
             </span>
           </div>
         )}

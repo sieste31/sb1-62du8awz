@@ -15,9 +15,11 @@ import { BatteryDetailElemCount } from './BatteryDetailElemCount';
 import { BatteryDetailElemVolt } from './BatteryDetailElemVolt';
 import { BatteryDetailElemMemo } from './BatteryDetailElemMemo';
 import { BatteryDetailElemHead } from './BatteryDetailElemHead';
+import { useTranslation } from 'react-i18next';
 
 
 export function BatteryDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { batteryGroup: loadBatteryGroup, batteries: loadBatteries, loading } = useBatteryGroup(id || '');
@@ -82,7 +84,7 @@ export function BatteryDetail() {
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            一覧に戻る
+            {t('battery.list.backToList')}
           </button>
         </div>
 
@@ -113,7 +115,7 @@ export function BatteryDetail() {
 
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">個別設定</h3>
+            <h3 className="text-lg font-medium text-gray-900">{t('battery.list.individualSettings')}</h3>
           </div>
           <div className="p-4 bg-gray-50">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -139,8 +141,8 @@ export function BatteryDetail() {
           isOpen={showDeleteConfirm}
           onClose={() => setShowDeleteConfirm(false)}
           onConfirm={handleDelete}
-          title="電池グループの削除"
-          message={`「${batteryGroup.name}」を削除してもよろしいですか？\n\n※この操作は取り消せません。`}
+          title={t('battery.list.deleteGroup')}
+          message={t('battery.list.deleteConfirmation', { name: batteryGroup.name })}
           loading={deleting}
         />
 

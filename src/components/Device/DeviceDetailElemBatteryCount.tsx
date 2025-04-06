@@ -4,6 +4,7 @@ import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Hash } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -16,6 +17,7 @@ interface DeviceDetailElemBatteryCountProps {
 }
 
 export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceDetailElemBatteryCountProps) {
+  const { t } = useTranslation();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -27,7 +29,7 @@ export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceD
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">必要本数</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.batteryCount')}</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div>
@@ -47,14 +49,14 @@ export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceD
             />
             {hasBatteriesInstalled && (
               <p className="mt-1 text-xs text-amber-600">
-                電池が設定されているため変更できません
+                {t('device.detail.cannotChangeBatteryShape')}
               </p>
             )}
           </div>
         ) : (
           <div className="flex items-center">
             <span className="text-base font-medium text-gray-900">
-              {device.battery_count}本
+              {device.battery_count}{t('common.unit')}
             </span>
           </div>
         )}

@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
+import { useTranslation } from 'react-i18next';
 
 export function BatteryDetailElemKind() {
+  const { t } = useTranslation();
   const isEditing = useBatteryDetailStore(state => state.isEditing);
   const editData = useBatteryDetailStore(state => state.editData);
   const setEditData = useBatteryDetailStore(state => state.setEditData);
@@ -14,7 +16,7 @@ export function BatteryDetailElemKind() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電池タイプ</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.kind')}</dt>
         <dd className="mt-1">
           <div>
             <select
@@ -25,12 +27,12 @@ export function BatteryDetailElemKind() {
                 restrictTypeAndCountEditing ? 'bg-gray-100 cursor-not-allowed' : ''
               }`}
             >
-              <option value="rechargeable">充電池</option>
-              <option value="disposable">使い切り</option>
+              <option value="rechargeable">{t('battery.kind.rechargeable')}</option>
+              <option value="disposable">{t('battery.kind.disposable')}</option>
             </select>
             {restrictTypeAndCountEditing && (
               <p className="mt-1 text-xs text-amber-600">
-                使用中の電池があるため変更できません
+                {t('battery.detail.cannotChangeKind')}
               </p>
             )}
           </div>
@@ -40,12 +42,12 @@ export function BatteryDetailElemKind() {
   } else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">電池タイプ</dt>
+        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.kind')}</dt>
         <dd className="mt-1">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
             batteryGroup.kind === 'rechargeable' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
           }`}>
-            {batteryGroup.kind === 'rechargeable' ? '充電池' : '使い切り'}
+            {batteryGroup.kind === 'rechargeable' ? t('battery.kind.rechargeable') : t('battery.kind.disposable')}
           </span>
         </dd>
       </div>

@@ -9,6 +9,7 @@ import { validateImage } from '@/lib/imageUtils';
 import { ImageCropper } from '@/components/ImageCropper';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { uploadBatteryGroupImage } from '@/lib/api';
+import { useTranslation } from 'react-i18next';
 
 interface BatteryDetailImageProps {
     imageUrl: string | null;
@@ -25,6 +26,7 @@ export function BatteryDetailImage({
     batteryGroup, 
     setError 
 }: BatteryDetailImageProps) {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [showCropper, setShowCropper] = useState(false);
@@ -46,8 +48,8 @@ export function BatteryDetailImage({
             };
             reader.readAsDataURL(file);
         } catch (err) {
-            console.error('画像選択エラー:', err);
-            setError(err instanceof Error ? err.message : '画像の選択に失敗しました');
+            console.error(t('battery.detail.imageSelectError'), err);
+            setError(err instanceof Error ? err.message : t('battery.detail.imageSelectFailed'));
         }
     };
 
@@ -68,8 +70,8 @@ export function BatteryDetailImage({
             setSelectedImage(null);
             window.location.reload();
         } catch (err) {
-            console.error('画像アップロード処理エラー:', err);
-            setError(err instanceof Error ? err.message : '画像のアップロードに失敗しました');
+            console.error(t('battery.detail.imageUploadError'), err);
+            setError(err instanceof Error ? err.message : t('battery.detail.imageUploadFailed'));
         }
     };
 
@@ -78,7 +80,7 @@ export function BatteryDetailImage({
             <div className="relative group">
                 <img
                     src={imageUrl || ''}
-                    alt={`${batteryGroup.type}の画像`}
+                    alt={t('battery.detail.imageAlt', { type: batteryGroup.type })}
                     className="w-32 h-32 rounded-lg object-cover"
                 />
                 <button

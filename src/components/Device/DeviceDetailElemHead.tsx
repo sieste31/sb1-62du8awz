@@ -5,6 +5,7 @@ import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, Pencil, X, Check, ToyBrick } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -22,6 +23,7 @@ const deviceTypeIcons = {
 };
 
 export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
@@ -59,14 +61,14 @@ export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {
         </div>
         <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
           <div className="text-sm text-gray-500 mr-4">
-            登録日: {new Date(device.created_at).toLocaleDateString()}
+            {t('common.registrationDate', { date: new Date(device.created_at).toLocaleDateString() })}
           </div>
           {isEditing ? (
             <div className="flex space-x-2">
               <button
                 onClick={() => handleCancelEdit(device)}
                 className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-gray-500"
-                aria-label="キャンセル"
+                aria-label={t('common.cancel')}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -74,7 +76,7 @@ export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {
                 onClick={() => handleSave(queryClient)}
                 disabled={saving}
                 className="inline-flex items-center p-2 border border-transparent rounded-full text-green-600 hover:text-green-700 disabled:opacity-50"
-                aria-label="保存"
+                aria-label={t('common.save')}
               >
                 <Check className="h-5 w-5" />
               </button>
@@ -83,7 +85,7 @@ export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {
             <button
               onClick={() => setIsEditing(true)}
               className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-gray-500"
-              aria-label="編集"
+              aria-label={t('common.edit')}
             >
               <Pencil className="h-5 w-5" />
             </button>

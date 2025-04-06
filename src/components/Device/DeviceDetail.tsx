@@ -18,8 +18,10 @@ import { DeviceDetailElemPurchaseDate } from './DeviceDetailElemPurchaseDate';
 import { DeviceDetailElemLastChange } from './DeviceDetailElemLastChange';
 import { DeviceDetailElemNotes } from './DeviceDetailElemNotes';
 import { DeviceDetailBatterySection } from './DeviceDetailBatterySection';
+import { useTranslation } from 'react-i18next';
 
 export function DeviceDetail() {
+  const { t } = useTranslation();
   const { id: urlId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { device, batteries, loading } = useDevice(urlId || '');
@@ -77,7 +79,7 @@ export function DeviceDetail() {
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            一覧に戻る
+            {t('device.detail.backToList')}
           </button>
         </div>
 

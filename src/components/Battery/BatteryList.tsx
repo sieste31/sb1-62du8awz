@@ -4,6 +4,7 @@ import React from 'react';
 import { Battery, Plus, Filter, Search, SortDesc, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { useTranslation } from 'react-i18next';
 // 新しい構造を使用
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
 // 注: 上記のインポートは内部的に store.ts の useBatteryGroupsStore と useUserPlanStore を使用しています
@@ -25,6 +26,7 @@ type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
 
 
 export function BatteryList() {
+  const { t } = useTranslation();
   const { batteryGroups, loading } = useBatteryGroups();
   const isDesktop = useMediaQuery({ minWidth: 768 });
   
@@ -48,7 +50,7 @@ export function BatteryList() {
     <div>
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">電池一覧</h2>
+          <h2 className="text-xl font-semibold text-gray-900">{t('battery.list.title')}</h2>
           <div className="flex flex-wrap items-center gap-3">
             <BatteryListFilterButton />
             <BatteryAddButton batteryGroups={batteryGroups} />
@@ -64,12 +66,12 @@ export function BatteryList() {
           <div className="text-center py-16">
             <Battery className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-4 text-lg font-medium text-gray-900">
-              {batteryGroups.length === 0 ? '電池がありません' : '条件に一致する電池がありません'}
+              {batteryGroups.length === 0 ? t('battery.list.noBatteries') : t('battery.list.noMatchingBatteries')}
             </h3>
             <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
               {batteryGroups.length === 0 
-                ? '新しい電池を登録して、効率的に管理を始めましょう。' 
-                : '検索条件やフィルター設定を変更して、再度お試しください。'}
+                ? t('battery.list.emptyStateMessage') 
+                : t('battery.list.noMatchingMessage')}
             </p>
             {batteryGroups.length === 0 && (
               <div className="mt-6">
@@ -78,7 +80,7 @@ export function BatteryList() {
                   className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  新規登録
+                  {t('battery.list.addNew')}
                 </Link>
               </div>
             )}
@@ -99,6 +101,7 @@ export function BatteryList() {
 
 // 電池グループ追加ボタンコンポーネント
 function BatteryAddButton({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
+  const { t } = useTranslation();
   const { userPlan, isLimitReached } = useUserPlan();
   const isBatteryGroupLimitReached = isLimitReached.batteryGroups(batteryGroups.length);
 
@@ -110,10 +113,10 @@ function BatteryAddButton({ batteryGroups }: { batteryGroups: BatteryGroup[] }) 
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed"
         >
           <Plus className="h-4 w-4 mr-2" />
-          新規登録
+          {t('battery.list.addNew')}
         </button>
         <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2">
-          電池グループの上限に達しています
+          {t('battery.form.limitReachedError')}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-800"></div>
         </div>
       </div>
@@ -126,13 +129,14 @@ function BatteryAddButton({ batteryGroups }: { batteryGroups: BatteryGroup[] }) 
       className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
     >
       <Plus className="h-4 w-4 mr-2" />
-      新規登録
+      {t('battery.list.addNew')}
     </Link>
   );
 }
 
 // ユーザープラン情報表示コンポーネント
 function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
+  const { t } = useTranslation();
   const { userPlan, loading } = useUserPlan();
 
   if (loading || !userPlan) return null;
@@ -140,8 +144,8 @@ function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
   const batteryGroupCount = batteryGroups.length;
   const maxBatteryGroups = userPlan.max_battery_groups;
   const isLimitReached = batteryGroupCount >= maxBatteryGroups;
-  const planTypeDisplay = userPlan.plan_type === 'free' ? '無料' : 
-                          userPlan.plan_type === 'premium' ? 'プレミアム' : 'ビジネス';
+  const planTypeDisplay = userPlan.plan_type === 'free' ? t('plan.free') : 
+                          userPlan.plan_type === 'premium' ? t('plan.premium') : t('plan.business');
 
   return (
     <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50' : 'bg-blue-50'}`}>
@@ -152,17 +156,17 @@ function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
           )}
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
-              電池グループ: {batteryGroupCount} / {maxBatteryGroups}
-              {isLimitReached && ' (上限に達しています)'}
+              {t('battery.list.groupCount', { current: batteryGroupCount, max: maxBatteryGroups })}
+              {isLimitReached && t('battery.list.limitReached')}
             </p>
           </div>
         </div>
         {userPlan.plan_type === 'free' && (
           <button
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={() => alert('この機能は現在開発中です。')}
+            onClick={() => alert(t('battery.form.upgradeInDevelopment'))}
           >
-            アップグレード
+            {t('battery.form.upgradePlan')}
           </button>
         )}
       </div>

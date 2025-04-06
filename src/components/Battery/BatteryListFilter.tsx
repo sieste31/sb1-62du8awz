@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Battery, Zap, Search, SortDesc } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   useBatteryFilterStore,
   BATTERY_TYPES,
@@ -11,12 +12,6 @@ import {
   SORT_OPTIONS
 } from '@/lib/batteryFilterStore';
 
-// 電池の種類
-const batteryKindLabels = {
-  'すべて': 'すべて',
-  'disposable': '使い切り',
-  'rechargeable': '充電池',
-} as const;
 
 const batteryKindIcons = {
   'すべて': null,
@@ -25,6 +20,14 @@ const batteryKindIcons = {
 } as const;
 
 export function BatteryListFilter() {
+  const { t } = useTranslation();
+  
+  // 電池の種類
+  const batteryKindLabels = {
+    'すべて': t('common.all'),
+    'disposable': t('battery.kind.disposable'),
+    'rechargeable': t('battery.kind.rechargeable'),
+  } as const;
   // Zustandストアから状態と関数を取得
   // Zustandストアから状態と関数を取得
   const {
@@ -53,7 +56,7 @@ export function BatteryListFilter() {
               </div>
               <input
                 type="text"
-                placeholder="電池名・コメントを検索..."
+                placeholder={t('battery.list.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -83,7 +86,7 @@ export function BatteryListFilter() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
                   <Battery className="h-4 w-4 mr-1.5 text-gray-500" />
-                  電池種別
+                  {t('battery.list.batteryType')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {BATTERY_TYPES.map((type) => (
@@ -103,7 +106,7 @@ export function BatteryListFilter() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
                   <Zap className="h-4 w-4 mr-1.5 text-gray-500" />
-                  電池タイプ
+                  {t('device.select.batteryType')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {BATTERY_KINDS.map((kind) => (
@@ -133,7 +136,7 @@ export function BatteryListFilter() {
             onClick={resetFilters}
             className="text-sm text-blue-600 hover:text-blue-800"
           >
-            フィルターをリセット
+            {t('device.select.reset')}
           </button>
         </div>
       </div>

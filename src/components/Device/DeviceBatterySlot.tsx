@@ -3,6 +3,7 @@
 import React from 'react';
 import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type InstalledBattery = Database['public']['Tables']['batteries']['Row'] & {
   battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
@@ -17,6 +18,7 @@ export function DeviceBatterySlot({
   slotNumber,
   battery,
 }: DeviceBatterySlotProps) {
+  const { t } = useTranslation();
   console.log('battery:', battery);
   console.log('battery_groups:', battery?.battery_groups);
   if (!battery) {
@@ -28,15 +30,15 @@ export function DeviceBatterySlot({
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-700 text-xs mr-2 flex-shrink-0">
                 {slotNumber}
               </span>
-              スロット #{slotNumber}
+              {t('device.batterySlot')} #{slotNumber}
             </h4>
             <p className="mt-1 text-sm text-gray-500">
-              電池が設定されていません
+              {t('device.status.notSet')}
             </p>
           </div>
           <div className="flex items-center">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-              未設定
+              {t('device.status.notSet')}
             </span>
           </div>
         </div>
@@ -56,7 +58,7 @@ export function DeviceBatterySlot({
           </h4>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             <p className="text-sm text-gray-500 flex items-center">
-              <span className="w-24 inline-block flex-shrink-0">最終チェック日:</span>
+              <span className="w-24 inline-block flex-shrink-0">{t('device.detail.lastCheck')}:</span>
               <span className="font-medium">
                 {battery.last_checked
                   ? new Date(battery.last_checked).toLocaleDateString()
@@ -64,7 +66,7 @@ export function DeviceBatterySlot({
               </span>
             </p>
             <p className="text-sm text-gray-500 flex items-center">
-              <span className="w-24 inline-block flex-shrink-0">最終交換日:</span>
+              <span className="w-24 inline-block flex-shrink-0">{t('device.detail.lastChange')}:</span>
               <span className="font-medium">
                 {battery.last_changed_at
                   ? new Date(battery.last_changed_at).toLocaleDateString()
@@ -86,12 +88,12 @@ export function DeviceBatterySlot({
             }`}
           >
             {battery.status === 'charged'
-              ? '満充電'
+              ? t('battery.status.charged')
               : battery.status === 'in_use'
-              ? '使用中'
+              ? t('battery.status.in_use')
               : battery.status === 'empty'
-              ? '使用済み'
-              : '廃棄'}
+              ? t('battery.status.empty')
+              : t('battery.status.disposed')}
           </span>
         </div>
       </div>

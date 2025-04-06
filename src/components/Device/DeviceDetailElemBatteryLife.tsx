@@ -4,6 +4,7 @@ import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Clock } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -12,6 +13,7 @@ interface DeviceDetailElemBatteryLifeProps {
 }
 
 export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryLifeProps) {
+  const { t } = useTranslation();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
@@ -20,7 +22,7 @@ export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryL
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">電池寿命</dt>
+      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.batteryLife')}</dt>
       <dd className="mt-1">
         {isEditing ? (
           <div className="relative rounded-md shadow-sm">
@@ -34,16 +36,16 @@ export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryL
                 })
               }
               className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm pr-8"
-              placeholder="例: 12"
+              placeholder={t('device.detail.batteryLifePlaceholder')}
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-gray-500 sm:text-sm">週</span>
+              <span className="text-gray-500 sm:text-sm">{t('device.detail.weeks')}</span>
             </div>
           </div>
         ) : (
           <div className="flex items-center">
             <span className="text-base font-medium text-gray-900">
-              {device.battery_life_weeks ? `${device.battery_life_weeks}週` : '---'}
+              {device.battery_life_weeks ? t('device.detail.weeksValue', { weeks: device.battery_life_weeks }) : '---'}
             </span>
           </div>
         )}

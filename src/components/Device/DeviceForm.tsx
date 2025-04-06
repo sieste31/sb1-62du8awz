@@ -7,20 +7,23 @@ import { useAuth } from '@/lib/auth-provider';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { createDevice } from '@/lib/api';
 import type { Database } from '@/lib/database.types';
+import { useTranslation } from 'react-i18next';
 
 type DeviceType = Database['public']['Tables']['devices']['Row']['type'];
 
-const deviceTypeOptions = [
-  { value: 'remotecontroller', label: 'リモコン', icon: Smartphone },
-  { value: 'speaker', label: 'ラジオ/スピーカー', icon: Radio },
-  { value: 'camera', label: 'カメラ', icon: Camera },
-  { value: 'gadget', label: 'ガジェット', icon: Gamepad },
-  { value: 'light', label: 'ライト', icon: Lightbulb },
-  { value: 'toy', label: 'おもちゃ', icon: ToyBrick },
-  { value: 'other', label: 'その他', icon: HelpCircle },
-];
 
 export function DeviceForm() {
+  const { t } = useTranslation();
+  
+  const deviceTypeOptions = [
+    { value: 'remotecontroller', label: t('device.types.remotecontroller'), icon: Smartphone },
+    { value: 'speaker', label: t('device.types.speaker'), icon: Radio },
+    { value: 'camera', label: t('device.types.camera'), icon: Camera },
+    { value: 'gadget', label: t('device.types.gadget'), icon: Gamepad },
+    { value: 'light', label: t('device.types.light'), icon: Lightbulb },
+    { value: 'toy', label: t('device.types.toy'), icon: ToyBrick },
+    { value: 'other', label: t('device.types.other'), icon: HelpCircle },
+  ];
   const navigate = useNavigate();
   const { user } = useAuth();
   const { devices } = useDevices();
@@ -54,7 +57,7 @@ export function DeviceForm() {
     
     // 制限チェック
     if (isDeviceLimitReached) {
-      setError('デバイスの上限に達しています。プランをアップグレードしてください。');
+      setError(t('device.form.limitReachedError'));
       return;
     }
 
@@ -75,7 +78,7 @@ export function DeviceForm() {
 
       navigate('/devices');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'デバイスの登録に失敗しました');
+      setError(err instanceof Error ? err.message : t('device.form.createError'));
       setLoading(false);
     }
   };
@@ -89,13 +92,13 @@ export function DeviceForm() {
             className="inline-flex items-center text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            一覧に戻る
+            {t('device.detail.backToList')}
           </button>
         </div>
 
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
-            <h2 className="text-xl font-bold text-gray-900">デバイスの新規登録</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('device.form.title')}</h2>
           </div>
           
           {showLimitWarning && (
@@ -106,12 +109,12 @@ export function DeviceForm() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-amber-700">
-                    デバイスの上限に達しています（{devices.length}/{userPlan?.max_devices || 5}）。
+                    {t('device.form.limitReachedWarning', { current: devices.length, max: userPlan?.max_devices || 5 })}
                     <button 
                       className="ml-2 font-medium text-amber-700 underline"
-                      onClick={() => alert('この機能は現在開発中です。')}
+                      onClick={() => alert(t('device.form.upgradeInDevelopment'))}
                     >
-                      プランをアップグレード
+                      {t('device.form.upgradePlan')}
                     </button>
                   </p>
                 </div>
@@ -122,7 +125,7 @@ export function DeviceForm() {
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                デバイス名
+                {t('device.form.nameLabel')}
               </label>
               <input
                 type="text"
@@ -136,7 +139,7 @@ export function DeviceForm() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                デバイスタイプ
+                {t('device.detail.deviceType')}
               </label>
               <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {deviceTypeOptions.map((option) => {
@@ -168,7 +171,7 @@ export function DeviceForm() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="batteryShape" className="block text-sm font-medium text-gray-700">
-                  電池形状
+                  {t('device.detail.batteryShape')}
                 </label>
                 <select
                   id="batteryShape"
@@ -176,17 +179,17 @@ export function DeviceForm() {
                   onChange={(e) => setFormData({ ...formData, batteryShape: e.target.value })}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
-                  <option value="単1形">単1形</option>
-                  <option value="単2形">単2形</option>
-                  <option value="単3形">単3形</option>
-                  <option value="単4形">単4形</option>
-                  <option value="9V形">9V形</option>
+                  <option value="単1形">{t('battery.shape.d')}</option>
+                  <option value="単2形">{t('battery.shape.c')}</option>
+                  <option value="単3形">{t('battery.shape.aa')}</option>
+                  <option value="単4形">{t('battery.shape.aaa')}</option>
+                  <option value="9V形">{t('battery.shape.9v')}</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="batteryCount" className="block text-sm font-medium text-gray-700">
-                  必要本数
+                  {t('device.form.batteryCountLabel')}
                 </label>
                 <input
                   type="number"
@@ -202,7 +205,7 @@ export function DeviceForm() {
 
             <div>
               <label htmlFor="batteryLifeWeeks" className="block text-sm font-medium text-gray-700">
-                電池寿命（週）
+                {t('device.detail.batteryLife')}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <input
@@ -211,21 +214,21 @@ export function DeviceForm() {
                   min="1"
                   value={formData.batteryLifeWeeks}
                   onChange={(e) => setFormData({ ...formData, batteryLifeWeeks: e.target.value })}
-                  placeholder="例: 12"
+                  placeholder={t('device.detail.batteryLifePlaceholder')}
                   className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">週</span>
+                  <span className="text-gray-500 sm:text-sm">{t('device.detail.weeks')}</span>
                 </div>
               </div>
               <p className="mt-2 text-sm text-gray-500">
-                電池の予想寿命を週単位で設定します。空欄の場合は通知されません。
+                {t('device.form.batteryLifeHelp')}
               </p>
             </div>
 
             <div>
               <label htmlFor="purchaseDate" className="block text-sm font-medium text-gray-700">
-                購入日
+                {t('device.detail.purchaseDate')}
               </label>
               <input
                 type="date"
@@ -238,7 +241,7 @@ export function DeviceForm() {
 
             <div>
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                メモ
+                {t('device.detail.notes')}
               </label>
               <textarea
                 id="notes"
@@ -259,7 +262,7 @@ export function DeviceForm() {
                 disabled={loading}
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {loading ? '登録中...' : '登録する'}
+                {loading ? t('device.form.saving') : t('device.form.submit')}
               </button>
             </div>
           </form>
