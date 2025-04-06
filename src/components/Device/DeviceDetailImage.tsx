@@ -4,15 +4,19 @@ import React, { useRef } from 'react';
 import { Upload } from 'lucide-react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { useAuth } from '@/lib/auth-provider';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailImage() {
+type Device = Database['public']['Tables']['devices']['Row'];
+
+interface DeviceDetailImageProps {
+  device: Device;
+}
+
+export function DeviceDetailImage({ device }: DeviceDetailImageProps) {
   const imageUrl = useDeviceDetailStore(state => state.imageUrl);
-  const device = useDeviceDetailStore(state => state.device);
   const handleImageSelect = useDeviceDetailStore(state => state.handleImageSelect);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
-
-  if (!device) return null;
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

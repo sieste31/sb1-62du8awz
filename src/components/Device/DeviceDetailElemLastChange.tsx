@@ -3,15 +3,22 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailElemLastChange() {
-  const device = useDeviceDetailStore(state => state.device);
-  const batteries = useDeviceDetailStore(state => state.batteries);
+type Device = Database['public']['Tables']['devices']['Row'];
+type Battery = Database['public']['Tables']['batteries']['Row'] & {
+  battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
+};
+
+interface DeviceDetailElemLastChangeProps {
+  device: Device;
+  batteries?: Battery[];
+}
+
+export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDetailElemLastChangeProps) {
   const calculateBatteryEndDate = useDeviceDetailStore(state => state.calculateBatteryEndDate);
 
-  if (!device) return null;
-
-  const batteryEndDate = calculateBatteryEndDate();
+  const batteryEndDate = calculateBatteryEndDate(device);
   const today = new Date();
   const daysUntilEnd = batteryEndDate 
     ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)

@@ -20,52 +20,40 @@ import { DeviceDetailElemNotes } from './DeviceDetailElemNotes';
 import { DeviceDetailBatterySection } from './DeviceDetailBatterySection';
 
 export function DeviceDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id: urlId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { device, batteries, loading } = useDevice(id || '');
+  const { device, batteries, loading } = useDevice(urlId || '');
   
   // Zustandストアから状態と関数を取得
   const {
+    id: storeId, setId,
     editData, initializeEditData,
     error, setError,
     imageUrl, setImageUrl,
     showHistory,
     selectedImage, showCropper,
-    handleCropComplete,
-    setDevice, setBatteries,
     setIsEditing
   } = useDeviceDetailStore();
 
   // 初期データをセット
   useEffect(() => {
-    if (device) {
-      console.log('useDevice batteries:', batteries);
-      
-      // 常にeditDataを初期化して、編集モードをリセット
+    if (urlId && urlId !== storeId) {
+      setId(urlId);
+    }
+  }, [urlId, storeId, setId]);
+
+  // デバイスデータが取得できたら編集データを初期化
+  useEffect(() => {
+    if (device && urlId === storeId) {
+      // デバイスが変更された場合のみeditDataを初期化
       initializeEditData(device);
       setIsEditing(false);
       
-      // deviceの更新
-      const currentDevice = useDeviceDetailStore.getState().device;
-      if (!currentDevice || currentDevice.id !== device.id) {
-        setDevice(device);
-        
-        // 画像URLを取得
-        getDeviceImage(device.type, device.image_url)
-          .then(url => setImageUrl(url));
-      }
-      
-      // batteriesの更新（deviceが変更されなくても常に最新のbatteriesを反映）
-      if (batteries && batteries.length > 0) {
-        setBatteries(batteries);
-        console.log('After setBatteries, store batteries:', useDeviceDetailStore.getState().batteries);
-      } else {
-        console.log('batteries is empty or undefined');
-        // 空の場合も明示的に空の配列を設定
-        setBatteries([]);
-      }
+      // 画像URLを取得
+      getDeviceImage(device.type as 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other', device.image_url)
+        .then(url => setImageUrl(url));
     }
-  }, [id, device, batteries, setDevice, setBatteries, initializeEditData, setImageUrl, setIsEditing]);
+  }, [device, storeId, urlId, initializeEditData, setImageUrl, setIsEditing]);
 
   if (loading || !device || !editData) {
     return (
@@ -74,6 +62,11 @@ export function DeviceDetail() {
       </div>
     );
   }
+
+  // handleCropCompleteのラッパー関数
+  const handleCropCompleteWrapper = (croppedBlob: Blob) => {
+    return useDeviceDetailStore.getState().handleCropComplete(croppedBlob, device.id);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -89,31 +82,31 @@ export function DeviceDetail() {
         </div>
 
         <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
-          <DeviceDetailElemHead />
+          <DeviceDetailElemHead device={device} />
 
           <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
             <div className="flex flex-row space-x-4">
               <div className="flex-shrink-0">
-                <DeviceDetailImage />
+                <DeviceDetailImage device={device} />
               </div>
               <div className="flex-1 min-w-0">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-3 sm:grid-cols-2">
-                  <DeviceDetailElemType />
-                  <DeviceDetailElemBatteryShape />
-                  <DeviceDetailElemBatteryCount />
-                  <DeviceDetailElemPurchaseDate />
-                  <DeviceDetailElemBatteryLife />
-                  <DeviceDetailElemLastChange />
+                  <DeviceDetailElemType device={device} />
+                  <DeviceDetailElemBatteryShape device={device} batteries={batteries} />
+                  <DeviceDetailElemBatteryCount device={device} batteries={batteries} />
+                  <DeviceDetailElemPurchaseDate device={device} />
+                  <DeviceDetailElemBatteryLife device={device} />
+                  <DeviceDetailElemLastChange device={device} batteries={batteries} />
                 </dl>
               </div>
             </div>
             <div className="mt-6">
-              <DeviceDetailElemNotes />
+              <DeviceDetailElemNotes device={device} />
             </div>
           </div>
         </div>
 
-        <DeviceDetailBatterySection />
+        <DeviceDetailBatterySection device={device} batteries={batteries} />
 
         {error && (
           <div className="mt-4 p-4 bg-red-50 rounded-md">
@@ -135,7 +128,7 @@ export function DeviceDetail() {
               useDeviceDetailStore.getState().setShowCropper(false);
               useDeviceDetailStore.getState().setSelectedImage(null);
             }}
-            onCropComplete={handleCropComplete}
+            onCropComplete={handleCropCompleteWrapper}
           />
         )}
       </div>

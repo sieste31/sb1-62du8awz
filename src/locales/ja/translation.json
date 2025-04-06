@@ -32,12 +32,13 @@
       "notes": "メモ"
     },
     "types": {
-      "smartphone": "スマートフォン/リモコン",
-      "speaker": "スピーカー",
+      "remotecontroller": "リモコン",
+      "speaker": "ラジオ/スピーカー",
       "camera": "カメラ",
       "gadget": "ガジェット",
       "light": "ライト",
-      "toy": "おもちゃ"
+      "toy": "おもちゃ",
+      "other": "その他"
     },
     "batterySection": "電池情報",
     "batterySlot": "電池スロット",

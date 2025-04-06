@@ -9,18 +9,19 @@ import { DeviceListItem } from './DeviceListItem';
 import type { Database } from '@/lib/database.types';
 
 type Device = Database['public']['Tables']['devices']['Row'];
-type DeviceType = 'all' | 'smartphone' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy';
+type DeviceType = 'all' | 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other';
 type BatteryType = 'all' | '単1形' | '単2形' | '単3形' | '単4形' | '9V形';
 type SortOrder = 'none' | 'asc' | 'desc' | 'battery-end-asc' | 'battery-end-desc' | 'name-asc' | 'name-desc';
 
 const deviceTypeLabels: Record<DeviceType, string> = {
   all: 'すべて',
-  smartphone: 'スマホ/リモコン',
-  speaker: 'スピーカー',
+  remotecontroller: 'リモコン',
+  speaker: 'ラジオ/スピーカー',
   camera: 'カメラ',
   gadget: 'ガジェット',
   light: 'ライト',
-  toy: 'おもちゃ'
+  toy: 'おもちゃ',
+  other: 'その他'
 };
 
 // 電池切れ予想日を計算する関数

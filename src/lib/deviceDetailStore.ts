@@ -10,9 +10,6 @@ import { uploadDeviceImage } from './api/storage';
 import { getCurrentUser } from './api/auth';
 
 type Device = Database['public']['Tables']['devices']['Row'];
-type Battery = Database['public']['Tables']['batteries']['Row'] & {
-  battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
-};
 
 interface EditData {
   name: string;
@@ -26,8 +23,7 @@ interface EditData {
 
 interface DeviceDetailState {
   // 状態
-  device: Device | null;
-  batteries: Battery[];
+  id: string | null; // 現在表示中のデバイスID
   isEditing: boolean;
   editData: EditData | null;
   imageUrl: string | null;
@@ -37,8 +33,8 @@ interface DeviceDetailState {
   saving: boolean;
   showHistory: boolean;
 
-
   // アクション
+  setId: (id: string | null) => void;
   setIsEditing: (isEditing: boolean) => void;
   setEditData: (data: Partial<EditData>) => void;
   setError: (error: string | null) => void;
@@ -47,25 +43,22 @@ interface DeviceDetailState {
   setShowCropper: (show: boolean) => void;
   setSaving: (saving: boolean) => void;
   setShowHistory: (show: boolean) => void;
-  setDevice: (device: Device | null) => void;
-  setBatteries: (batteries: Battery[]) => void;
 
   // 初期化
   initializeEditData: (device: Device) => void;
-  resetEditData: () => void;
+  resetEditData: (device: Device) => void;
 
   // 操作
   handleSave: (queryClient?: any) => Promise<void>;
-  handleCancelEdit: () => void;
+  handleCancelEdit: (device: Device) => void;
   handleImageSelect: (file: File, userId: string) => Promise<void>;
-  handleCropComplete: (croppedBlob: Blob) => Promise<void>;
-  calculateBatteryEndDate: () => Date | null;
+  handleCropComplete: (croppedBlob: Blob, deviceId: string) => Promise<void>;
+  calculateBatteryEndDate: (device: Device) => Date | null;
 }
 
 export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   // 初期状態
-  device: null,
-  batteries: [],
+  id: null,
   isEditing: false,
   editData: null,
   imageUrl: null,
@@ -75,8 +68,8 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   saving: false,
   showHistory: false,
 
-
   // アクション
+  setId: (id) => set({ id }),
   setIsEditing: (isEditing) => set({ isEditing }),
   setEditData: (data) => set(state => ({
     editData: state.editData ? { ...state.editData, ...data } : null
@@ -87,8 +80,6 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   setShowCropper: (showCropper) => set({ showCropper }),
   setSaving: (saving) => set({ saving }),
   setShowHistory: (showHistory) => set({ showHistory }),
-  setDevice: (device) => set({ device }),
-  setBatteries: (batteries) => set({ batteries }),
 
   // 初期化
   initializeEditData: (device) => set({
@@ -103,33 +94,30 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     }
   }),
 
-  resetEditData: () => {
-    const { device } = get();
-    if (device) {
-      set({
-        editData: {
-          name: device.name,
-          type: device.type,
-          batteryShape: device.battery_type,
-          batteryCount: device.battery_count,
-          batteryLifeWeeks: device.battery_life_weeks || '',
-          purchaseDate: device.purchase_date || '',
-          notes: device.notes || '',
-        },
-        isEditing: false
-      });
-    }
+  resetEditData: (device) => {
+    set({
+      editData: {
+        name: device.name,
+        type: device.type,
+        batteryShape: device.battery_type,
+        batteryCount: device.battery_count,
+        batteryLifeWeeks: device.battery_life_weeks || '',
+        purchaseDate: device.purchase_date || '',
+        notes: device.notes || '',
+      },
+      isEditing: false
+    });
   },
 
   // 操作
   handleSave: async (queryClient) => {
-    const { device, editData } = get();
-    if (!device || !editData) return;
+    const { id, editData } = get();
+    if (!id || !editData) return;
 
     set({ saving: true, error: null });
 
     try {
-      await updateDevice(device.id, {
+      await updateDevice(id, {
         name: editData.name,
         type: editData.type,
         battery_type: editData.batteryShape,
@@ -154,8 +142,8 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     }
   },
 
-  handleCancelEdit: () => {
-    get().resetEditData();
+  handleCancelEdit: (device) => {
+    get().resetEditData(device);
   },
 
   handleImageSelect: async (file: File, userId: string) => {
@@ -178,9 +166,8 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     }
   },
 
-  handleCropComplete: async (croppedBlob: Blob) => {
-    const { device } = get();
-    if (!device) return;
+  handleCropComplete: async (croppedBlob: Blob, deviceId: string) => {
+    if (!deviceId) return;
 
     try {
       // ユーザー情報を取得
@@ -190,9 +177,9 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
       // 画像をアップロード
       await uploadDeviceImage(
         user.id,
-        device.id,
+        deviceId,
         croppedBlob,
-        device.image_url || null
+        null // 既存の画像URLはAPIで取得するため不要
       );
 
       set({
@@ -209,8 +196,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     }
   },
 
-  calculateBatteryEndDate: () => {
-    const { device } = get();
+  calculateBatteryEndDate: (device) => {
     if (!device || !device.last_battery_change || !device.battery_life_weeks) return null;
     
     const lastChange = new Date(device.last_battery_change);

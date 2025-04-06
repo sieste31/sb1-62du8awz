@@ -3,14 +3,20 @@
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { FileText } from 'lucide-react';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailElemNotes() {
+type Device = Database['public']['Tables']['devices']['Row'];
+
+interface DeviceDetailElemNotesProps {
+  device: Device;
+}
+
+export function DeviceDetailElemNotes({ device }: DeviceDetailElemNotesProps) {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  const device = useDeviceDetailStore(state => state.device);
 
-  if (!editData || !device) return null;
+  if (!editData) return null;
 
   return (
     <div className="sm:col-span-2">

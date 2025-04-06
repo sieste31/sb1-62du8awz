@@ -3,22 +3,27 @@
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Battery } from 'lucide-react';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailElemBatteryShape() {
+type Device = Database['public']['Tables']['devices']['Row'];
+type Battery = Database['public']['Tables']['batteries']['Row'] & {
+  battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
+};
+
+interface DeviceDetailElemBatteryShapeProps {
+  device: Device;
+  batteries?: Battery[];
+}
+
+export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceDetailElemBatteryShapeProps) {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  const device = useDeviceDetailStore(state => state.device);
-  const batteries  = useDeviceDetailStore(state => state.batteries);
 
-  const installedCount = batteries.length 
-  const hasBatteriesInstalled = installedCount> 0;
+  const installedCount = batteries.length;
+  const hasBatteriesInstalled = installedCount > 0;
 
-  if (!editData || !device　|| !batteries) return null;
-  console.log('batteries:', batteries);
-  console.log('lenght:', batteries.length);
-  console.log('hasBatteriesInstalled:', hasBatteriesInstalled);
-  console.log('installedCount:', installedCount);
+  if (!editData) return null;
 
   return (
     <div>

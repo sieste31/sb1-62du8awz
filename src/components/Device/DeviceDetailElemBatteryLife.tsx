@@ -3,14 +3,20 @@
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Clock } from 'lucide-react';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailElemBatteryLife() {
+type Device = Database['public']['Tables']['devices']['Row'];
+
+interface DeviceDetailElemBatteryLifeProps {
+  device: Device;
+}
+
+export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryLifeProps) {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  const device = useDeviceDetailStore(state => state.device);
 
-  if (!editData || !device) return null;
+  if (!editData) return null;
 
   return (
     <div>

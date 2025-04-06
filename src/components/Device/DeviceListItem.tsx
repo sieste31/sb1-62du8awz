@@ -1,7 +1,7 @@
 // デバイス一覧画面の各デバイスを表示するコンポーネント
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, ToyBrick, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock, Hash, Info } from 'lucide-react';
+import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock, Hash, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
@@ -9,12 +9,13 @@ import type { Database } from '@/lib/database.types';
 type Device = Database['public']['Tables']['devices']['Row'];
 
 const iconMap = {
-  smartphone: Smartphone,
-  speaker: Speaker,
+  remotecontroller: Smartphone,
+  speaker: Radio,
   camera: Camera,
   gadget: Gamepad,
   light: Lightbulb,
   toy: ToyBrick,
+  other: HelpCircle,
 };
 
 // 電池切れ予想日を計算する関数
@@ -86,11 +87,12 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
                 <Icon className="h-4 w-4 mr-1 text-gray-500" />
-                {device.type === 'smartphone' ? 'スマホ/リモコン' : 
-                 device.type === 'speaker' ? 'スピーカー' : 
+                {device.type === 'remotecontroller' ? 'リモコン' : 
+                 device.type === 'speaker' ? 'ラジオ/スピーカー' : 
                  device.type === 'camera' ? 'カメラ' : 
                  device.type === 'gadget' ? 'ガジェット' : 
-                 device.type === 'light' ? 'ライト' : 'おもちゃ'}
+                 device.type === 'light' ? 'ライト' : 
+                 device.type === 'toy' ? 'おもちゃ' : 'その他'}
               </span>
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
                 {device.battery_type}

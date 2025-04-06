@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Smartphone, Speaker, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick, AlertCircle } from 'lucide-react';
+import { Smartphone, Radio, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick, AlertCircle, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { createDevice } from '@/lib/api';
@@ -11,12 +11,13 @@ import type { Database } from '@/lib/database.types';
 type DeviceType = Database['public']['Tables']['devices']['Row']['type'];
 
 const deviceTypeOptions = [
-  { value: 'smartphone', label: 'スマートフォン/リモコン', icon: Smartphone },
-  { value: 'speaker', label: 'スピーカー', icon: Speaker },
+  { value: 'remotecontroller', label: 'リモコン', icon: Smartphone },
+  { value: 'speaker', label: 'ラジオ/スピーカー', icon: Radio },
   { value: 'camera', label: 'カメラ', icon: Camera },
   { value: 'gadget', label: 'ガジェット', icon: Gamepad },
   { value: 'light', label: 'ライト', icon: Lightbulb },
   { value: 'toy', label: 'おもちゃ', icon: ToyBrick },
+  { value: 'other', label: 'その他', icon: HelpCircle },
 ];
 
 export function DeviceForm() {
@@ -39,7 +40,7 @@ export function DeviceForm() {
   }, [isDeviceLimitReached]);
   const [formData, setFormData] = useState({
     name: '',
-    type: 'smartphone' as DeviceType,
+    type: 'remotecontroller' as DeviceType,
     batteryShape: '単3形',
     batteryCount: 1,
     batteryLifeWeeks: '' as string | number,

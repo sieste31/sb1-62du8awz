@@ -32,12 +32,13 @@
       "notes": "Notes"
     },
     "types": {
-      "smartphone": "Smartphone/Remote",
-      "speaker": "Speaker",
+      "remotecontroller": "Remote Controller",
+      "speaker": "Radio/Speaker",
       "camera": "Camera",
       "gadget": "Gadget",
       "light": "Light",
-      "toy": "Toy"
+      "toy": "Toy",
+      "other": "Other"
     },
     "batterySection": "Battery Information",
     "batterySlot": "Battery Slot",

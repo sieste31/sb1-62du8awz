@@ -4,6 +4,13 @@ import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, Pencil, X, Check, ToyBrick } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import type { Database } from '@/lib/database.types';
+
+type Device = Database['public']['Tables']['devices']['Row'];
+
+interface DeviceDetailElemHeadProps {
+  device: Device;
+}
 
 const deviceTypeIcons = {
   smartphone: Smartphone,
@@ -14,18 +21,17 @@ const deviceTypeIcons = {
   toy: ToyBrick,
 };
 
-export function DeviceDetailElemHead() {
+export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {
   const queryClient = useQueryClient();
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  const device = useDeviceDetailStore(state => state.device);
   const handleSave = useDeviceDetailStore(state => state.handleSave);
   const handleCancelEdit = useDeviceDetailStore(state => state.handleCancelEdit);
   const setIsEditing = useDeviceDetailStore(state => state.setIsEditing);
   const saving = useDeviceDetailStore(state => state.saving);
 
-  if (!editData || !device) return null;
+  if (!editData) return null;
 
   const DeviceIcon = deviceTypeIcons[device.type as keyof typeof deviceTypeIcons];
 
@@ -58,7 +64,7 @@ export function DeviceDetailElemHead() {
           {isEditing ? (
             <div className="flex space-x-2">
               <button
-                onClick={handleCancelEdit}
+                onClick={() => handleCancelEdit(device)}
                 className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-gray-500"
                 aria-label="キャンセル"
               >

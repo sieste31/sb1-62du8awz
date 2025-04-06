@@ -5,19 +5,22 @@ import { Battery, History } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { DeviceBatterySlot } from './DeviceBatterySlot';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailBatterySection() {
-  const device = useDeviceDetailStore(state => state.device);
+type Device = Database['public']['Tables']['devices']['Row'];
+type Battery = Database['public']['Tables']['batteries']['Row'] & {
+  battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
+};
+
+interface DeviceDetailBatterySectionProps {
+  device: Device;
+  batteries: Battery[];
+}
+
+export function DeviceDetailBatterySection({ device, batteries }: DeviceDetailBatterySectionProps) {
   const setShowHistory = useDeviceDetailStore(state => state.setShowHistory);
   
-  // Zustandストアからbatteriesを取得
-  const storeBatteries = useDeviceDetailStore(state => state.batteries);
-  
-  // 両方のbatteriesを比較し、hookBatteriesが存在する場合はそちらを使用
-  const batteries = storeBatteries;
-  const installedCount = storeBatteries.length;
-
-  if (!device) return null;
+  const installedCount = batteries.length;
 
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">

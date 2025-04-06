@@ -3,17 +3,27 @@
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Hash } from 'lucide-react';
+import type { Database } from '@/lib/database.types';
 
-export function DeviceDetailElemBatteryCount() {
+type Device = Database['public']['Tables']['devices']['Row'];
+type Battery = Database['public']['Tables']['batteries']['Row'] & {
+  battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
+};
+
+interface DeviceDetailElemBatteryCountProps {
+  device: Device;
+  batteries?: Battery[];
+}
+
+export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceDetailElemBatteryCountProps) {
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  const device = useDeviceDetailStore(state => state.device);
-  const batteries = useDeviceDetailStore(state => state.batteries);
-  const installedCount = batteries.length 
+  
+  const installedCount = batteries.length;
   const hasBatteriesInstalled = installedCount > 0;
 
-  if (!editData || !device) return null;
+  if (!editData) return null;
 
   return (
     <div>
