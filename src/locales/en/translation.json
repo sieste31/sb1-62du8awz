@@ -10,6 +10,9 @@
     "detail": "Details"
   },
   "battery": {
+    "image": {
+      "alt": "Image of {{type}}"
+    },
     "comments": {
       "detailItem": "Battery item component for battery details screen"
     },
@@ -29,8 +32,10 @@
         "lastChanged": "Last Changed",
         "removeFromDevice": "Remove from Device",
         "usageHistory": "Usage History",
-        "removeError": "Failed to remove battery from device",
-        "updateStatusError": "Failed to update battery status"
+      "removeError": "Failed to remove battery from device",
+      "updateStatusError": "Failed to update battery status",
+      "removeConfirmMessage": "Do you want to remove the battery from {{deviceName}}?",
+      "removeConfirm": "Remove"
       },
       "cannotChangeCount": "Cannot change quantity while batteries are in use",
       "cannotReduceCount": "Cannot reduce quantity while batteries are installed in devices",

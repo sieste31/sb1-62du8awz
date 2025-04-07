@@ -227,9 +227,9 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         onClose={() => setShowRemoveConfirm(false)}
         onConfirm={handleRemoveBattery}
         title={t('battery.detail.item.removeFromDevice')}
-        message={`${battery.devices?.name}から電池を取り外しますか？`}
-        confirmText="取り外す"
-        cancelText="キャンセル"
+        message={t('battery.detail.item.removeConfirmMessage', { deviceName: battery.devices?.name })}
+        confirmText={t('battery.detail.item.removeConfirm')}
+        cancelText={t('common.cancel')}
         loading={removing}
       />
     </div>

@@ -62,7 +62,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
           <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
             <img
               src={imageUrl || ''}
-              alt={`${group.shape || group.type}の画像`}
+              alt={t('battery.image.alt', { type: group.shape || group.type })}
               className="w-full sm:w-24 h-24 rounded-lg object-cover shadow-sm"
             />
           </div>
