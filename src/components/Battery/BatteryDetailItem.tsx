@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Smartphone, History, Battery, ChevronDown, Check, Unplug } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BatteryUsageHistory } from './BatteryUsageHistory';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import type { Database } from '@/lib/database.types';
@@ -17,13 +18,6 @@ type Battery = Database['public']['Tables']['batteries']['Row'] & {
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'];
 
 type BatteryStatus = 'charged' | 'in_use' | 'empty' | 'disposed';
-
-const batteryStatusLabels = {
-  charged: '満充電',
-  in_use: '使用中',
-  empty: '使用済み',
-  disposed: '廃棄'
-} as const;
 
 const batteryStatusColors = {
   charged: 'bg-green-100 text-green-800 border-green-200',
@@ -47,6 +41,7 @@ interface BatteryItemProps {
 }
 
 export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryItemProps) {
+  const { t } = useTranslation();
   const [showHistory, setShowHistory] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
@@ -65,7 +60,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
       // 成功後の処理
       window.location.reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '電池の取り外しに失敗しました');
+      setError(err instanceof Error ? err.message : t('battery.detail.item.removeError'));
     } finally {
       setRemoving(false);
     }
@@ -81,7 +76,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
       await updateBatteryStatus(batteryId, newStatus);
       window.location.reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '電池の状態の更新に失敗しました');
+      setError(err instanceof Error ? err.message : t('battery.detail.item.updateStatusError'));
     }
   };
 
@@ -102,14 +97,14 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
           </h4>
         </div>
         <div className={`px-2 py-1 rounded-full text-xs font-medium ${batteryStatusColors[battery.status as BatteryStatus]}`}>
-          {batteryStatusLabels[battery.status as BatteryStatus]}
+          {t(`battery.status.${battery.status}`)}
         </div>
         {/* 状態変更ボタン */}
         <button
           onClick={() => setShowStatusDropdown(!showStatusDropdown)}
           className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
         >
-          状態変更
+          {t('battery.detail.item.changeStatus')}
         </button>
       </div>
 
@@ -117,7 +112,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
       <div className="mb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <dt className="text-sm font-medium text-gray-500 mr-2">設置状況:</dt>
+            <dt className="text-sm font-medium text-gray-500 mr-2">{t('battery.detail.item.installationStatus')}:</dt>
             <dd className="text-sm flex-1 truncate max-w-[150px] flex items-center">
               {battery.device_id && battery.devices ? (
                 <>
@@ -129,7 +124,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                   </Link>
                 </>
               ) : (
-                <span className="text-gray-500">未設置</span>
+                <span className="text-gray-500">{t('battery.detail.item.notInstalled')}</span>
               )}
             </dd>
           </div>
@@ -150,10 +145,10 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
             >
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <h3 className="text-lg font-medium text-gray-900 mb-3">
-                  電池 #{battery.slot_number} の状態を変更
+                  {t('battery.detail.item.changeStatusTitle', { number: battery.slot_number })}
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(batteryStatusLabels).map(([status, label]) => {
+                  {(['charged', 'in_use', 'empty', 'disposed'] as BatteryStatus[]).map((status) => {
                     const isDisabled = batteryGroup.kind === 'disposable' && status === 'charged';
                     const isSelected = battery.status === status;
 
@@ -162,7 +157,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                         key={status}
                         onClick={() => {
                           if (!isDisabled) {
-                            handleBatteryStatusChange(battery.id, status as BatteryStatus);
+                            handleBatteryStatusChange(battery.id, status);
                             setShowStatusDropdown(false);
                           }
                         }}
@@ -170,11 +165,11 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                         className={`px-4 py-3 rounded-md text-sm font-medium flex items-center justify-center ${isDisabled
                           ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                           : isSelected
-                            ? batteryStatusColors[status as BatteryStatus]
+                            ? batteryStatusColors[status]
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                       >
-                        {label}
+                        {t(`battery.status.${status}`)}
                         {isSelected && <Check className="h-4 w-4 ml-2" />}
                       </button>
                     );
@@ -187,7 +182,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => setShowStatusDropdown(false)}
                 >
-                  キャンセル
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
@@ -198,14 +193,14 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
       {/* フッター部分 */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
         <div>
-          <div>最終チェック: {battery.last_checked ? new Date(battery.last_checked).toLocaleDateString() : '---'}</div>
-          <div>最終交換: {battery.last_changed_at ? new Date(battery.last_changed_at).toLocaleDateString() : '---'}</div>
+          <div>{t('battery.detail.item.lastChecked')}: {battery.last_checked ? new Date(battery.last_checked).toLocaleDateString() : '---'}</div>
+          <div>{t('battery.detail.item.lastChanged')}: {battery.last_changed_at ? new Date(battery.last_changed_at).toLocaleDateString() : '---'}</div>
         </div>
         {battery.device_id && battery.devices ? (
           <button
             onClick={() => setShowRemoveConfirm(true)}
             className="ml-2 inline-flex items-center p-1 rounded-full text-red-600 hover:bg-red-50"
-            title="デバイスから取り外す"
+            title={t('battery.detail.item.removeFromDevice')}
           >
             <Unplug className="h-4 w-4" />
           </button>
@@ -213,7 +208,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         <button
           onClick={() => setShowHistory(true)}
           className="inline-flex items-center p-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
-          title="使用履歴"
+          title={t('battery.detail.item.usageHistory')}
         >
           <History className="h-4 w-4" />
         </button>
@@ -231,7 +226,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
         isOpen={showRemoveConfirm}
         onClose={() => setShowRemoveConfirm(false)}
         onConfirm={handleRemoveBattery}
-        title="電池の取り外し"
+        title={t('battery.detail.item.removeFromDevice')}
         message={`${battery.devices?.name}から電池を取り外しますか？`}
         confirmText="取り外す"
         cancelText="キャンセル"

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
+import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 
 export function BatteryDetailElemShape() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export function BatteryDetailElemShape() {
       <div>
         <dt className="text-sm font-medium text-gray-500">{t('battery.detail.shape')}</dt>
         <dd className="mt-1">
-          <span className="text-sm text-gray-900">{batteryGroup.shape}</span>
+          <span className="text-sm text-gray-900">{t(batteryShapeToTranslationKey(batteryGroup.shape))}</span>
         </dd>
       </div>
     );

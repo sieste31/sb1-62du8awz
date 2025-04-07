@@ -4,9 +4,15 @@
   },
   "nav": {
     "batteries": "電池管理",
-    "devices": "デバイス管理"
+    "devices": "デバイス管理",
+    "new": "新規登録",
+    "selectBattery": "電池選択",
+    "detail": "詳細"
   },
   "battery": {
+    "comments": {
+      "detailItem": "電池詳細画面の電池アイテムコンポーネント"
+    },
     "voltage": "電圧",
     "detail": {
       "memo": "メモ",
@@ -14,6 +20,18 @@
       "shape": "形状",
       "kind": "種類",
       "title": "タイトル",
+      "item": {
+        "changeStatus": "状態変更",
+        "installationStatus": "設置状況",
+        "notInstalled": "未設置",
+        "changeStatusTitle": "電池 #{{number}} の状態を変更",
+        "lastChecked": "最終チェック",
+        "lastChanged": "最終交換",
+        "removeFromDevice": "デバイスから取り外す",
+        "usageHistory": "使用履歴",
+        "removeError": "電池の取り外しに失敗しました",
+        "updateStatusError": "電池の状態の更新に失敗しました"
+      },
       "cannotChangeCount": "使用中の電池があるため変更できません",
       "cannotReduceCount": "デバイスに設定されている電池があるため、本数を減らすことはできません",
       "cannotChangeKind": "使用中の電池があるため変更できません",
@@ -24,7 +42,8 @@
       "imageSelectFailed": "画像の選択に失敗しました",
       "imageUploadError": "画像アップロード処理エラー:",
       "imageUploadFailed": "画像のアップロードに失敗しました",
-      "imageAlt": "{{type}}の画像"
+      "imageAlt": "{{type}}の画像",
+      "cannotDelete": "デバイスに設定されている電池があるため削除できません"
     },
     "shape": {
       "d": "単1形",
@@ -53,7 +72,8 @@
       "groupCount": "電池グループ: {{current}} / {{max}}",
       "limitReached": " (上限に達しています)",
       "searchPlaceholder": "電池名・コメントを検索...",
-      "batteryType": "電池種別"
+      "batteryType": "電池種別",
+      "resetFilter": "フィルターをリセット"
     },
     "status": {
       "charged": "満充電",
@@ -99,6 +119,33 @@
       "weeksValue": "{{weeks}}週",
       "notesPlaceholder": "メモを入力してください",
       "installedBatteries": "設置済み: {{installed}}本 / 未設置: {{remaining}}本"
+    },
+    "list": {
+      "title": "デバイス一覧",
+      "searchPlaceholder": "デバイス名・メモを検索...",
+      "sortOptions": {
+        "none": "並び替え",
+        "batteryEndAsc": "交換予定日が近い順",
+        "batteryEndDesc": "交換予定日が遠い順",
+        "changeAsc": "交換日が古い順",
+        "changeDesc": "交換日が新しい順",
+        "nameAsc": "名前（昇順）",
+        "nameDesc": "名前（降順）"
+      },
+      "deviceType": "デバイス種別",
+      "batteryType": "電池種別",
+      "resetFilter": "フィルターをリセット",
+      "noDevices": "デバイスがありません",
+      "emptyStateMessage": "新しいデバイスを登録して、効率的に管理を始めましょう。",
+      "noMatchingDevices": "条件に一致するデバイスがありません",
+      "noMatchingMessage": "検索条件やフィルター設定を変更して、再度お試しください。",
+      "withBatteries": "電池設定済みのデバイス",
+      "withoutBatteries": "電池未設定のデバイス",
+      "limitReached": "デバイスの上限に達しています",
+      "deviceCount": "デバイス: {{current}} / {{max}}",
+      "addNew": "新規登録",
+      "upgrade": "アップグレード",
+      "upgradeInDevelopment": "この機能は現在開発中です。"
     },
     "types": {
       "remotecontroller": "リモコン",

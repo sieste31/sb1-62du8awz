@@ -15,6 +15,7 @@ import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
 import { DeviceUsageHistory } from './DeviceUsageHistory';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
   devices?: Database['public']['Tables']['devices']['Row'] | null;
@@ -160,7 +161,7 @@ export function SelectBattery() {
 
       navigate(`/devices/${deviceId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '電池の設定に失敗しました');
+      setError(err instanceof Error ? err.message : t('device.select.createError'));
       setSaving(false);
     }
   };
@@ -290,7 +291,7 @@ export function SelectBattery() {
             <p className="mt-1 text-sm text-gray-500">
               {t('device.select.settingDescription', { 
                 deviceName: device.name, 
-                batteryType: device.battery_type, 
+                batteryType: t(batteryShapeToTranslationKey(device.battery_type)), 
                 count: device.battery_count 
               })}
             </p>
@@ -303,7 +304,7 @@ export function SelectBattery() {
                 {t('device.select.noBatteries')}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                {t('device.select.registerNew', { batteryType: device.battery_type })}
+                {t('device.select.registerNew', { batteryType: t(batteryShapeToTranslationKey(device.battery_type)) })}
               </p>
             </div>
           ) : (

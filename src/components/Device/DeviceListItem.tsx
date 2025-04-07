@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -92,7 +93,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 {t(`device.types.${device.type}`)}
               </span>
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
-                {device.battery_type}
+                {t(batteryShapeToTranslationKey(device.battery_type))}
                 <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
                   {device.battery_count}{t('common.unit')}
                 </span>

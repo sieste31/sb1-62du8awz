@@ -6,6 +6,7 @@ import { BatteryStatusBadge } from './BatteryStatusBadge';
 import { Link, useNavigate } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { getBatteryStatusCounts } from '@/lib/api';
+import { batteryShapeToTranslationKey } from '@/lib/i18nUtils'; 
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
 
@@ -80,7 +81,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
             {/* 電池情報 */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
-                {group.shape || group.type}
+                {t(batteryShapeToTranslationKey(group.shape))}
                 <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
                   {totalCount}{t('battery.list.unit')}
                 </span>

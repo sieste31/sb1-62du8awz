@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -19,10 +20,15 @@ export function DeleteConfirmDialog({
   title,
   message,
   loading = false,
-  confirmText = '削除する',
-  cancelText = 'キャンセル',
+  confirmText,
+  cancelText,
 }: DeleteConfirmDialogProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
+  
+  // デフォルト値を設定
+  confirmText = confirmText || t('common.delete');
+  cancelText = cancelText || t('common.cancel');
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -63,7 +69,7 @@ export function DeleteConfirmDialog({
               onClick={onConfirm}
               disabled={loading}
             >
-              {loading ? `${confirmText}中...` : confirmText}
+              {loading ? t('common.loading') : confirmText}
             </button>
             <button
               type="button"

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Smartphone, Plus, Filter, ArrowDownAZ, ArrowUpAZ, X, Clock, ChevronDown, ChevronRight, Search, SortDesc, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { useTranslation } from 'react-i18next';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { DeviceListItem } from './DeviceListItem';
 import type { Database } from '@/lib/database.types';
@@ -13,16 +14,7 @@ type DeviceType = 'all' | 'remotecontroller' | 'speaker' | 'camera' | 'gadget' |
 type BatteryType = 'all' | '単1形' | '単2形' | '単3形' | '単4形' | '9V形';
 type SortOrder = 'none' | 'asc' | 'desc' | 'battery-end-asc' | 'battery-end-desc' | 'name-asc' | 'name-desc';
 
-const deviceTypeLabels: Record<DeviceType, string> = {
-  all: 'すべて',
-  remotecontroller: 'リモコン',
-  speaker: 'ラジオ/スピーカー',
-  camera: 'カメラ',
-  gadget: 'ガジェット',
-  light: 'ライト',
-  toy: 'おもちゃ',
-  other: 'その他'
-};
+// デバイスタイプのラベルは翻訳関数を使用するため、後で定義
 
 // 電池切れ予想日を計算する関数
 function calculateBatteryEndDate(device: Device) {
@@ -68,6 +60,7 @@ function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop }: Devi
 }
 
 export function DeviceList() {
+  const { t } = useTranslation();
   const { devices, loading } = useDevices();
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [showFilters, setShowFilters] = useState(false);
@@ -77,6 +70,18 @@ export function DeviceList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showWithBatteries, setShowWithBatteries] = useState(true);
   const [showWithoutBatteries, setShowWithoutBatteries] = useState(true);
+  
+  // デバイスタイプのラベルを翻訳関数で定義
+  const deviceTypeLabels: Record<DeviceType, string> = {
+    all: t('common.all'),
+    remotecontroller: t('device.types.remotecontroller'),
+    speaker: t('device.types.speaker'),
+    camera: t('device.types.camera'),
+    gadget: t('device.types.gadget'),
+    light: t('device.types.light'),
+    toy: t('device.types.toy'),
+    other: t('device.types.other')
+  };
 
   // Calculate active filters count
   const activeFiltersCount = React.useMemo(() => {
@@ -183,14 +188,14 @@ export function DeviceList() {
     <div>
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">デバイス一覧</h2>
+          <h2 className="text-xl font-semibold text-gray-900">{t('device.list.title')}</h2>
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <Filter className="h-4 w-4 mr-2" />
-              フィルター
+              {t('battery.list.filter')}
               {activeFiltersCount > 0 && (
                 <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   {activeFiltersCount}
@@ -214,7 +219,7 @@ export function DeviceList() {
                   </div>
                   <input
                     type="text"
-                    placeholder="デバイス名・メモを検索..."
+                    placeholder={t('device.list.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -226,13 +231,13 @@ export function DeviceList() {
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
                     className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
                   >
-                    <option value="none">並び替え</option>
-                    <option value="battery-end-asc">交換予定日が近い順</option>
-                    <option value="battery-end-desc">交換予定日が遠い順</option>
-                    <option value="asc">交換日が古い順</option>
-                    <option value="desc">交換日が新しい順</option>
-                    <option value="name-asc">名前（昇順）</option>
-                    <option value="name-desc">名前（降順）</option>
+                    <option value="none">{t('device.list.sortOptions.none')}</option>
+                    <option value="battery-end-asc">{t('device.list.sortOptions.batteryEndAsc')}</option>
+                    <option value="battery-end-desc">{t('device.list.sortOptions.batteryEndDesc')}</option>
+                    <option value="asc">{t('device.list.sortOptions.changeAsc')}</option>
+                    <option value="desc">{t('device.list.sortOptions.changeDesc')}</option>
+                    <option value="name-asc">{t('device.list.sortOptions.nameAsc')}</option>
+                    <option value="name-desc">{t('device.list.sortOptions.nameDesc')}</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <SortDesc className="h-4 w-4 text-gray-400" />
@@ -244,7 +249,7 @@ export function DeviceList() {
                 {/* デバイス種別フィルター */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    デバイス種別
+                    {t('device.list.deviceType')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {(Object.keys(deviceTypeLabels) as DeviceType[]).map((type) => (
@@ -266,7 +271,7 @@ export function DeviceList() {
                 {/* 電池種別フィルター */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    電池種別
+                    {t('device.list.batteryType')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {(['all', '単1形', '単2形', '単3形', '単4形', '9V形'] as BatteryType[]).map((type) => (
@@ -291,7 +296,7 @@ export function DeviceList() {
                 onClick={resetFilters}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
-                フィルターをリセット
+                {t('device.list.resetFilter')}
               </button>
             </div>
           </div>
@@ -302,8 +307,8 @@ export function DeviceList() {
         <div className="bg-white shadow rounded-xl overflow-hidden">
           <div className="text-center py-16">
             <Smartphone className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">デバイスがありません</h3>
-            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">新しいデバイスを登録して、効率的に管理を始めましょう。</p>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">{t('device.list.noDevices')}</h3>
+            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">{t('device.list.emptyStateMessage')}</p>
             <div className="mt-6">
               <Link
                 to="/devices/new"
@@ -319,15 +324,15 @@ export function DeviceList() {
         <div className="bg-white shadow rounded-xl overflow-hidden">
           <div className="text-center py-16">
             <Filter className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">条件に一致するデバイスがありません</h3>
-            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">検索条件やフィルター設定を変更して、再度お試しください。</p>
+            <h3 className="mt-4 text-lg font-medium text-gray-900">{t('device.list.noMatchingDevices')}</h3>
+            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">{t('device.list.noMatchingMessage')}</p>
             <div className="mt-6">
               <button
                 onClick={resetFilters}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <X className="h-4 w-4 mr-2" />
-                フィルターをリセット
+                {t('device.list.resetFilter')}
               </button>
             </div>
           </div>
@@ -335,14 +340,14 @@ export function DeviceList() {
       ) : (
         <div className="bg-white shadow rounded-xl overflow-hidden">
           <DeviceListSection
-            title="電池設定済みのデバイス"
+            title={t('device.list.withBatteries')}
             devices={withBatteries}
             isOpen={showWithBatteries}
             onToggle={() => setShowWithBatteries(!showWithBatteries)}
             isDesktop={isDesktop}
           />
           <DeviceListSection
-            title="電池未設定のデバイス"
+            title={t('device.list.withoutBatteries')}
             devices={withoutBatteries}
             isOpen={showWithoutBatteries}
             onToggle={() => setShowWithoutBatteries(!showWithoutBatteries)}
@@ -356,6 +361,7 @@ export function DeviceList() {
 
 // デバイス追加ボタンコンポーネント
 function DeviceAddButton({ devices }: { devices: Device[] }) {
+  const { t } = useTranslation();
   const { userPlan, isLimitReached } = useUserPlan();
   const isDeviceLimitReached = isLimitReached.devices(devices.length);
 
@@ -367,10 +373,10 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed"
         >
           <Plus className="h-4 w-4 mr-2" />
-          新規登録
+          {t('device.list.addNew')}
         </button>
         <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2">
-          デバイスの上限に達しています
+          {t('device.list.limitReached')}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-800"></div>
         </div>
       </div>
@@ -383,13 +389,14 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
       className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
     >
       <Plus className="h-4 w-4 mr-2" />
-      新規登録
+      {t('device.list.addNew')}
     </Link>
   );
 }
 
 // ユーザープラン情報表示コンポーネント
 function UserPlanInfo({ devices }: { devices: Device[] }) {
+  const { t } = useTranslation();
   const { userPlan, loading } = useUserPlan();
 
   if (loading || !userPlan) return null;
@@ -397,8 +404,8 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
   const deviceCount = devices.length;
   const maxDevices = userPlan.max_devices;
   const isLimitReached = deviceCount >= maxDevices;
-  const planTypeDisplay = userPlan.plan_type === 'free' ? '無料' : 
-                          userPlan.plan_type === 'premium' ? 'プレミアム' : 'ビジネス';
+  const planTypeDisplay = userPlan.plan_type === 'free' ? t('common.planType.free') : 
+                          userPlan.plan_type === 'premium' ? t('common.planType.premium') : t('common.planType.business');
 
   return (
     <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50' : 'bg-blue-50'}`}>
@@ -409,17 +416,17 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
           )}
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
-              デバイス: {deviceCount} / {maxDevices}
-              {isLimitReached && ' (上限に達しています)'}
+              {t('device.list.deviceCount', { count: deviceCount, max: maxDevices })}
+              {isLimitReached && ` ${t('device.list.limitReachedNote')}`}
             </p>
           </div>
         </div>
         {userPlan.plan_type === 'free' && (
           <button
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={() => alert('この機能は現在開発中です。')}
+            onClick={() => alert(t('common.featureInDevelopment'))}
           >
-            アップグレード
+            {t('device.list.upgrade')}
           </button>
         )}
       </div>

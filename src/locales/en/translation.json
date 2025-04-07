@@ -4,9 +4,15 @@
   },
   "nav": {
     "batteries": "Battery Management",
-    "devices": "Device Management"
+    "devices": "Device Management",
+    "new": "New",
+    "selectBattery": "Select Battery",
+    "detail": "Details"
   },
   "battery": {
+    "comments": {
+      "detailItem": "Battery item component for battery details screen"
+    },
     "voltage": "Voltage",
     "detail": {
       "memo": "Memo",
@@ -14,6 +20,18 @@
       "shape": "Shape",
       "kind": "Type",
       "title": "Title",
+      "item": {
+        "changeStatus": "Change Status",
+        "installationStatus": "Installation Status",
+        "notInstalled": "Not Installed",
+        "changeStatusTitle": "Change Battery #{{number}} Status",
+        "lastChecked": "Last Checked",
+        "lastChanged": "Last Changed",
+        "removeFromDevice": "Remove from Device",
+        "usageHistory": "Usage History",
+        "removeError": "Failed to remove battery from device",
+        "updateStatusError": "Failed to update battery status"
+      },
       "cannotChangeCount": "Cannot change quantity while batteries are in use",
       "cannotReduceCount": "Cannot reduce quantity while batteries are installed in devices",
       "cannotChangeKind": "Cannot change battery type while batteries are in use",
@@ -24,7 +42,8 @@
       "imageSelectFailed": "Failed to select image",
       "imageUploadError": "Image upload error:",
       "imageUploadFailed": "Failed to upload image",
-      "imageAlt": "Image of {{type}}"
+      "imageAlt": "Image of {{type}}",
+      "cannotDelete": "Cannot delete while batteries are installed in devices"
     },
     "shape": {
       "d": "D Size",
@@ -53,7 +72,8 @@
       "groupCount": "Battery Groups: {{current}} / {{max}}",
       "limitReached": " (Limit Reached)",
       "searchPlaceholder": "Search battery name or comments...",
-      "batteryType": "Battery Category"
+      "batteryType": "Battery Category",
+      "resetFilter": "Reset Filters"
     },
     "status": {
       "charged": "Fully Charged",
@@ -99,6 +119,33 @@
       "weeksValue": "{{weeks}} weeks",
       "notesPlaceholder": "Enter notes here",
       "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs"
+    },
+    "list": {
+      "title": "Device List",
+      "searchPlaceholder": "Search device name or notes...",
+      "sortOptions": {
+        "none": "Sort by",
+        "batteryEndAsc": "Due date (soonest first)",
+        "batteryEndDesc": "Due date (latest first)",
+        "changeAsc": "Change date (oldest first)",
+        "changeDesc": "Change date (newest first)",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)"
+      },
+      "deviceType": "Device Type",
+      "batteryType": "Battery Type",
+      "resetFilter": "Reset Filters",
+      "noDevices": "No Devices",
+      "emptyStateMessage": "Register new devices to start efficient management.",
+      "noMatchingDevices": "No Matching Devices",
+      "noMatchingMessage": "Try changing your search criteria or filter settings.",
+      "withBatteries": "Devices with Batteries",
+      "withoutBatteries": "Devices without Batteries",
+      "limitReached": "Device limit reached",
+      "deviceCount": "Devices: {{current}} / {{max}}",
+      "addNew": "Add New",
+      "upgrade": "Upgrade",
+      "upgradeInDevelopment": "This feature is currently under development."
     },
     "types": {
       "remotecontroller": "Remote Controller",

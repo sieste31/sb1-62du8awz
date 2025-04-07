@@ -5,8 +5,10 @@ import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { Battery, Pencil, X, Check, ArrowLeft, Trash2 } from 'lucide-react';
 import { BatteryDetailElemTitle } from '@/components/Battery/BatteryDetailElemTitle'; // Adjust the import path as necessary
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 export function BatteryDetailElemHead() {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const isEditing = useBatteryDetailStore(state => state.isEditing);
     const editData = useBatteryDetailStore(state => state.editData);
@@ -31,7 +33,7 @@ export function BatteryDetailElemHead() {
             </div>
             <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto">
                 <div className="text-sm text-gray-500 mr-4">
-                    登録日: {new Date(batteryGroup.created_at).toLocaleDateString()}
+                    {t('common.registrationDate', { date: new Date(batteryGroup.created_at).toLocaleDateString() })}
                 </div>
                 {isEditing ? (
                     <div className="flex space-x-2">
@@ -60,7 +62,7 @@ export function BatteryDetailElemHead() {
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
                             disabled={installedCount > 0}
-                            title={installedCount > 0 ? 'デバイスに設定されている電池があるため削除できません' : '電池グループを削除'}
+                            title={installedCount > 0 ? t('battery.detail.cannotDelete') : t('battery.list.deleteGroup')}
                             className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-400 hover:text-red-500 disabled:opacity-50 disabled:hover:text-gray-400"
                         >
                             <Trash2 className="h-5 w-5" />

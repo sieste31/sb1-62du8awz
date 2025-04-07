@@ -5,6 +5,7 @@ import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -61,7 +62,7 @@ export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceD
         ) : (
           <div className="flex items-center">
             <span className="text-base font-medium text-gray-900">
-              {device.battery_type}
+              {t(batteryShapeToTranslationKey(device.battery_type))}
             </span>
           </div>
         )}

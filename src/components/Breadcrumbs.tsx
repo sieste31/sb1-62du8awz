@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BreadcrumbItem {
   name: string;
@@ -9,6 +10,7 @@ interface BreadcrumbItem {
 }
 
 export function Breadcrumbs() {
+  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
@@ -24,20 +26,20 @@ export function Breadcrumbs() {
       // パスに応じて表示名を設定
       switch (curr) {
         case 'batteries':
-          name = '電池管理';
+          name = t('nav.batteries');
           break;
         case 'devices':
-          name = 'デバイス管理';
+          name = t('nav.devices');
           break;
         case 'new':
-          name = '新規登録';
+          name = t('nav.new');
           break;
         case 'select-battery':
-          name = '電池選択';
+          name = t('nav.selectBattery');
           break;
         default:
           if (idx === pathSegments.length - 1 && !isNaN(Number('0x' + curr.substring(0, 2)))) {
-            name = '詳細';
+            name = t('nav.detail');
           }
       }
 
