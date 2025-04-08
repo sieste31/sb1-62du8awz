@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Plus, Filter, ArrowDownAZ, ArrowUpAZ, X, Clock, ChevronDown, ChevronRight, Search, SortDesc, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
 import { useDevices, useUserPlan } from '@/lib/hooks';
@@ -398,6 +398,7 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
 function UserPlanInfo({ devices }: { devices: Device[] }) {
   const { t } = useTranslation();
   const { userPlan, loading } = useUserPlan();
+  const navigate = useNavigate();
 
   if (loading || !userPlan) return null;
 
@@ -417,16 +418,16 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
               {t('device.list.deviceCount', { current: deviceCount, max: maxDevices })}
-              {isLimitReached && ` ${t('device.list.limitReachedNote')}`}
+              {isLimitReached && ` ${t('device.list.limitReachedSettings')}`}
             </p>
           </div>
         </div>
-        {userPlan.plan_type === 'free' && (
+        {isLimitReached && (
           <button
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={() => alert(t('common.featureInDevelopment'))}
+            onClick={() => navigate('/settings')}
           >
-            {t('device.list.upgrade')}
+            {t('device.list.changeInSettings')}
           </button>
         )}
       </div>

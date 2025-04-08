@@ -76,6 +76,8 @@
       "addNew": "新規登録",
       "groupCount": "電池グループ: {{current}} / {{max}}",
       "limitReached": " (上限に達しています)",
+      "limitReachedSettings": "設定画面で制限数を変更できます",
+      "changeInSettings": "設定画面で変更",
       "searchPlaceholder": "電池名・コメントを検索...",
       "batteryType": "電池種別",
       "resetFilter": "フィルターをリセット"

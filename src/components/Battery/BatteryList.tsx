@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Battery, Plus, Filter, Search, SortDesc, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
 // 新しい構造を使用
@@ -138,6 +138,7 @@ function BatteryAddButton({ batteryGroups }: { batteryGroups: BatteryGroup[] }) 
 function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
   const { t } = useTranslation();
   const { userPlan, loading } = useUserPlan();
+  const navigate = useNavigate();
 
   if (loading || !userPlan) return null;
 
@@ -157,16 +158,16 @@ function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
               {t('battery.list.groupCount', { current: batteryGroupCount, max: maxBatteryGroups })}
-              {isLimitReached && t('battery.list.limitReached')}
+              {isLimitReached && ` ${t('battery.list.limitReachedSettings')}`}
             </p>
           </div>
         </div>
-        {userPlan.plan_type === 'free' && (
+        {isLimitReached && (
           <button
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            onClick={() => alert(t('battery.form.upgradeInDevelopment'))}
+            onClick={() => navigate('/settings')}
           >
-            {t('battery.form.upgradePlan')}
+            {t('battery.list.changeInSettings')}
           </button>
         )}
       </div>

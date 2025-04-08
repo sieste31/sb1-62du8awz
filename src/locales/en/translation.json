@@ -76,6 +76,8 @@
       "addNew": "Add New",
       "groupCount": "Battery Groups: {{current}} / {{max}}",
       "limitReached": " (Limit Reached)",
+      "limitReachedSettings": "You can change the limit in the settings screen",
+      "changeInSettings": "Change in Settings",
       "searchPlaceholder": "Search battery name or comments...",
       "batteryType": "Battery Category",
       "resetFilter": "Reset Filters"
