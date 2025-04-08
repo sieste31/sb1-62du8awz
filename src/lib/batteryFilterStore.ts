@@ -10,24 +10,24 @@ type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
 };
 
 // 定数定義（BatteryList.tsxから移動）
-export const BATTERY_TYPES = ['すべて', '単1形', '単2形', '単3形', '単4形', '9V形'] as const;
+export const BATTERY_SHAPES = ['すべて', '単1形', '単2形', '単3形', '単4形', '9V形'] as const;
 export const BATTERY_KINDS = ['すべて', 'disposable', 'rechargeable'] as const;
 export const SORT_OPTIONS = ['登録日（新しい順）', '登録日（古い順）', '名前（昇順）', '名前（降順）'] as const;
 
-export type BatteryType = typeof BATTERY_TYPES[number];
+export type BatteryShape = typeof BATTERY_SHAPES[number];
 export type BatteryKind = typeof BATTERY_KINDS[number];
 export type SortOption = typeof SORT_OPTIONS[number];
 
 interface BatteryFilterState {
   // フィルター状態
-  selectedType: BatteryType;
+  selectedShape: BatteryShape;
   selectedKind: BatteryKind;
   searchTerm: string;
   sortOption: SortOption;
   showFilters: boolean;
 
   // アクション
-  setSelectedType: (type: BatteryType) => void;
+  setSelectedShape: (type: BatteryShape) => void;
   setSelectedKind: (kind: BatteryKind) => void;
   setSearchTerm: (term: string) => void;
   setSortOption: (option: SortOption) => void;
@@ -40,31 +40,31 @@ interface BatteryFilterState {
 
 export const useBatteryFilterStore = create<BatteryFilterState>((set, get) => ({
   // 初期状態
-  selectedType: 'すべて',
+  selectedShape: 'すべて',
   selectedKind: 'すべて',
   searchTerm: '',
   sortOption: '登録日（新しい順）',
   showFilters: false,
 
   // アクション
-  setSelectedType: (type) => set({ selectedType: type }),
+  setSelectedShape: (shape) => set({ selectedShape: shape }),
   setSelectedKind: (kind) => set({ selectedKind: kind }),
   setSearchTerm: (term) => set({ searchTerm: term }),
   setSortOption: (option) => set({ sortOption: option }),
   setShowFilters: (show) => set({ showFilters: show }),
   resetFilters: () => set({
-    selectedType: 'すべて',
+    selectedShape: 'すべて',
     selectedKind: 'すべて',
     searchTerm: '',
   }),
 
   // フィルタリングとソート
   getFilteredAndSortedGroups: (batteryGroups) => {
-    const { selectedType, selectedKind, searchTerm, sortOption } = get();
+    const { selectedShape, selectedKind, searchTerm, sortOption } = get();
 
     return batteryGroups
       .filter(group => {
-        const matchesType = selectedType === 'すべて' || group.shape === selectedType || group.type === selectedType;
+        const matchesType = selectedShape === 'すべて' || group.shape === selectedShape || group.type === selectedShape;
         const matchesKind = selectedKind === 'すべて' || group.kind === selectedKind;
         const matchesSearch = searchTerm === '' || 
           group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

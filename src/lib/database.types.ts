@@ -231,7 +231,7 @@ export interface Database {
           id: string                                                           // デバイスの一意識別子
           name: string                                                         // デバイス名
           type: 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other' // デバイスタイプ
-          battery_type: string                                                 // 使用する電池タイプ
+          battery_shape: string                                                // 使用する電池形状
           battery_count: number                                                // 必要な電池数
           battery_life_weeks: number | null                                    // 予想電池寿命（週単位）
           purchase_date: string | null                                         // 購入日
@@ -249,7 +249,7 @@ export interface Database {
           id?: string                                                          // 自動生成可能なID
           name: string                                                         // 必須: デバイス名
           type: 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other' // 必須: デバイスタイプ
-          battery_type: string                                                 // 必須: 電池タイプ
+          battery_shape: string                                                // 使用する電池形状
           battery_count: number                                                // 必須: 電池数
           battery_life_weeks?: number | null                                   // オプション: 予想寿命
           purchase_date?: string | null                                        // オプション: 購入日
@@ -267,7 +267,7 @@ export interface Database {
           id?: string                                                          // 更新対象のID
           name?: string                                                        // デバイス名
           type?: 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other' // デバイスタイプ
-          battery_type?: string                                                // 電池タイプ
+          battery_shape?: string                                                // 使用する電池形状
           battery_count?: number                                               // 電池数
           battery_life_weeks?: number | null                                   // 予想寿命
           purchase_date?: string | null                                        // 購入日

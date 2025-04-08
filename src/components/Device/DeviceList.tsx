@@ -112,7 +112,7 @@ export function DeviceList() {
     
     // Apply battery type filter
     if (batteryTypeFilter !== 'all') {
-      result = result.filter(device => device.battery_type === batteryTypeFilter);
+      result = result.filter(device => device.battery_shape === batteryTypeFilter);
     }
     
     // Apply sorting
@@ -375,10 +375,6 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
           <Plus className="h-4 w-4 mr-2" />
           {t('device.list.addNew')}
         </button>
-        <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2">
-          {t('device.list.limitReached')}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-t-4 border-l-4 border-r-4 border-transparent border-t-gray-800"></div>
-        </div>
       </div>
     );
   }
@@ -418,7 +414,7 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
               {t('device.list.deviceCount', { current: deviceCount, max: maxDevices })}
-              {isLimitReached && ` ${t('device.list.limitReachedSettings')}`}
+              {isLimitReached && ` ${t('device.list.limitReached')}`}
             </p>
           </div>
         </div>

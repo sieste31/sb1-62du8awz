@@ -61,7 +61,7 @@ export function SelectBattery() {
     loading: deviceLoading,
   } = useDevice(deviceId || '');
   const { availableBatteryGroups, loading: batteriesLoading } =
-    useAvailableBatteries(device?.battery_type ?? '');
+    useAvailableBatteries(device?.battery_shape ?? '');
   const [selectedBatteries, setSelectedBatteries] = useState<
     Array<{ groupId: string; batteryId: string; status: BatteryStatus }>
   >([]);
@@ -291,7 +291,7 @@ export function SelectBattery() {
             <p className="mt-1 text-sm text-gray-500">
               {t('device.select.settingDescription', { 
                 deviceName: device.name, 
-                batteryType: t(batteryShapeToTranslationKey(device.battery_type)), 
+                batteryType: t(batteryShapeToTranslationKey(device.battery_shape)), 
                 count: device.battery_count 
               })}
             </p>
@@ -304,7 +304,7 @@ export function SelectBattery() {
                 {t('device.select.noBatteries')}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                {t('device.select.registerNew', { batteryType: t(batteryShapeToTranslationKey(device.battery_type)) })}
+                {t('device.select.registerNew', { batteryType: t(batteryShapeToTranslationKey(device.battery_shape)) })}
               </p>
             </div>
           ) : (

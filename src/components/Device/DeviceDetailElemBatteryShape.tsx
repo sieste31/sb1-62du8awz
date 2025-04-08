@@ -62,7 +62,7 @@ export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceD
         ) : (
           <div className="flex items-center">
             <span className="text-base font-medium text-gray-900">
-              {t(batteryShapeToTranslationKey(device.battery_type))}
+              {t(batteryShapeToTranslationKey(device.battery_shape))}
             </span>
           </div>
         )}

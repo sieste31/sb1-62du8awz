@@ -7,7 +7,7 @@ import { Battery, Zap, Search, SortDesc } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
   useBatteryFilterStore,
-  BATTERY_TYPES,
+  BATTERY_SHAPES,
   BATTERY_KINDS,
   SORT_OPTIONS
 } from '@/lib/batteryFilterStore';
@@ -31,12 +31,12 @@ export function BatteryListFilter() {
   // Zustandストアから状態と関数を取得
   // Zustandストアから状態と関数を取得
   const {
-    selectedType,
+    selectedShape,
     selectedKind,
     searchTerm,
     sortOption,
     showFilters,
-    setSelectedType,
+    setSelectedShape,
     setSelectedKind,
     setSearchTerm,
     setSortOption,
@@ -89,16 +89,16 @@ export function BatteryListFilter() {
                   {t('battery.list.batteryType')}
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {BATTERY_TYPES.map((type) => (
+                  {BATTERY_SHAPES.map((shape) => (
                     <button
-                      key={type}
-                      onClick={() => setSelectedType(type)}
+                      key={shape}
+                      onClick={() => setSelectedShape(shape)}
                       className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedType === type
                           ? 'bg-blue-100 text-blue-800 ring-1 ring-blue-300'
                           : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                         }`}
                     >
-                      {type}
+                      {shape}
                     </button>
                   ))}
                 </div>

@@ -68,7 +68,7 @@ export function DeviceForm() {
       await createDevice({
         name: formData.name,
         type: formData.type,
-        battery_type: formData.batteryShape,
+        battery_shape: formData.batteryShape,
         battery_count: formData.batteryCount,
         battery_life_weeks: formData.batteryLifeWeeks ? Number(formData.batteryLifeWeeks) : null,
         purchase_date: formData.purchaseDate || null,

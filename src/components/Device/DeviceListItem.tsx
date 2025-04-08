@@ -93,7 +93,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 {t(`device.types.${device.type}`)}
               </span>
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 text-sm font-medium text-gray-600">
-                {t(batteryShapeToTranslationKey(device.battery_type))}
+                {t(batteryShapeToTranslationKey(device.battery_shape))}
                 <span className="ml-1 bg-gray-200 text-gray-800 rounded-full px-1.5 py-0.5 text-xs font-medium">
                   {device.battery_count}{t('common.unit')}
                 </span>

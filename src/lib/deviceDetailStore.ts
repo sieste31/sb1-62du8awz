@@ -86,7 +86,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     editData: {
       name: device.name,
       type: device.type,
-      batteryShape: device.battery_type,
+      batteryShape: device.battery_shape,
       batteryCount: device.battery_count,
       batteryLifeWeeks: device.battery_life_weeks || '',
       purchaseDate: device.purchase_date || '',
@@ -99,7 +99,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
       editData: {
         name: device.name,
         type: device.type,
-        batteryShape: device.battery_type,
+        batteryShape: device.battery_shape,
         batteryCount: device.battery_count,
         batteryLifeWeeks: device.battery_life_weeks || '',
         purchaseDate: device.purchase_date || '',
@@ -120,7 +120,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
       await updateDevice(id, {
         name: editData.name,
         type: editData.type,
-        battery_type: editData.batteryShape,
+        battery_shape: editData.batteryShape,
         battery_count: editData.batteryCount,
         battery_life_weeks: editData.batteryLifeWeeks ? Number(editData.batteryLifeWeeks) : null,
         purchase_date: editData.purchaseDate || null,
