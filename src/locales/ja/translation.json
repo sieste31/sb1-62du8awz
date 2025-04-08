@@ -3,8 +3,8 @@
     "title": "電池＆デバイス管理"
   },
   "nav": {
-    "batteries": "電池管理",
-    "devices": "デバイス管理",
+    "batteries": "電池",
+    "devices": "デバイス",
     "new": "新規登録",
     "selectBattery": "電池選択",
     "detail": "詳細"
@@ -209,6 +209,20 @@
     "free": "無料",
     "premium": "プレミアム",
     "business": "ビジネス"
+  },
+  "userSettings": {
+    "title": "ユーザー設定",
+    "language": "言語設定",
+    "planLimits": {
+      "title": "プラン制限",
+      "batteryGroups": "電池グループ作成可能数",
+      "devices": "デバイス作成可能数",
+      "of": "/ {{max}}",
+      "upgrade": {
+        "batteryGroups": "電池グループ数を増やす",
+        "devices": "デバイス数を増やす"
+      }
+    }
   },
   "common": {
     "edit": "編集",

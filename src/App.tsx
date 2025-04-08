@@ -9,6 +9,7 @@ import { DeviceList } from './components/Device/DeviceList';
 import { DeviceDetail } from './components/Device/DeviceDetail';
 import { DeviceForm } from './components/Device/DeviceForm';
 import { SelectBattery } from './components/Device/SelectBattery';
+import { UserSettings } from './components/UserSettings';
 import { Login } from './components/Login';
 import { AuthRequired } from './components/AuthRequired';
 import { useAuth } from './lib/auth-provider';
@@ -93,6 +94,14 @@ function App() {
               element={
                 <AuthRequired>
                   <SelectBattery />
+                </AuthRequired>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <AuthRequired>
+                  <UserSettings />
                 </AuthRequired>
               }
             />

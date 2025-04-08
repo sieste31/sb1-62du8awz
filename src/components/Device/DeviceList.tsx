@@ -416,7 +416,7 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
           )}
           <div>
             <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
-              {t('device.list.deviceCount', { count: deviceCount, max: maxDevices })}
+              {t('device.list.deviceCount', { current: deviceCount, max: maxDevices })}
               {isLimitReached && ` ${t('device.list.limitReachedNote')}`}
             </p>
           </div>

@@ -3,8 +3,8 @@
     "title": "Battery & Device Management"
   },
   "nav": {
-    "batteries": "Battery Management",
-    "devices": "Device Management",
+    "batteries": "Battery",
+    "devices": "Device",
     "new": "New",
     "selectBattery": "Select Battery",
     "detail": "Details"
@@ -209,6 +209,20 @@
     "free": "Free",
     "premium": "Premium",
     "business": "Business"
+  },
+  "userSettings": {
+    "title": "User Settings",
+    "language": "Language Settings",
+    "planLimits": {
+      "title": "Plan Limits",
+      "batteryGroups": "Maximum Battery Groups",
+      "devices": "Maximum Devices",
+      "of": "/ {{max}}",
+      "upgrade": {
+        "batteryGroups": "Increase Battery Group Limit",
+        "devices": "Increase Device Limit"
+      }
+    }
   },
   "common": {
     "edit": "Edit",
