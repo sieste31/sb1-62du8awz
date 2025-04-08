@@ -216,6 +216,12 @@
   "userSettings": {
     "title": "User Settings",
     "language": "Language Settings",
+    "darkMode": {
+      "title": "Dark Mode",
+      "description": "Toggle dark mode on/off",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
     "planLimits": {
       "title": "Plan Limits",
       "batteryGroups": "Maximum Battery Groups",

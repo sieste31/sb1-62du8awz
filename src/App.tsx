@@ -13,21 +13,23 @@ import { UserSettings } from './components/UserSettings';
 import { Login } from './components/Login';
 import { AuthRequired } from './components/AuthRequired';
 import { useAuth } from './lib/auth-provider';
+import { useDarkMode } from './lib/hooks';
 
 function App() {
   const { user, loading } = useAuth();
+  const { isDark } = useDarkMode();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center dark:bg-dark-bg">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
       </div>
     );
   }
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-bg">
         {user && <Navigation />}
         <main className={user ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" : ""}>
           {user && <Breadcrumbs />}

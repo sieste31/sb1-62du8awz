@@ -216,6 +216,12 @@
   "userSettings": {
     "title": "ユーザー設定",
     "language": "言語設定",
+    "darkMode": {
+      "title": "ダークモード",
+      "description": "ダークモードの有効/無効を切り替えます",
+      "enabled": "有効",
+      "disabled": "無効"
+    },
     "planLimits": {
       "title": "プラン制限",
       "batteryGroups": "電池グループ作成可能数",

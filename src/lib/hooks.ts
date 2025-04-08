@@ -37,7 +37,37 @@ export function useDeviceBatteries(deviceId: string) {
   };
 }
 
-// 必要に応じて、UIロジック特化の新しいフックをここに追加
+/**
+ * ダークモードの状態を管理するフック
+ * 
+ * システムの設定を初期値として使用し、
+ * ユーザーの選択をローカルストレージに保存します
+ */
+export function useDarkMode() {
+  const [isDark, setIsDark] = useState(() => {
+    // ローカルストレージから設定を読み込む
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      return saved === 'true';
+    }
+    // システムの設定をデフォルトとして使用
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    // ダークモードの切り替え
+    document.documentElement.classList.toggle('dark', isDark);
+    // 設定を保存
+    localStorage.setItem('darkMode', String(isDark));
+  }, [isDark]);
+
+  return {
+    isDark,
+    toggle: () => setIsDark(prev => !prev),
+    enable: () => setIsDark(true),
+    disable: () => setIsDark(false),
+  };
+}
 
 /**
  * クエリキャッシュを無効化するユーティリティ関数

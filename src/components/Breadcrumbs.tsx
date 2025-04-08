@@ -53,17 +53,17 @@ export function Breadcrumbs() {
   if (breadcrumbs.length === 0) return null;
 
   return (
-    <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-      <Link to="/" className="hover:text-gray-700">
+    <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <Link to="/" className="hover:text-gray-700 dark:hover:text-gray-300">
         <Home className="w-4 h-4" />
       </Link>
       {breadcrumbs.map((item, index) => (
         <div key={item.href} className="flex items-center">
-          <ChevronRight className="w-4 h-4 text-gray-400" />
+          <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
           <Link
             to={item.href}
-            className={`hover:text-gray-700 ${
-              index === breadcrumbs.length - 1 ? 'text-gray-900 font-medium' : ''
+            className={`hover:text-gray-700 dark:hover:text-gray-300 ${
+              index === breadcrumbs.length - 1 ? 'text-gray-900 dark:text-dark-text font-medium' : ''
             }`}
           >
             {item.name}
