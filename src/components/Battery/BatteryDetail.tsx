@@ -76,22 +76,22 @@ export function BatteryDetail() {
   const sortedBatteries = batteries ? [...batteries].sort((a, b) => a.slot_number - b.slot_number) : [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
             onClick={() => navigate('/batteries')}
-            className="inline-flex items-center text-gray-600 hover:text-gray-800"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('battery.list.backToList')}
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
+        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
           <BatteryDetailElemHead />
 
-          <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
+          <div className="px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-dark-border">
             <div className="flex space-x-6">
               <BatteryDetailImage
                 imageUrl={imageUrl}
@@ -113,11 +113,11 @@ export function BatteryDetail() {
           </div>
         </div>
 
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">{t('battery.list.individualSettings')}</h3>
+        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden">
+          <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-dark-border">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text">{t('battery.list.individualSettings')}</h3>
           </div>
-          <div className="p-4 bg-gray-50">
+          <div className="p-4 bg-gray-50 dark:bg-gray-800">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
               {sortedBatteries.map((battery) => (
                 <BatteryDetailItem
@@ -132,8 +132,8 @@ export function BatteryDetail() {
         </div>
 
         {error && (
-          <div className="mt-4 p-4 bg-red-50 rounded-md">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-md">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
 

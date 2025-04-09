@@ -50,7 +50,7 @@ export function BatteryList() {
     <div>
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">{t('battery.list.title')}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text">{t('battery.list.title')}</h2>
           <div className="flex flex-wrap items-center gap-3">
             <BatteryListFilterButton />
             <BatteryAddButton batteryGroups={batteryGroups} />
@@ -61,14 +61,14 @@ export function BatteryList() {
         <BatteryListFilter />
       </div>
 
-      <div className="bg-white shadow rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-dark-card shadow rounded-xl overflow-hidden">
         {filteredAndSortedGroups.length === 0 ? (
           <div className="text-center py-16">
-            <Battery className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-4 text-lg font-medium text-gray-900">
+            <Battery className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">
               {batteryGroups.length === 0 ? t('battery.list.noBatteries') : t('battery.list.noMatchingBatteries')}
             </h3>
-            <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
               {batteryGroups.length === 0 
                 ? t('battery.list.emptyStateMessage') 
                 : t('battery.list.noMatchingMessage')}
@@ -145,14 +145,14 @@ function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
                           userPlan.plan_type === 'premium' ? t('plan.premium') : t('plan.business');
 
   return (
-    <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50' : 'bg-blue-50'}`}>
+    <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
       <div className="flex justify-between items-center">
         <div className="flex items-start gap-3">
           {isLimitReached && (
             <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
           )}
           <div>
-            <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
+            <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600 dark:text-blue-400'}`}>
               {t('battery.list.groupCount', { current: batteryGroupCount, max: maxBatteryGroups })}
               {isLimitReached && ` ${t('battery.list.limitReachedSettings')}`}
             </p>

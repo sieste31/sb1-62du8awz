@@ -17,14 +17,14 @@ export function BatteryDetailElemShape() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.shape')}</dt>
+        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.shape')}</dt>
         <dd className="mt-1">
           <div>
             <select
               value={editData.shape}
               onChange={(e) => setEditData({ shape: e.target.value })}
               disabled={restrictTypeAndCountEditing}
-              className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${restrictTypeAndCountEditing ? 'bg-gray-100 cursor-not-allowed' : ''
+              className={`block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text ${restrictTypeAndCountEditing ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed' : ''
                 }`}
             >
               <option value="単1形">{t('battery.shape.d')}</option>
@@ -34,7 +34,7 @@ export function BatteryDetailElemShape() {
               <option value="9V形">{t('battery.shape.9v')}</option>
             </select>
             {restrictTypeAndCountEditing && (
-              <p className="mt-1 text-xs text-amber-600">
+              <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
                 {t('battery.detail.cannotChangeShape')}
               </p>
             )}
@@ -46,9 +46,9 @@ export function BatteryDetailElemShape() {
   else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.shape')}</dt>
+        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.shape')}</dt>
         <dd className="mt-1">
-          <span className="text-sm text-gray-900">{t(batteryShapeToTranslationKey(batteryGroup.shape))}</span>
+          <span className="text-sm text-gray-900 dark:text-dark-text">{t(batteryShapeToTranslationKey(batteryGroup.shape))}</span>
         </dd>
       </div>
     );

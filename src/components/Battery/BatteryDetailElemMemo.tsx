@@ -17,8 +17,8 @@ export function BatteryDetailElemMemo() {
  
     return (
       <div className="sm:col-span-2">
-        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1 flex items-center">
-          <FileText className="h-4 w-4 text-gray-400 mr-1" />
+        <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 flex items-center">
+          <FileText className="h-4 w-4 text-gray-400 dark:text-gray-500 mr-1" />
           {t('battery.detail.memo')}
         </dt>
         <dd className="mt-1">
@@ -29,11 +29,11 @@ export function BatteryDetailElemMemo() {
               onChange={(e) =>
                 setEditData({ notes: e.target.value })
               }
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
               placeholder={t('battery.detail.memoPlaceholder')}
             />
           ) : (
-            <div className="bg-gray-50 p-3 rounded-md text-gray-900 whitespace-pre-wrap">
+            <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-md text-gray-900 dark:text-dark-text whitespace-pre-wrap">
               {batteryGroup.notes || '---'}
             </div>
           )}
@@ -44,12 +44,12 @@ export function BatteryDetailElemMemo() {
   } else {
     return (
       <div className="sm:col-span-2">
-        <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1 flex items-center">
-          <FileText className="h-4 w-4 text-gray-400 mr-1" />
+        <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 flex items-center">
+          <FileText className="h-4 w-4 text-gray-400 dark:text-gray-500 mr-1" />
           {t('battery.detail.memo')}
         </dt>
         <dd className="mt-1">
-          <div className="bg-gray-50 p-3 rounded-md text-gray-900 whitespace-pre-wrap">
+          <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-md text-gray-900 dark:text-dark-text whitespace-pre-wrap">
             {batteryGroup.notes || '---'}
           </div>
         </dd>

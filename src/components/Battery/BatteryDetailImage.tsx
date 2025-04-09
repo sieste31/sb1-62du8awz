@@ -81,13 +81,13 @@ export function BatteryDetailImage({
                 <img
                     src={imageUrl || ''}
                     alt={t('battery.detail.imageAlt', { type: batteryGroup.type })}
-                    className="w-32 h-32 rounded-lg object-cover"
+                    className="w-32 h-32 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
                 />
                 <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                    className="absolute inset-0 flex items-center justify-center bg-black dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
                 >
-                    <Upload className="h-6 w-6 text-white" />
+                    <Upload className="h-6 w-6 text-white dark:text-gray-300" />
                 </button>
                 <input
                     ref={fileInputRef}

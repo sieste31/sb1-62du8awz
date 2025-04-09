@@ -78,37 +78,37 @@ export function BatteryForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
             onClick={() => navigate('/batteries')}
-            className="inline-flex items-center text-gray-600 hover:text-gray-800"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('battery.list.backToList')}
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:px-6 bg-gray-50">
+        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden">
+          <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-gray-800">
             <div className="flex items-center">
-              <Battery className="h-6 w-6 text-gray-400 mr-3" />
-              <h2 className="text-xl font-bold text-gray-900">{t('battery.form.title')}</h2>
+              <Battery className="h-6 w-6 text-gray-400 dark:text-gray-500 mr-3" />
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('battery.form.title')}</h2>
             </div>
           </div>
           
           {showLimitWarning && (
-            <div className="px-4 py-3 bg-amber-50 border-b border-amber-100">
+            <div className="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-900/30">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-amber-400" />
+                  <AlertCircle className="h-5 w-5 text-amber-400 dark:text-amber-300" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm text-amber-700">
+                  <p className="text-sm text-amber-700 dark:text-amber-300">
                     {t('battery.form.limitReachedWarning', { current: batteryGroups.length, max: userPlan?.max_battery_groups || 5 })}
                     <button 
-                      className="ml-2 font-medium text-amber-700 underline"
+                      className="ml-2 font-medium text-amber-700 dark:text-amber-300 underline"
                       onClick={() => alert(t('battery.form.upgradeInDevelopment'))}
                     >
                       {t('battery.form.upgradePlan')}
@@ -121,7 +121,7 @@ export function BatteryForm() {
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.form.nameLabel')}
               </label>
               <input
@@ -130,20 +130,20 @@ export function BatteryForm() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
                 placeholder={t('battery.form.namePlaceholder')}
               />
             </div>
 
             <div>
-              <label htmlFor="shape" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="shape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.detail.shape')}
               </label>
               <select
                 id="shape"
                 value={formData.shape}
                 onChange={(e) => setFormData({ ...formData, shape: e.target.value })}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
               >
                 <option value="単1形">{t('battery.shape.d')}</option>
                 <option value="単2形">{t('battery.shape.c')}</option>
@@ -154,15 +154,15 @@ export function BatteryForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.detail.kind')}
               </label>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div
                   className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
                     formData.kind === 'disposable'
-                      ? 'border-blue-500 ring-2 ring-blue-500'
-                      : 'border-gray-300'
+                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
                   }`}
                   onClick ={() => {
                     setFormData({ 
@@ -175,7 +175,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">{t('battery.kind.disposable')}</p>
+                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.kind.disposable')}</p>
                       </div>
                     </div>
                   </div>
@@ -183,15 +183,15 @@ export function BatteryForm() {
                 <div
                   className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
                     formData.kind === 'rechargeable'
-                      ? 'border-blue-500 ring-2 ring-blue-500'
-                      : 'border-gray-300'
+                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
                   }`}
                   onClick={() => setFormData({ ...formData, kind: 'rechargeable' })}
                 >
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">{t('battery.kind.rechargeable')}</p>
+                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.kind.rechargeable')}</p>
                       </div>
                     </div>
                   </div>
@@ -207,8 +207,8 @@ export function BatteryForm() {
                 <div
                   className={`relative flex rounded-lg border p-4 ${
                     formData.status === 'charged'
-                      ? 'border-blue-500 ring-2 ring-blue-500'
-                      : 'border-gray-300'
+                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
                   } ${
                     formData.kind === 'disposable'
                       ? 'opacity-50 cursor-not-allowed'
@@ -223,7 +223,7 @@ export function BatteryForm() {
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">{t('battery.status.charged')}</p>
+                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.status.charged')}</p>
                       </div>
                     </div>
                   </div>
@@ -231,15 +231,15 @@ export function BatteryForm() {
                 <div
                   className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
                     formData.status === 'empty'
-                      ? 'border-blue-500 ring-2 ring-blue-500'
-                      : 'border-gray-300'
+                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
                   }`}
                   onClick={() => setFormData({ ...formData, status: 'empty' })}
                 >
                   <div className="flex w-full items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-sm">
-                        <p className="font-medium text-gray-900">{t('battery.status.empty')}</p>
+                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.status.empty')}</p>
                       </div>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export function BatteryForm() {
             </div>
 
             <div>
-              <label htmlFor="count" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="count" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.detail.count')}
               </label>
               <input
@@ -257,12 +257,12 @@ export function BatteryForm() {
                 min="1"
                 value={formData.count}
                 onChange={(e) => setFormData({ ...formData, count: parseInt(e.target.value) })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
               />
             </div>
 
             <div>
-              <label htmlFor="voltage" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="voltage" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.voltage')}
               </label>
               <input
@@ -272,12 +272,12 @@ export function BatteryForm() {
                 min="0"
                 value={formData.voltage}
                 onChange={(e) => setFormData({ ...formData, voltage: parseFloat(e.target.value) })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
               />
             </div>
 
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.detail.memo')}
               </label>
               <textarea
@@ -285,12 +285,12 @@ export function BatteryForm() {
                 rows={3}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
               />
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm">{error}</div>
+              <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
             )}
 
             <div className="flex justify-end">

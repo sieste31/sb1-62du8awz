@@ -22,31 +22,31 @@ export function BatteryStatusBadge({ status, className = '' }: BatteryStatusBadg
         return {
           icon: BatteryCharging,
           text: t('battery.status.charged'),
-          color: 'bg-green-100 text-green-800',
+          color: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300',
         };
       case 'in_use':
         return {
           icon: BatteryMedium,
           text: t('battery.status.in_use'),
-          color: 'bg-blue-100 text-blue-800',
+          color: 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300',
         };
       case 'empty':
         return {
           icon: BatteryLow,
           text: t('battery.status.empty'),
-          color: 'bg-yellow-100 text-yellow-800',
+          color: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300',
         };
       case 'disposed':
         return {
           icon: BatteryWarning,
           text: t('battery.status.disposed'),
-          color: 'bg-red-100 text-red-800',
+          color: 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300',
         };
       default:
         return {
           icon: Battery,
           text: t('battery.status.unknown'),
-          color: 'bg-gray-100 text-gray-800',
+          color: 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300',
         };
     }
   };

@@ -17,7 +17,7 @@ export function BatteryDetailElemCount() {
   if (isEditing) {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.count')}</dt>
+        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.count')}</dt>
         <dd className="mt-1">
           <div>
             <input
@@ -26,20 +26,20 @@ export function BatteryDetailElemCount() {
               value={editData.count}
               onChange={(e) => setEditData({ count: parseInt(e.target.value) })}
               disabled={restrictTypeAndCountEditing}
-              className={`block w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+              className={`block w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text ${
                 restrictTypeAndCountEditing
-                  ? 'bg-gray-100 cursor-not-allowed border-gray-300'
+                  ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed border-gray-300 dark:border-gray-600'
                   : editData.count < batteryGroup.count && installedCount > 0
-                  ? 'border-red-300'
-                  : 'border-gray-300'
+                  ? 'border-red-300 dark:border-red-700'
+                  : 'border-gray-300 dark:border-gray-600'
               }`}
             />
             {restrictTypeAndCountEditing ? (
-              <p className="mt-1 text-xs text-amber-600">
+              <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
                 {t('battery.detail.cannotChangeCount')}
               </p>
             ) : editData.count < batteryGroup.count && installedCount > 0 && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                 {t('battery.detail.cannotReduceCount')}
               </p>
             )}
@@ -50,9 +50,9 @@ export function BatteryDetailElemCount() {
   } else {
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">{t('battery.detail.count')}</dt>
+        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.count')}</dt>
         <dd className="mt-1">
-          <span className="text-sm text-gray-900">{batteryGroup.count}{t('common.unit')}</span>
+          <span className="text-sm text-gray-900 dark:text-dark-text">{batteryGroup.count}{t('common.unit')}</span>
         </dd>
       </div>
     );
