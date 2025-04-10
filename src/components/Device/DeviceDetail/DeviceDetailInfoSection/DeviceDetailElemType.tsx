@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -43,20 +44,20 @@ export function DeviceDetailElemType({ device }: DeviceDetailElemTypeProps) {
 
   const deviceTypeInfo = getDeviceTypeInfo(device.type);
 
+  const onChangeType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedType = e.target.value;
+    setEditData({
+      type: selectedType as Device['type'],
+    });
+  };
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
-        {t('device.detail.deviceType')}
-      </dt>
+      <DetailInfoElemHead title={t('device.detail.deviceType')} />
       <dd className="mt-1">
         {isEditing ? (
           <select
             value={editData.type}
-            onChange={(e) =>
-              setEditData({
-                type: e.target.value as any,
-              })
-            }
+            onChange={onChangeType}
             className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           >
             <option value="remotecontroller">

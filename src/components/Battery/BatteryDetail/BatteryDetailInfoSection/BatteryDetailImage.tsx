@@ -21,10 +21,10 @@ interface BatteryDetailImageProps {
     setError: (error: string | null) => void;
 }
 
-export function BatteryDetailImage({ 
-    imageUrl, 
-    batteryGroup, 
-    setError 
+export function BatteryDetailImage({
+    imageUrl,
+    batteryGroup,
+    setError
 }: BatteryDetailImageProps) {
     const { t } = useTranslation();
     const { user } = useAuth();

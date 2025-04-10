@@ -5,17 +5,12 @@ import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
-import { BatteryDetailItem } from './BatteryDetailItem';
+import { BatteryDetailItem } from './BatteryDetailItemSection/BatteryDetailItem';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
-import { BatteryDetailImage } from './BatteryDetailImage';
-import { BatteryDetailElemShape } from './BatteryDetailElemShape';
-import { BatteryDetailElemKind } from './BatteryDetailElemKind';
-import { BatteryDetailElemCount } from './BatteryDetailElemCount';
-import { BatteryDetailElemVolt } from './BatteryDetailElemVolt';
-import { BatteryDetailElemMemo } from './BatteryDetailElemMemo';
-import { BatteryDetailElemHead } from './BatteryDetailElemHead';
 import { useTranslation } from 'react-i18next';
+import { BatteryDetailInfoSection } from './BatteryDetailInfoSection';
+import { BatteryDetailItemSection } from './BatteryDetailItemSection';
 
 
 export function BatteryDetail() {
@@ -34,7 +29,6 @@ export function BatteryDetail() {
     saving, deleting,
     handleSave, handleDelete, handleCancelEdit,
     batteryGroup, setBatteryGroup, batteries, setBatteries,
-    restrictTypeAndCountEditing
   } = useBatteryDetailStore();
 
   // 1. 基本データの同期
@@ -72,12 +66,11 @@ export function BatteryDetail() {
     );
   }
 
-  // 電池をslot_numberで昇順にソート
-  const sortedBatteries = batteries ? [...batteries].sort((a, b) => a.slot_number - b.slot_number) : [];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* 戻るボタン */}
         <div className="mb-6">
           <button
             onClick={() => navigate('/batteries')}
@@ -87,49 +80,11 @@ export function BatteryDetail() {
             {t('battery.list.backToList')}
           </button>
         </div>
+        {/* 電池詳細画面 情報部分 */}
+        <BatteryDetailInfoSection />
 
-        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
-          <BatteryDetailElemHead />
-
-          <div className="px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-dark-border">
-            <div className="flex space-x-6">
-              <BatteryDetailImage
-                imageUrl={imageUrl}
-                batteryGroup={batteryGroup}
-                setError={setError}
-              />
-              <div className="flex-1">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-3 sm:grid-cols-2">
-                  <BatteryDetailElemShape />
-                  <BatteryDetailElemKind />
-                  <BatteryDetailElemCount />
-                  <BatteryDetailElemVolt />
-                </dl>
-              </div>
-            </div>
-            <div className="mt-6">
-              <BatteryDetailElemMemo />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-dark-border">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text">{t('battery.list.individualSettings')}</h3>
-          </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-800">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-              {sortedBatteries.map((battery) => (
-                <BatteryDetailItem
-                  key={battery.slot_number}
-                  battery={battery}
-                  batteryGroup={batteryGroup}
-                  setError={setError}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* 電池詳細画面 電池一覧部分 */}
+        <BatteryDetailItemSection />
 
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-md">

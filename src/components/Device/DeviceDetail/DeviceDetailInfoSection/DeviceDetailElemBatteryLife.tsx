@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 import { Clock } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +23,7 @@ export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryL
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.batteryLife')}</dt>
+      <DetailInfoElemHead title={t('device.detail.batteryLife')} />
       <dd className="mt-1">
         {isEditing ? (
           <div className="relative rounded-md shadow-sm">

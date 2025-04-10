@@ -5,6 +5,7 @@ import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Calendar } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -22,7 +23,7 @@ export function DeviceDetailElemPurchaseDate({ device }: DeviceDetailElemPurchas
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.purchaseDate')}</dt>
+      <DetailInfoElemHead title={t('device.detail.purchaseDate')} />
       <dd className="mt-1">
         {isEditing ? (
           <input

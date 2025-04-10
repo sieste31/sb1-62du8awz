@@ -4,6 +4,7 @@ import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 
 export function BatteryDetailElemShape() {
   const { t } = useTranslation();
@@ -12,13 +13,13 @@ export function BatteryDetailElemShape() {
   const setEditData = useBatteryDetailStore(state => state.setEditData);
   const restrictTypeAndCountEditing = useBatteryDetailStore(state => state.restrictTypeAndCountEditing);
   const batteryGroup = useBatteryDetailStore(state => state.batteryGroup);
-  
+
   if (!editData || !batteryGroup) return null;
-  if (isEditing) {
-    return (
-      <div>
-        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.shape')}</dt>
-        <dd className="mt-1">
+  return (
+    <div>
+      <DetailInfoElemHead title={t('battery.detail.shape')} />
+      <dd className="mt-1">
+        {isEditing ? (
           <div>
             <select
               value={editData.shape}
@@ -39,19 +40,12 @@ export function BatteryDetailElemShape() {
               </p>
             )}
           </div>
-        </dd>
-      </div>
-    );
-  }
-  else {
-    return (
-      <div>
-        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('battery.detail.shape')}</dt>
-        <dd className="mt-1">
-          <span className="text-sm text-gray-900 dark:text-dark-text">{t(batteryShapeToTranslationKey(batteryGroup.shape))}</span>
-        </dd>
-      </div>
-    );
-  }
-
+        ) : (
+          <div>
+            <span className="text-sm text-gray-900 dark:text-dark-text">{t(batteryShapeToTranslationKey(batteryGroup.shape))}</span>
+          </div>
+        )}
+      </dd>
+    </div>
+  );
 }

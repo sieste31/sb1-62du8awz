@@ -1,7 +1,7 @@
 // デバイス詳細画面の最終電池交換日の表示を担当するコンポーネント
 
 import React from 'react';
-import { Clock } from 'lucide-react';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
 
   const batteryEndDate = calculateBatteryEndDate(device);
   const today = new Date();
-  const daysUntilEnd = batteryEndDate 
+  const daysUntilEnd = batteryEndDate
     ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     : null;
   const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
@@ -31,7 +31,7 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
 
   return (
     <div>
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{t('device.detail.lastChange')}</dt>
+      <DetailInfoElemHead title={t('device.detail.lastChange')} />
       <dd className="mt-1">
         <div className="flex items-center">
           <span className="text-base font-medium text-gray-900">
@@ -40,16 +40,15 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
               : '---'}
           </span>
         </div>
-        
+
         {batteryEndDate && hasBatteriesFullInstalled && (
           <div className="mt-2 text-sm">
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-              isOverdue 
-                ? 'bg-red-100 text-red-800' 
-                : isNearingEnd 
-                  ? 'bg-yellow-100 text-yellow-800' 
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${isOverdue
+                ? 'bg-red-100 text-red-800'
+                : isNearingEnd
+                  ? 'bg-yellow-100 text-yellow-800'
                   : 'bg-blue-100 text-blue-800'
-            }`}>
+              }`}>
               {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
               {isOverdue && ` (${t('device.status.overdue')})`}
               {isNearingEnd && ` (${t('device.status.soon')})`}

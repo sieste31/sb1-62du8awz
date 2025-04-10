@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
-import { FileText } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -22,10 +22,7 @@ export function DeviceDetailElemNotes({ device }: DeviceDetailElemNotesProps) {
 
   return (
     <div className="sm:col-span-2">
-      <dt className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1 flex items-center">
-        <FileText className="h-4 w-4 text-gray-400 mr-1" />
-        {t('device.detail.notes')}
-      </dt>
+      <DetailInfoElemHead title={t('device.detail.notes')} />
       <dd className="mt-1">
         {isEditing ? (
           <textarea

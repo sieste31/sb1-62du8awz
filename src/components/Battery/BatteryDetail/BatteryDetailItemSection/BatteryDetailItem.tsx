@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Smartphone, History, Battery, ChevronDown, Check, Unplug } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BatteryUsageHistory } from './BatteryUsageHistory';
+import { BatteryUsageHistory } from '../../BatteryUsageHistory';
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
 import type { Database } from '@/lib/database.types';
 import { useAuth } from '@/lib/auth-provider';

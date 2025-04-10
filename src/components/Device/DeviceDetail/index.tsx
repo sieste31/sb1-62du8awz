@@ -4,19 +4,11 @@ import React, { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDevice } from '@/lib/hooks';
-import { DeviceUsageHistory } from './DeviceUsageHistory';
+import { DeviceUsageHistory } from '../DeviceUsageHistory';
 import { getDeviceImage } from '@/lib/deviceImages';
 import { ImageCropper } from '@/components/ImageCropper';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
-import { DeviceDetailElemHead } from './DeviceDetailElemHead';
-import { DeviceDetailImage } from './DeviceDetailImage';
-import { DeviceDetailElemType } from './DeviceDetailElemType';
-import { DeviceDetailElemBatteryShape } from './DeviceDetailElemBatteryShape';
-import { DeviceDetailElemBatteryCount } from './DeviceDetailElemBatteryCount';
-import { DeviceDetailElemBatteryLife } from './DeviceDetailElemBatteryLife';
-import { DeviceDetailElemPurchaseDate } from './DeviceDetailElemPurchaseDate';
-import { DeviceDetailElemLastChange } from './DeviceDetailElemLastChange';
-import { DeviceDetailElemNotes } from './DeviceDetailElemNotes';
+import { DeviceDetailInfo } from './DeviceDetailInfoSection';
 import { DeviceDetailBatterySection } from './DeviceDetailBatterySection';
 import { useTranslation } from 'react-i18next';
 
@@ -73,6 +65,7 @@ export function DeviceDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* 戻るボタン */}
         <div className="mb-6">
           <button
             onClick={() => navigate('/devices')}
@@ -83,38 +76,19 @@ export function DeviceDetail() {
           </button>
         </div>
 
-        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
-          <DeviceDetailElemHead device={device} />
-
-          <div className="px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex flex-row space-x-4">
-              <div className="flex-shrink-0">
-                <DeviceDetailImage device={device} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-4 lg:grid-cols-3 sm:grid-cols-2">
-                  <DeviceDetailElemType device={device} />
-                  <DeviceDetailElemBatteryShape device={device} batteries={batteries} />
-                  <DeviceDetailElemBatteryCount device={device} batteries={batteries} />
-                  <DeviceDetailElemPurchaseDate device={device} />
-                  <DeviceDetailElemBatteryLife device={device} />
-                  <DeviceDetailElemLastChange device={device} batteries={batteries} />
-                </dl>
-              </div>
-            </div>
-            <div className="mt-6">
-              <DeviceDetailElemNotes device={device} />
-            </div>
-          </div>
-        </div>
-
-        <DeviceDetailBatterySection device={device} batteries={batteries} />
-
+        {/* エラーメッセージ */}
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-md">
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
+        {/* デバイス詳細画面　ヘッダー部分 */}
+        <DeviceDetailInfo device={device} batteries={batteries} />
+
+        {/* デバイス詳細画面　電池一覧部分 */}
+        <DeviceDetailBatterySection device={device} batteries={batteries} />
+
+
 
         <DeviceUsageHistory
           isOpen={showHistory}
