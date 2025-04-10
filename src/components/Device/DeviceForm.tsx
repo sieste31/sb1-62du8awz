@@ -84,31 +84,31 @@ export function DeviceForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <button
-            onClick={() => navigate('/devices')}
-            className="inline-flex items-center text-gray-600 hover:text-gray-800"
-          >
+<button
+  onClick={() => navigate('/devices')}
+  className="inline-flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
+>
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('device.detail.backToList')}
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-4 py-5 sm:px-6 bg-gray-50">
-            <h2 className="text-xl font-bold text-gray-900">{t('device.form.title')}</h2>
-          </div>
+        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden">
+<div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-gray-800">
+  <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('device.form.title')}</h2>
+</div>
           
           {showLimitWarning && (
-            <div className="px-4 py-3 bg-amber-50 border-b border-amber-100">
+            <div className="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-800/30">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <AlertCircle className="h-5 w-5 text-amber-400" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm text-amber-700">
+                  <p className="text-sm text-amber-700 dark:text-amber-400">
                     {t('device.form.limitReachedWarning', { current: devices.length, max: userPlan?.max_devices || 5 })}
                     <button 
                       className="ml-2 font-medium text-amber-700 underline"
@@ -124,61 +124,61 @@ export function DeviceForm() {
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('device.form.nameLabel')}
               </label>
-              <input
-                type="text"
-                id="name"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
+<input
+  type="text"
+  id="name"
+  required
+  value={formData.name}
+  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+  className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300 sm:text-sm"
+/>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                {t('device.detail.deviceType')}
-              </label>
-              <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {deviceTypeOptions.map((option) => {
-                  const Icon = option.icon;
-                  return (
-                    <div
-                      key={option.value}
-                      className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                        formData.type === option.value
-                          ? 'border-blue-500 ring-2 ring-blue-500'
-                          : 'border-gray-300'
-                      }`}
-                      onClick={() => setFormData({ ...formData, type: option.value as DeviceType })}
-                    >
-                      <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="text-sm">
-                            <Icon className="h-5 w-5 text-gray-400 mr-2" />
-                            <p className="font-medium text-gray-900">{option.label}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+<label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+  {t('device.detail.deviceType')}
+</label>
+<div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
+  {deviceTypeOptions.map((option) => {
+    const Icon = option.icon;
+    return (
+      <div
+        key={option.value}
+        className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
+          formData.type === option.value
+            ? 'border-blue-500 ring-2 ring-blue-500 dark:border-blue-600 dark:ring-blue-600'
+            : 'border-gray-300 dark:border-gray-600'
+        }`}
+        onClick={() => setFormData({ ...formData, type: option.value as DeviceType })}
+      >
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center">
+            <div className="text-sm">
+              <Icon className="h-5 w-5 text-gray-400 dark:text-gray-500 mr-2" />
+              <p className="font-medium text-gray-900 dark:text-dark-text">{option.label}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
             </div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label htmlFor="batteryShape" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="batteryShape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.detail.batteryShape')}
                 </label>
-                <select
-                  id="batteryShape"
-                  value={formData.batteryShape}
-                  onChange={(e) => setFormData({ ...formData, batteryShape: e.target.value })}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                >
+<select
+  id="batteryShape"
+  value={formData.batteryShape}
+  onChange={(e) => setFormData({ ...formData, batteryShape: e.target.value })}
+  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:text-gray-300"
+>
                   <option value="単1形">{t('battery.shape.d')}</option>
                   <option value="単2形">{t('battery.shape.c')}</option>
                   <option value="単3形">{t('battery.shape.aa')}</option>
@@ -188,80 +188,80 @@ export function DeviceForm() {
               </div>
 
               <div>
-                <label htmlFor="batteryCount" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="batteryCount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.form.batteryCountLabel')}
                 </label>
-                <input
-                  type="number"
-                  id="batteryCount"
-                  min="1"
-                  required
-                  value={formData.batteryCount}
-                  onChange={(e) => setFormData({ ...formData, batteryCount: parseInt(e.target.value) })}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+<input
+  type="number"
+  id="batteryCount"
+  min="1"
+  required
+  value={formData.batteryCount}
+  onChange={(e) => setFormData({ ...formData, batteryCount: parseInt(e.target.value) })}
+  className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
+/>
               </div>
             </div>
 
             <div>
-              <label htmlFor="batteryLifeWeeks" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="batteryLifeWeeks" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('device.detail.batteryLife')}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
-                <input
-                  type="number"
-                  id="batteryLifeWeeks"
-                  min="1"
-                  value={formData.batteryLifeWeeks}
-                  onChange={(e) => setFormData({ ...formData, batteryLifeWeeks: e.target.value })}
-                  placeholder={t('device.detail.batteryLifePlaceholder')}
-                  className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">{t('device.detail.weeks')}</span>
-                </div>
-              </div>
-              <p className="mt-2 text-sm text-gray-500">
-                {t('device.form.batteryLifeHelp')}
-              </p>
+<input
+  type="number"
+  id="batteryLifeWeeks"
+  min="1"
+  value={formData.batteryLifeWeeks}
+  onChange={(e) => setFormData({ ...formData, batteryLifeWeeks: e.target.value })}
+  placeholder={t('device.detail.batteryLifePlaceholder')}
+  className="block w-full border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
+/>
+<div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+  <span className="text-gray-500 dark:text-gray-400 sm:text-sm">{t('device.detail.weeks')}</span>
+</div>
+</div>
+<p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+  {t('device.form.batteryLifeHelp')}
+</p>
             </div>
 
             <div>
-              <label htmlFor="purchaseDate" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="purchaseDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('device.detail.purchaseDate')}
               </label>
-              <input
-                type="date"
-                id="purchaseDate"
-                value={formData.purchaseDate}
-                onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
+<input
+  type="date"
+  id="purchaseDate"
+  value={formData.purchaseDate}
+  onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
+  className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
+/>
             </div>
 
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('device.detail.notes')}
               </label>
-              <textarea
-                id="notes"
-                rows={3}
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
+<textarea
+  id="notes"
+  rows={3}
+  value={formData.notes}
+  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+  className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
+/>
             </div>
 
-            {error && (
-              <div className="text-red-600 text-sm">{error}</div>
-            )}
+{error && (
+  <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
+)}
 
             <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-              >
+<button
+  type="submit"
+  disabled={loading}
+  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+>
                 {loading ? t('device.form.saving') : t('device.form.submit')}
               </button>
             </div>

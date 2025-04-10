@@ -23,7 +23,9 @@ type Battery = Database['public']['Tables']['batteries']['Row'] & {
 };
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
-  batteries?: Battery[];
+  batteries?: (Battery & {
+    devices?: Database['public']['Tables']['devices']['Row'] | null;
+  })[];
 };
 
 type BatteryStatus = 'charged' | 'in_use' | 'empty' | 'disposed';
@@ -156,7 +158,7 @@ export function SelectBattery() {
 
       // キャッシュを無効化
       const { invalidateBatteries, invalidateDevices } =
-      invalidateQueriesCompat(queryClient);
+        invalidateQueriesCompat(queryClient);
       await Promise.all([invalidateBatteries(), invalidateDevices()]);
 
       navigate(`/devices/${deviceId}`);
@@ -175,16 +177,36 @@ export function SelectBattery() {
   // 電池グループを名前でソート
   const sortedBatteryGroups = [...availableBatteryGroups]
     .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
-    .filter((group) => kindFilter === 'all' || group.kind === kindFilter);
+    .filter((group) => kindFilter === 'all' || group.kind === kindFilter)
+    .map(group => {
+      const extendedBatteries = (group as any).batteries
+        ? (group as any).batteries.map((battery: any) => ({
+          ...battery,
+          slot_number: battery.slot_number || 0,
+          status: battery.status || 'empty',
+          devices: battery.devices || null,
+          id: battery.id || '',
+          group_id: battery.group_id || group.id,
+          device_id: battery.device_id || null,
+          created_at: battery.created_at || '',
+          user_id: battery.user_id || ''
+        }))
+        : [];
+
+      return {
+        ...group,
+        batteries: extendedBatteries
+      };
+    });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <button
               onClick={() => navigate(`/devices/${deviceId}`)}
-              className="inline-flex items-center text-gray-600 hover:text-gray-800"
+              className="inline-flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t('device.select.backToDevice')}
@@ -192,7 +214,7 @@ export function SelectBattery() {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 {t('device.select.filter')}
@@ -204,7 +226,7 @@ export function SelectBattery() {
               </button>
               <button
                 onClick={() => setShowHistory(true)}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 <History className="h-4 w-4 mr-1" />
                 {t('device.select.history')}
@@ -221,13 +243,13 @@ export function SelectBattery() {
         </div>
 
         {showFilters && (
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
+          <div className="bg-white dark:bg-dark-card p-4 rounded-lg shadow-sm mb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-medium text-gray-700">{t('device.select.filterTitle')}</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('device.select.filterTitle')}</h3>
               {activeFiltersCount > 0 && (
                 <button
                   onClick={resetFilters}
-                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 hover:text-gray-900"
+                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   <X className="h-3 w-3 mr-1" />
                   {t('device.select.reset')}
@@ -236,7 +258,7 @@ export function SelectBattery() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('device.select.batteryStatus')}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -250,11 +272,10 @@ export function SelectBattery() {
                             : [...prev, status]
                         );
                       }}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                        statusFilter.includes(status)
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                      }`}
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${statusFilter.includes(status)
+                        ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
                     >
                       {getBatteryStatusLabel(status, t)}
                     </button>
@@ -262,7 +283,7 @@ export function SelectBattery() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('device.select.batteryType')}
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -270,11 +291,10 @@ export function SelectBattery() {
                     <button
                       key={kind}
                       onClick={() => setKindFilter(kind)}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-                        kindFilter === kind
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                      }`}
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${kindFilter === kind
+                        ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
                     >
                       {getBatteryKindLabel(kind, t)}
                     </button>
@@ -289,10 +309,10 @@ export function SelectBattery() {
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <h2 className="text-xl font-bold text-gray-900">{t('device.select.settingTitle')}</h2>
             <p className="mt-1 text-sm text-gray-500">
-              {t('device.select.settingDescription', { 
-                deviceName: device.name, 
-                batteryType: t(batteryShapeToTranslationKey(device.battery_shape)), 
-                count: device.battery_count 
+              {t('device.select.settingDescription', {
+                deviceName: device.name,
+                batteryType: t(batteryShapeToTranslationKey(device.battery_shape)),
+                count: device.battery_count
               })}
             </p>
           </div>
@@ -311,12 +331,11 @@ export function SelectBattery() {
             <div className="divide-y divide-gray-200">
               {sortedBatteryGroups.map((group) => {
                 // フィルターに一致する電池のみを表示
-                const batteries =
-                  group.batteries
-                    ?.filter((battery) =>
-                      statusFilter.includes(battery.status as BatteryStatus)
-                    )
-                    .sort((a, b) => a.slot_number - b.slot_number) ?? [];
+                const batteries = (group.batteries || [])
+                  .filter((battery: Battery) =>
+                    statusFilter.includes(battery.status as BatteryStatus)
+                  )
+                  .sort((a: Battery, b: Battery) => a.slot_number - b.slot_number);
 
                 if (batteries.length === 0) return null;
 
@@ -333,11 +352,10 @@ export function SelectBattery() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            group.kind === 'rechargeable'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${group.kind === 'rechargeable'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                            }`}
                         >
                           {group.kind === 'rechargeable'
                             ? t('battery.kind.rechargeable')
@@ -346,7 +364,7 @@ export function SelectBattery() {
                       </div>
                     </div>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {batteries.map((battery) => {
+                      {batteries.map((battery: Battery) => {
                         const isSelected = selectedBatteries.some(
                           (b) => b.batteryId === battery.id
                         );
@@ -370,17 +388,15 @@ export function SelectBattery() {
                               )
                             }
                             disabled={isDisabled}
-                            className={`relative flex items-center p-4 border rounded-lg ${
-                              isSelected
-                                ? 'border-blue-500 ring-2 ring-blue-500'
-                                : isInstalledInOtherDevice
+                            className={`relative flex items-center p-4 border rounded-lg ${isSelected
+                              ? 'border-blue-500 ring-2 ring-blue-500'
+                              : isInstalledInOtherDevice
                                 ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
                                 : 'border-gray-300 hover:border-gray-400'
-                            } ${
-                              isDisabled && !isInstalledInOtherDevice
+                              } ${isDisabled && !isInstalledInOtherDevice
                                 ? 'opacity-50 cursor-not-allowed'
                                 : ''
-                            }`}
+                              }`}
                           >
                             <div className="flex-1">
                               <p className="text-sm font-medium text-gray-900">

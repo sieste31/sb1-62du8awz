@@ -71,22 +71,22 @@ export function DeviceDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <button
             onClick={() => navigate('/devices')}
-            className="inline-flex items-center text-gray-600 hover:text-gray-800"
+            className="inline-flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('device.detail.backToList')}
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
+        <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
           <DeviceDetailElemHead device={device} />
 
-          <div className="px-4 py-4 sm:px-6 border-b border-gray-200">
+          <div className="px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex flex-row space-x-4">
               <div className="flex-shrink-0">
                 <DeviceDetailImage device={device} />
@@ -111,8 +111,8 @@ export function DeviceDetail() {
         <DeviceDetailBatterySection device={device} batteries={batteries} />
 
         {error && (
-          <div className="mt-4 p-4 bg-red-50 rounded-md">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-md">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
 
