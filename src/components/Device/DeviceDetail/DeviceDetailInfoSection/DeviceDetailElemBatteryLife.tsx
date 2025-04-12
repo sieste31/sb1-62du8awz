@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 import { Clock } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';

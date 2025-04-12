@@ -3,7 +3,7 @@
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 
 export function BatteryDetailElemCount() {
   const { t } = useTranslation();

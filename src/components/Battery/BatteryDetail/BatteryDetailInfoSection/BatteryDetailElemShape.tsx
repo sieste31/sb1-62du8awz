@@ -4,7 +4,7 @@ import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 
 export function BatteryDetailElemShape() {
   const { t } = useTranslation();

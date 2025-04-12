@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { FileText } from 'lucide-react';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 
 export function BatteryDetailElemMemo() {
   const { t } = useTranslation();

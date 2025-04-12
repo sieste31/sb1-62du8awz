@@ -6,7 +6,7 @@ import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {

@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useBatteryGroup } from '@/lib/hooks';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
 import { BatteryDetailItem } from './BatteryDetailItemSection/BatteryDetailItem';
-import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog';
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
 import { BatteryDetailInfoSection } from './BatteryDetailInfoSection';

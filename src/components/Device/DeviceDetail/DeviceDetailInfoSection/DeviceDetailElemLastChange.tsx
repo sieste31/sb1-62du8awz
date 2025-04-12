@@ -1,7 +1,7 @@
 // デバイス詳細画面の最終電池交換日の表示を担当するコンポーネント
 
 import React from 'react';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';

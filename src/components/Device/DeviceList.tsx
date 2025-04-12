@@ -38,10 +38,10 @@ function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop }: Devi
 
   return (
     <div className="bg-white dark:bg-dark-card shadow rounded-lg mb-4">
-<button
-  onClick={onToggle}
-  className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700"
->
+      <button
+        onClick={onToggle}
+        className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-t-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+      >
         <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text flex items-center">
           {isOpen ? <ChevronDown className="h-5 w-5 mr-2" /> : <ChevronRight className="h-5 w-5 mr-2" />}
           {title}
@@ -70,7 +70,7 @@ export function DeviceList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showWithBatteries, setShowWithBatteries] = useState(true);
   const [showWithoutBatteries, setShowWithoutBatteries] = useState(true);
-  
+
   // デバイスタイプのラベルを翻訳関数で定義
   const deviceTypeLabels: Record<DeviceType, string> = {
     all: t('common.all'),
@@ -96,37 +96,37 @@ export function DeviceList() {
   // Apply filters and sorting
   const filteredAndSortedDevices = React.useMemo(() => {
     let result = [...devices];
-    
+
     // Apply search filter
     if (searchTerm !== '') {
-      result = result.filter(device => 
+      result = result.filter(device =>
         device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (device.notes && device.notes.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    
+
     // Apply device type filter
     if (deviceTypeFilter !== 'all') {
       result = result.filter(device => device.type === deviceTypeFilter);
     }
-    
+
     // Apply battery type filter
     if (batteryTypeFilter !== 'all') {
       result = result.filter(device => device.battery_shape === batteryTypeFilter);
     }
-    
+
     // Apply sorting
     if (sortOrder !== 'none') {
       result.sort((a, b) => {
         if (sortOrder === 'battery-end-asc' || sortOrder === 'battery-end-desc') {
           const dateA = calculateBatteryEndDate(a);
           const dateB = calculateBatteryEndDate(b);
-          
+
           // Handle null values
           if (!dateA && !dateB) return 0;
           if (!dateA) return sortOrder === 'battery-end-asc' ? 1 : -1;
           if (!dateB) return sortOrder === 'battery-end-asc' ? -1 : 1;
-          
+
           // Compare dates
           return sortOrder === 'battery-end-asc'
             ? dateA.getTime() - dateB.getTime()
@@ -141,14 +141,14 @@ export function DeviceList() {
           if (!a.last_battery_change && !b.last_battery_change) return 0;
           if (!a.last_battery_change) return sortOrder === 'asc' ? 1 : -1;
           if (!b.last_battery_change) return sortOrder === 'asc' ? -1 : 1;
-          
+
           const dateA = new Date(a.last_battery_change).getTime();
           const dateB = new Date(b.last_battery_change).getTime();
           return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         }
       });
     }
-    
+
     return result;
   }, [devices, searchTerm, deviceTypeFilter, batteryTypeFilter, sortOrder]);
 
@@ -244,7 +244,7 @@ export function DeviceList() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* デバイス種別フィルター */}
                 <div>
@@ -253,15 +253,14 @@ export function DeviceList() {
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {(Object.keys(deviceTypeLabels) as DeviceType[]).map((type) => (
-<button
-  key={type}
-  onClick={() => setDeviceTypeFilter(type)}
-  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-    deviceTypeFilter === type
-      ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
-      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-  }`}
->
+                      <button
+                        key={type}
+                        onClick={() => setDeviceTypeFilter(type)}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${deviceTypeFilter === type
+                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                      >
                         {deviceTypeLabels[type]}
                       </button>
                     ))}
@@ -275,15 +274,14 @@ export function DeviceList() {
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {(['all', '単1形', '単2形', '単3形', '単4形', '9V形'] as BatteryType[]).map((type) => (
-<button
-  key={type}
-  onClick={() => setBatteryTypeFilter(type)}
-  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
-    batteryTypeFilter === type
-      ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
-      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-  }`}
->
+                      <button
+                        key={type}
+                        onClick={() => setBatteryTypeFilter(type)}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${batteryTypeFilter === type
+                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                      >
                         {type === 'all' ? 'すべて' : type}
                       </button>
                     ))}
@@ -292,10 +290,10 @@ export function DeviceList() {
               </div>
             </div>
             <div className="flex justify-end">
-<button
-  onClick={resetFilters}
-  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-500"
->
+              <button
+                onClick={resetFilters}
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-500"
+              >
                 {t('device.list.resetFilter')}
               </button>
             </div>
@@ -304,41 +302,41 @@ export function DeviceList() {
       </div>
 
       {devices.length === 0 ? (
-<div className="bg-white dark:bg-dark-card shadow rounded-xl overflow-hidden">
-  <div className="text-center py-16">
-    <Smartphone className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-    <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.list.noDevices')}</h3>
-    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">{t('device.list.emptyStateMessage')}</p>
-    <div className="mt-6">
-      <Link
-        to="/devices/new"
-        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        新規登録
-      </Link>
-    </div>
-  </div>
-</div>
+        <div className="bg-white dark:bg-dark-card shadow rounded-xl overflow-hidden">
+          <div className="text-center py-16">
+            <Smartphone className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.list.noDevices')}</h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">{t('device.list.emptyStateMessage')}</p>
+            <div className="mt-6">
+              <Link
+                to="/devices/new"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                新規登録
+              </Link>
+            </div>
+          </div>
+        </div>
       ) : filteredAndSortedDevices.length === 0 ? (
-<div className="bg-white dark:bg-dark-card shadow rounded-xl overflow-hidden">
-  <div className="text-center py-16">
-    <Filter className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-    <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.list.noMatchingDevices')}</h3>
-    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">{t('device.list.noMatchingMessage')}</p>
-    <div className="mt-6">
-      <button
-        onClick={resetFilters}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <X className="h-4 w-4 mr-2" />
-        {t('device.list.resetFilter')}
-      </button>
-    </div>
-  </div>
-</div>
+        <div className="bg-white dark:bg-dark-card shadow rounded-xl overflow-hidden">
+          <div className="text-center py-16">
+            <Filter className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.list.noMatchingDevices')}</h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">{t('device.list.noMatchingMessage')}</p>
+            <div className="mt-6">
+              <button
+                onClick={resetFilters}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <X className="h-4 w-4 mr-2" />
+                {t('device.list.resetFilter')}
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <div className="bg-white shadow rounded-xl overflow-hidden">
+        <div className="bg-white shadow rounded-xl overflow-hidden dark:bg-dark-bg">
           <DeviceListSection
             title={t('device.list.withBatteries')}
             devices={withBatteries}
@@ -401,8 +399,8 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
   const deviceCount = devices.length;
   const maxDevices = userPlan.max_devices;
   const isLimitReached = deviceCount >= maxDevices;
-  const planTypeDisplay = userPlan.plan_type === 'free' ? t('common.planType.free') : 
-                          userPlan.plan_type === 'premium' ? t('common.planType.premium') : t('common.planType.business');
+  const planTypeDisplay = userPlan.plan_type === 'free' ? t('common.planType.free') :
+    userPlan.plan_type === 'premium' ? t('common.planType.premium') : t('common.planType.business');
 
   return (
     <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50' : 'bg-blue-50'}`}>

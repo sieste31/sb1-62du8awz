@@ -5,7 +5,7 @@ import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { Calendar } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
-import { DetailInfoElemHead } from '@/components/DetailInfoElemHead';
+import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 

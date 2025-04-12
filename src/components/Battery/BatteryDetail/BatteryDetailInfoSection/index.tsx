@@ -7,6 +7,7 @@ import { BatteryDetailElemCount } from './BatteryDetailElemCount';
 import { BatteryDetailElemVolt } from './BatteryDetailElemVolt';
 import { BatteryDetailElemMemo } from './BatteryDetailElemMemo';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
+import { Section } from '@/components/common/Section';
 
 interface BatteryDetailInfoSectionProps {
   // Define your props here
@@ -15,21 +16,15 @@ interface BatteryDetailInfoSectionProps {
 export function BatteryDetailInfoSection({ }: BatteryDetailInfoSectionProps) {
   // Zustandストアから状態と関数を取得
   const {
-    isEditing, setIsEditing,
-    editData, initializeEditData,
-    error, setError,
-    imageUrl, setImageUrl,
-    showDeleteConfirm, setShowDeleteConfirm,
-    saving, deleting,
-    handleSave, handleDelete, handleCancelEdit,
-    batteryGroup, setBatteryGroup, batteries, setBatteries,
+    setError,
+    imageUrl, 
+    batteryGroup,
   } = useBatteryDetailStore();
 
-
   return (
-    <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
-      <BatteryDetailElemHead />
-      <div className="px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-dark-border">
+    <Section
+      header={<BatteryDetailElemHead />}>
+      <div>
         <div className="flex space-x-6">
           {batteryGroup && (
             <BatteryDetailImage
@@ -55,6 +50,6 @@ export function BatteryDetailInfoSection({ }: BatteryDetailInfoSectionProps) {
           <BatteryDetailElemMemo />
         </div>
       </div>
-    </div>
+    </Section>
   );
 };
