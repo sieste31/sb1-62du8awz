@@ -6,6 +6,7 @@ import { Calendar } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
 import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -38,11 +39,11 @@ export function DeviceDetailElemPurchaseDate({ device }: DeviceDetailElemPurchas
           />
         ) : (
           <div className="flex items-center">
-            <span className="text-base font-medium text-gray-900">
+            <DetailInfoElemText>
               {device.purchase_date
                 ? new Date(device.purchase_date).toLocaleDateString()
                 : '---'}
-            </span>
+            </DetailInfoElemText>
           </div>
         )}
       </dd>

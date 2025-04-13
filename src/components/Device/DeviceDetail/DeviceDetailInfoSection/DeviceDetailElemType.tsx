@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
 import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -72,9 +73,9 @@ export function DeviceDetailElemType({ device }: DeviceDetailElemTypeProps) {
           </select>
         ) : (
           <div className="flex items-center">
-            <span className="text-base font-medium text-gray-900">
+            <DetailInfoElemText>
               {deviceTypeInfo.label}
-            </span>
+            </DetailInfoElemText>
           </div>
         )}
       </dd>

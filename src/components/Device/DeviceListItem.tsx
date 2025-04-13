@@ -42,7 +42,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
   // 電池切れ予想日を計算
   const batteryEndDate = calculateBatteryEndDate(device);
   const today = new Date();
-  const daysUntilEnd = batteryEndDate 
+  const daysUntilEnd = batteryEndDate
     ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     : null;
   const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
@@ -61,10 +61,10 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
       : BatteryWarning;
 
   return (
-<Link 
-  to={`/devices/${device.id}`}
+    <Link
+      to={`/devices/${device.id}`}
   className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
->
+    >
       <div className="p-5">
         <div className="flex flex-col sm:flex-row">
           <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
@@ -85,7 +85,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">{shortId}</span>
               </div>
             </div>
-            
+
             {/* デバイス情報 */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -105,20 +105,19 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 </span>
               )}
             </div>
-            
+
             {/* 電池状態の表示 */}
             <div className="mt-3">
               <div className="flex justify-between text-xs text-gray-500 mb-2">
                 <span>{t('device.status.batteryStatus')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
-<div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${
-  device.has_batteries
-    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-    : device.last_battery_change
-      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
-      : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-}`}>
+                <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${device.has_batteries
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                    : device.last_battery_change
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
+                      : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+                  }`}>
                   <BatteryIcon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
                   {device.has_batteries
                     ? t('device.status.hasBatteries')
@@ -126,22 +125,21 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                       ? t('device.status.partiallySet')
                       : t('device.status.notSet')}
                 </div>
-                
+
                 {device.last_battery_change && (
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400">
                     <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
                     {t('device.status.exchangeDate', { date: new Date(device.last_battery_change).toLocaleDateString() })}
                   </div>
                 )}
-                
+
                 {batteryEndDate && (
-<div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${
-  isOverdue 
-    ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' 
-    : isNearingEnd 
-      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400' 
-      : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-}`}>
+                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${isOverdue
+                      ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+                      : isNearingEnd
+                        ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
+                        : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                    }`}>
                     <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
                     {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
                     {isOverdue && ` (${t('device.status.overdue')})`}
@@ -150,13 +148,13 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 )}
               </div>
             </div>
-            
+
             {/* メモ（ある場合） */}
             {device.notes && (
-<div className="mt-3 flex items-start">
-  <Info className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 mt-0.5 mr-1.5 flex-shrink-0" />
-  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{device.notes}</p>
-</div>
+              <div className="mt-3 flex items-start">
+                <Info className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 mt-0.5 mr-1.5 flex-shrink-0" />
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{device.notes}</p>
+              </div>
             )}
           </div>
         </div>

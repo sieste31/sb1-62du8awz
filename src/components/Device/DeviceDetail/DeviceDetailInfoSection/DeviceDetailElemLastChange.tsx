@@ -5,6 +5,7 @@ import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -34,20 +35,20 @@ export function DeviceDetailElemLastChange({ device, batteries = [] }: DeviceDet
       <DetailInfoElemHead title={t('device.detail.lastChange')} />
       <dd className="mt-1">
         <div className="flex items-center">
-          <span className="text-base font-medium text-gray-900">
+          <DetailInfoElemText>
             {device.last_battery_change
               ? new Date(device.last_battery_change).toLocaleDateString()
               : '---'}
-          </span>
+          </DetailInfoElemText>
         </div>
 
         {batteryEndDate && hasBatteriesFullInstalled && (
           <div className="mt-2 text-sm">
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${isOverdue
-                ? 'bg-red-100 text-red-800'
-                : isNearingEnd
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-blue-100 text-blue-800'
+              ? 'bg-red-100 text-red-800'
+              : isNearingEnd
+                ? 'bg-yellow-100 text-yellow-800'
+                : 'bg-blue-100 text-blue-800'
               }`}>
               {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
               {isOverdue && ` (${t('device.status.overdue')})`}

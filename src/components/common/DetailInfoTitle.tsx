@@ -11,6 +11,8 @@ interface DetailInfoTitleProps {
 }
 
 export function DetailInfoTitle({title, aria_label, placeholder, isEditing, setEditData}: DetailInfoTitleProps) {
+    const text_base_class = "text-lg font-medium text-gray-900 dark:text-dark-text  w-full truncate";
+
     if (isEditing)
     {
         return (
@@ -18,7 +20,7 @@ export function DetailInfoTitle({title, aria_label, placeholder, isEditing, setE
             type="text"
             value={title}
             onChange={(e) => setEditData({ name: e.target.value })}
-            className="text-xl font-bold text-gray-900 border-b-2 border-blue-500 focus:outline-none bg-transparent w-full truncate"
+            className={"border-b-2 border-blue-500 focus:outline-none bg-transparent dark:text-gray-300" + text_base_class}
             aria-label={aria_label}
             placeholder={placeholder}
             />);
@@ -26,7 +28,7 @@ export function DetailInfoTitle({title, aria_label, placeholder, isEditing, setE
     else
     {
         return (
-            <h2 className="text-xl font-bold text-gray-900 truncate">{title}</h2>
+            <h2 className={text_base_class}>{title}</h2>
         );
     }
 }

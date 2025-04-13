@@ -21,7 +21,7 @@ export function DeviceDetailBatterySectionHead({ device, batteries, onClickShowH
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center mb-4 sm:mb-0">
-                <h3 className="text-lg font-medium text-gray-900">{t('device.batterySection')}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.batterySection')}</h3>
                 <span className="ml-4 text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300">
                     {t('device.detail.installedBatteries', {
                         installed: installedCount,

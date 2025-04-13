@@ -34,7 +34,7 @@ export function DeviceDetailElemNotes({ device }: DeviceDetailElemNotesProps) {
             placeholder={t('device.detail.notesPlaceholder')}
           />
         ) : (
-          <div className="bg-gray-50 p-3 rounded-md text-gray-900 whitespace-pre-wrap">
+          <div className="bg-gray-50 p-3 rounded-md text-gray-900 whitespace-pre-wrap dark:bg-gray-700 dark:text-gray-300">
             {device.notes || '---'}
           </div>
         )}

@@ -6,6 +6,7 @@ import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 import { Hash } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -22,7 +23,7 @@ export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceD
   const isEditing = useDeviceDetailStore(state => state.isEditing);
   const editData = useDeviceDetailStore(state => state.editData);
   const setEditData = useDeviceDetailStore(state => state.setEditData);
-  
+
   const installedCount = batteries.length;
   const hasBatteriesInstalled = installedCount > 0;
 
@@ -44,9 +45,8 @@ export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceD
                 })
               }
               disabled={hasBatteriesInstalled}
-              className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                hasBatteriesInstalled ? 'bg-gray-100 cursor-not-allowed' : ''
-              }`}
+              className={`block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${hasBatteriesInstalled ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
             />
             {hasBatteriesInstalled && (
               <p className="mt-1 text-xs text-amber-600">
@@ -56,9 +56,9 @@ export function DeviceDetailElemBatteryCount({ device, batteries = [] }: DeviceD
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="text-base font-medium text-gray-900">
+            <DetailInfoElemText>
               {device.battery_count}{t('common.unit')}
-            </span>
+            </DetailInfoElemText>
           </div>
         )}
       </dd>

@@ -6,6 +6,7 @@ import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
 import { Clock } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
@@ -45,9 +46,9 @@ export function DeviceDetailElemBatteryLife({ device }: DeviceDetailElemBatteryL
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="text-base font-medium text-gray-900">
+            <DetailInfoElemText>
               {device.battery_life_weeks ? t('device.detail.weeksValue', { weeks: device.battery_life_weeks }) : '---'}
-            </span>
+            </DetailInfoElemText>
           </div>
         )}
       </dd>

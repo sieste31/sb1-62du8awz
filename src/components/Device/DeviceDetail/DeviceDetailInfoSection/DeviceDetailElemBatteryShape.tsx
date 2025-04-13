@@ -7,6 +7,7 @@ import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 import { DetailInfoElemHead } from '@/components/common/DetailInfoElemHead';
+import { DetailInfoElemText } from '@/components/common/DetailInfoElemText';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type Battery = Database['public']['Tables']['batteries']['Row'] & {
@@ -59,9 +60,9 @@ export function DeviceDetailElemBatteryShape({ device, batteries = [] }: DeviceD
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="text-base font-medium text-gray-900">
+            <DetailInfoElemText>
               {t(batteryShapeToTranslationKey(device.battery_shape))}
-            </span>
+            </DetailInfoElemText>
           </div>
         )}
       </dd>
