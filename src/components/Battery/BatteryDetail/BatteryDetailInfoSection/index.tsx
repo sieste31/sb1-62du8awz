@@ -1,5 +1,5 @@
 import React from 'react';
-import { BatteryDetailElemHead } from './BatteryDetailElemHead';
+import { BatteryDetailInfoHead } from './BatteryDetailInfoHead';
 import { BatteryDetailImage } from './BatteryDetailImage';
 import { BatteryDetailElemShape } from './BatteryDetailElemShape';
 import { BatteryDetailElemKind } from './BatteryDetailElemKind';
@@ -17,13 +17,13 @@ export function BatteryDetailInfoSection({ }: BatteryDetailInfoSectionProps) {
   // Zustandストアから状態と関数を取得
   const {
     setError,
-    imageUrl, 
+    imageUrl,
     batteryGroup,
   } = useBatteryDetailStore();
 
   return (
     <Section
-      header={<BatteryDetailElemHead />}>
+      header={<BatteryDetailInfoHead />}>
       <div>
         <div className="flex space-x-6">
           {batteryGroup && (

@@ -3,7 +3,6 @@
 import React from 'react';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { Battery, Pencil, X, Check, ArrowLeft, Trash2, LucideIcon } from 'lucide-react';
-import { BatteryDetailElemTitle } from '@/components/Battery/BatteryDetail/BatteryDetailInfoSection/BatteryDetailElemTitle';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { DetailInfoTitle } from './DetailInfoTitle';
