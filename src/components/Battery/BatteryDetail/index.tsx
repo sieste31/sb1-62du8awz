@@ -51,7 +51,7 @@ export function BatteryDetail() {
   useEffect(() => {
     if (batteryGroup && !loading) {
       getBatteryImage(
-        (batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages, 
+        (batteryGroup.shape || batteryGroup.type) as keyof typeof defaultBatteryImages,
         batteryGroup.image_url
       ).then(url => setImageUrl(url));
     }
@@ -60,12 +60,11 @@ export function BatteryDetail() {
   // supabaseから取得されるまでの間、loadingを表示
   if (loading || !loadBatteryGroup || !loadBatteries || !batteryGroup || !batteries || !editData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg">

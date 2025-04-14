@@ -17,7 +17,7 @@ export function DeviceDetail() {
   const { id: urlId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { device, batteries, loading } = useDevice(urlId || '');
-  
+
   // Zustandストアから状態と関数を取得
   const {
     id: storeId, setId,
@@ -42,7 +42,7 @@ export function DeviceDetail() {
       // デバイスが変更された場合のみeditDataを初期化
       initializeEditData(device);
       setIsEditing(false);
-      
+
       // 画像URLを取得
       getDeviceImage(device.type as 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other', device.image_url)
         .then(url => setImageUrl(url));
@@ -51,7 +51,7 @@ export function DeviceDetail() {
 
   if (loading || !device || !editData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
     );
