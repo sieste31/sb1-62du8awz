@@ -1,15 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getUserPlan } from '../lib/api/userPlans';
 import { useAuth } from '../lib/auth';
+import { signOut } from '../lib/api/auth';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useDarkMode } from '../lib/hooks';
 import { Sun, Moon } from 'lucide-react';
 
 export function UserSettings() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { user } = useAuth();
     const darkMode = useDarkMode();
+    const [logoutLoading, setLogoutLoading] = useState(false);
+    const [logoutError, setLogoutError] = useState<string | null>(null);
     const [userPlan, setUserPlan] = useState<{
         max_battery_groups: number;
         max_devices: number;
@@ -119,6 +124,45 @@ export function UserSettings() {
                                 {t('userSettings.planLimits.upgrade.devices')}
                             </button>
                         </span>
+                    </div>
+                </div>
+            </section>
+
+            {/* ログアウトセクション */}
+            <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-4 dark:text-dark-text">{t('userSettings.logout.title')}</h2>
+                <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4">
+                    <div className="flex flex-col space-y-4">
+                        <p className="text-gray-700 dark:text-dark-text">{t('userSettings.logout.description')}</p>
+                        
+                        {logoutError && (
+                            <div className="text-sm text-center text-red-600">
+                                {logoutError}
+                            </div>
+                        )}
+                        
+                        <button
+                            onClick={async () => {
+                                try {
+                                    setLogoutLoading(true);
+                                    setLogoutError(null);
+                                    await signOut();
+                                    navigate('/login');
+                                } catch (err) {
+                                    setLogoutError(
+                                        err instanceof Error 
+                                            ? err.message 
+                                            : t('userSettings.logout.error')
+                                    );
+                                } finally {
+                                    setLogoutLoading(false);
+                                }
+                            }}
+                            disabled={logoutLoading}
+                            className="w-full bg-red-500 text-white rounded-md py-2 px-4 hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {logoutLoading ? t('userSettings.logout.processing') : t('userSettings.logout.button')}
+                        </button>
                     </div>
                 </div>
             </section>

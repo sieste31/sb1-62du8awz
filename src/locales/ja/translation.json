@@ -231,6 +231,13 @@
         "batteryGroups": "電池グループ数を増やす",
         "devices": "デバイス数を増やす"
       }
+    },
+    "logout": {
+      "title": "ログアウト",
+      "description": "アカウントからログアウトします",
+      "button": "ログアウト",
+      "processing": "ログアウト中...",
+      "error": "ログアウトに失敗しました"
     }
   },
   "common": {

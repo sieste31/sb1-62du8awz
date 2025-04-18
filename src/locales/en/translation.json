@@ -231,6 +231,13 @@
         "batteryGroups": "Increase Battery Group Limit",
         "devices": "Increase Device Limit"
       }
+    },
+    "logout": {
+      "title": "Logout",
+      "description": "Sign out from your account",
+      "button": "Logout",
+      "processing": "Logging out...",
+      "error": "Failed to logout"
     }
   },
   "common": {
