@@ -104,7 +104,10 @@
       "createError": "Failed to register battery",
       "limitReachedWarning": "You have reached the battery group limit ({{current}}/{{max}}).",
       "upgradePlan": "Upgrade Plan",
-      "upgradeInDevelopment": "This feature is currently under development."
+      "upgradeInDevelopment": "This feature is currently under development.",
+      "imageLabel": "Image",
+      "uploadImage": "Select Image",
+      "imageHelp": "JPG, PNG, WebP images (max 5MB)"
     }
   },
   "device": {

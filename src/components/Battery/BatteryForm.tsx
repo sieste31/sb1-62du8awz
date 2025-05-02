@@ -1,15 +1,41 @@
 // 電池作成画面のコンポーネント
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Battery, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Battery, ArrowLeft, AlertCircle, Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
-import { createBatteryGroupWithBatteries } from '@/lib/api';
+import { createBatteryGroupWithBatteries, uploadBatteryGroupImage } from '@/lib/api';
 import { useTranslation } from 'react-i18next';
+import { validateImage } from '@/lib/imageUtils';
+import { ImageCropper } from '@/components/ImageCropper';
 
 type BatteryKind = 'disposable' | 'rechargeable';
 type BatteryStatus = 'charged' | 'empty';
+
+function BatteryShapeForm({ shape, onChange }: { shape: string; onChange: (shape: string) => void }) {
+  const { t } = useTranslation();
+  const batteryShapes = [ '単1形', '単2形', '単3形', '単4形', '9V形' ];
+  return (
+    <div>
+    <label htmlFor="shape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      {t('battery.detail.shape')}
+    </label>
+    <select
+      id="shape"
+      value={shape}
+      onChange={(e) => onChange(e.target.value)}
+      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
+    >
+      <option value="単1形">{t('battery.shape.d')}</option>
+      <option value="単2形">{t('battery.shape.c')}</option>
+      <option value="単3形">{t('battery.shape.aa')}</option>
+      <option value="単4形">{t('battery.shape.aaa')}</option>
+      <option value="9V形">{t('battery.shape.9v')}</option>
+    </select>
+  </div>
+  );
+}
 
 export function BatteryForm() {
   const { t } = useTranslation();
@@ -39,6 +65,41 @@ export function BatteryForm() {
     voltage: 1.5,
     notes: '',
   });
+  
+  // 画像アップロード関連のステート
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [uploadedImageBlob, setUploadedImageBlob] = useState<Blob | null>(null);
+
+  // 画像選択ハンドラ
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    try {
+      // 画像のバリデーション
+      validateImage(file);
+
+      // 画像をData URLに変換
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+        setShowCropper(true);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error(t('battery.detail.imageSelectError'), err);
+      setError(err instanceof Error ? err.message : t('battery.detail.imageSelectFailed'));
+    }
+  };
+
+  // 画像クロップ完了ハンドラ
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    setUploadedImageBlob(croppedBlob);
+    setShowCropper(false);
+    setSelectedImage(URL.createObjectURL(croppedBlob));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +116,7 @@ export function BatteryForm() {
 
     try {
       // 電池グループと電池を一括で作成
-      await createBatteryGroupWithBatteries(
+      const createdGroup = await createBatteryGroupWithBatteries(
         {
           name: formData.name,
           shape: formData.shape,
@@ -69,6 +130,20 @@ export function BatteryForm() {
         formData.status,
         user.id
       );
+
+      // 画像がある場合はアップロード
+      if (uploadedImageBlob) {
+        try {
+          await uploadBatteryGroupImage(
+            user.id,
+            createdGroup.id,
+            uploadedImageBlob
+          );
+        } catch (imageError) {
+          console.error(t('battery.detail.imageUploadError'), imageError);
+          // 画像アップロードエラーは致命的ではないので、続行する
+        }
+      }
 
       navigate('/batteries');
     } catch (err) {
@@ -120,6 +195,53 @@ export function BatteryForm() {
           )}
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
+            {/* 画像アップロード */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t('battery.form.imageLabel')}
+              </label>
+              
+              {selectedImage ? (
+                <div className="relative group">
+                  <img
+                    src={selectedImage}
+                    alt={t('battery.detail.imageAlt', { type: formData.shape })}
+                    className="w-32 h-32 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-0 flex items-center justify-center bg-black dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                  >
+                    <Upload className="h-6 w-6 text-white dark:text-gray-300" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none"
+                >
+                  <Upload className="h-6 w-6 text-gray-400 dark:text-gray-500 mb-1" />
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {t('battery.form.uploadImage')}
+                  </span>
+                </button>
+              )}
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageSelect}
+              />
+              
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {t('battery.form.imageHelp')}
+              </p>
+            </div>
+
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.form.nameLabel')}
@@ -135,23 +257,11 @@ export function BatteryForm() {
               />
             </div>
 
-            <div>
-              <label htmlFor="shape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('battery.detail.shape')}
-              </label>
-              <select
-                id="shape"
-                value={formData.shape}
-                onChange={(e) => setFormData({ ...formData, shape: e.target.value })}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
-              >
-                <option value="単1形">{t('battery.shape.d')}</option>
-                <option value="単2形">{t('battery.shape.c')}</option>
-                <option value="単3形">{t('battery.shape.aa')}</option>
-                <option value="単4形">{t('battery.shape.aaa')}</option>
-                <option value="9V形">{t('battery.shape.9v')}</option>
-              </select>
-            </div>
+            <BatteryShapeForm
+              shape={formData.shape}
+              onChange={(shape: string) => setFormData({ ...formData, shape })}
+            />
+            {/* 電池の種類と状態 */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -290,7 +400,9 @@ export function BatteryForm() {
             </div>
 
             {error && (
-              <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-md">
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              </div>
             )}
 
             <div className="flex justify-end">
@@ -305,6 +417,18 @@ export function BatteryForm() {
           </form>
         </div>
       </div>
+      
+      {/* 画像クロッパー */}
+      {showCropper && selectedImage && (
+        <ImageCropper
+          image={selectedImage}
+          onClose={() => {
+            setShowCropper(false);
+            setSelectedImage(null);
+          }}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </div>
   );
 }
