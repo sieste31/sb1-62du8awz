@@ -257,8 +257,8 @@ export function DeviceList() {
                         key={type}
                         onClick={() => setDeviceTypeFilter(type)}
                         className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${deviceTypeFilter === type
-                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                       >
                         {deviceTypeLabels[type]}
@@ -278,8 +278,8 @@ export function DeviceList() {
                         key={type}
                         onClick={() => setBatteryTypeFilter(type)}
                         className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${batteryTypeFilter === type
-                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                       >
                         {type === 'all' ? 'すべて' : type}
