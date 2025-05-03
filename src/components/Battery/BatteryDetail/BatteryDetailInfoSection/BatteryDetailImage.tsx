@@ -1,7 +1,3 @@
-// 電池詳細画面の画像を表示・アップロードするコンポーネント
-
-'use client';
-
 import React, { useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
@@ -10,6 +6,7 @@ import { ImageCropper } from '@/components/ImageCropper';
 import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { uploadBatteryGroupImage } from '@/lib/api';
 import { useTranslation } from 'react-i18next';
+import { ImageModal } from '@/components/ImageModal';
 
 interface BatteryDetailImageProps {
     imageUrl: string | null;
@@ -31,6 +28,8 @@ export function BatteryDetailImage({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [showCropper, setShowCropper] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const { isEditing } = useBatteryDetailStore();
 
     const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -75,20 +74,31 @@ export function BatteryDetailImage({
         }
     };
 
+    const handleImageClick = () => {
+        if (isEditing) {
+            fileInputRef.current?.click();
+        } else if (imageUrl) {
+            setShowImageModal(true);
+        }
+    };
+
     return (
         <div className="flex-shrink-0">
             <div className="relative group">
                 <img
                     src={imageUrl || ''}
                     alt={t('battery.detail.imageAlt', { type: batteryGroup.type })}
-                    className="w-32 h-32 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                    className="w-32 h-32 rounded-lg object-cover border border-gray-200 dark:border-gray-700 cursor-pointer"
+                    onClick={handleImageClick}
                 />
-                <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 flex items-center justify-center bg-black dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                >
-                    <Upload className="h-6 w-6 text-white dark:text-gray-300" />
-                </button>
+                {isEditing && (
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute inset-0 flex items-center justify-center bg-black dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                    >
+                        <Upload className="h-6 w-6 text-white dark:text-gray-300" />
+                    </button>
+                )}
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -107,6 +117,15 @@ export function BatteryDetailImage({
                         setSelectedImage(null);
                     }}
                     onCropComplete={handleCropComplete}
+                />
+            )}
+
+            {/* Image Modal */}
+            {showImageModal && imageUrl && (
+                <ImageModal
+                    imageUrl={imageUrl}
+                    alt={t('battery.detail.imageAlt', { type: batteryGroup.type })}
+                    onClose={() => setShowImageModal(false)}
                 />
             )}
         </div>
