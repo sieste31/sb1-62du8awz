@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Clock, Hash, Info } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getDeviceImage } from '@/lib/deviceImages';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +35,7 @@ interface DeviceListItemProps {
 
 export function DeviceListItem({ device }: DeviceListItemProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const Icon = iconMap[device.type as keyof typeof iconMap];
   const shortId = device.id.slice(0, 8);
@@ -63,99 +64,102 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
   return (
     <Link
       to={`/devices/${device.id}`}
-  className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
+      className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
     >
       <div className="p-5">
-        <div className="flex flex-col sm:flex-row">
-          <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-            <img
-              src={imageUrl || ''}
-              alt={device.name}
-              className="w-full sm:w-24 h-24 rounded-lg object-cover shadow-sm"
-            />
+        <div className="flex flex-col">
+          {/* 名称を一番上に移動 */}
+          <div className="flex flex-wrap items-start justify-between mb-4">
+            <span className="text-xl font-medium text-gray-900 dark:text-dark-text w-full">
+              {device.name}
+            </span>
+            <div className="flex items-center mt-1">
+              <Hash className="h-3 w-3 text-gray-400 mr-1" />
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">{shortId}</span>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            {/* ヘッダー情報（名前、タイプ） */}
-            <div className="flex flex-wrap items-start justify-between mb-2">
-              <span className="text-xl font-medium text-gray-900 dark:text-dark-text">
-                {device.name}
-              </span>
-              <div className="flex items-center mt-1 sm:mt-0">
-                <Hash className="h-3 w-3 text-gray-400 mr-1" />
-                <span className="text-xs text-gray-400 dark:text-gray-500 font-mono">{shortId}</span>
-              </div>
-            </div>
 
-            {/* デバイス情報 */}
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
-                <Icon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
-                {t(`device.types.${device.type}`)}
-              </span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
-                {t(batteryShapeToTranslationKey(device.battery_shape))}
-                <span className="ml-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                  {device.battery_count}{t('common.unit')}
-                </span>
-              </span>
-              {device.purchase_date && (
-                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                  <Clock className="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
-                  {t('common.purchase', { date: new Date(device.purchase_date).toLocaleDateString() })}
-                </span>
-              )}
+          <div className="flex">
+            {/* 画像を小さく左上に配置 */}
+            <div className="flex-shrink-0 mr-4 mb-4">
+              <img
+                src={imageUrl || ''}
+                alt={device.name}
+                className="w-20 h-20 rounded-lg object-cover shadow-sm"
+              />
             </div>
-
-            {/* 電池状態の表示 */}
-            <div className="mt-3">
-              <div className="flex justify-between text-xs text-gray-500 mb-2">
-                <span>{t('device.status.batteryStatus')}</span>
+            <div className="flex-1 min-w-0">
+              {/* デバイス情報 */}
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
+                  <Icon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
+                  {t(`device.types.${device.type}`)}
+                </span>
+                <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
+                  {t(batteryShapeToTranslationKey(device.battery_shape))}
+                  <span className="ml-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full px-1.5 py-0.5 text-xs font-medium">
+                    {device.battery_count}{t('common.unit')}
+                  </span>
+                </span>
+                {device.purchase_date && (
+                  <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                    <Clock className="h-3 w-3 mr-1 text-gray-400 dark:text-gray-500" />
+                    {t('common.purchase', { date: new Date(device.purchase_date).toLocaleDateString() })}
+                  </span>
+                )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${device.has_batteries
+
+              {/* 電池状態の表示 */}
+              <div className="mt-3">
+                <div className="flex justify-between text-xs text-gray-500 mb-2">
+                  <span>{t('device.status.batteryStatus')}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${device.has_batteries
                     ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                     : device.last_battery_change
                       ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
                       : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-                  }`}>
-                  <BatteryIcon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
-                  {device.has_batteries
-                    ? t('device.status.hasBatteries')
-                    : device.last_battery_change
-                      ? t('device.status.partiallySet')
-                      : t('device.status.notSet')}
-                </div>
-
-                {device.last_battery_change && (
-                  <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400">
-                    <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
-                    {t('device.status.exchangeDate', { date: new Date(device.last_battery_change).toLocaleDateString() })}
+                    }`}>
+                    <BatteryIcon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
+                    {device.has_batteries
+                      ? t('device.status.hasBatteries')
+                      : device.last_battery_change
+                        ? t('device.status.partiallySet')
+                        : t('device.status.notSet')}
                   </div>
-                )}
 
-                {batteryEndDate && (
-                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${isOverdue
+                  {device.last_battery_change && (
+                    <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400">
+                      <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
+                      {t('device.status.exchangeDate', { date: new Date(device.last_battery_change).toLocaleDateString() })}
+                    </div>
+                  )}
+
+                  {batteryEndDate && (
+                    <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${isOverdue
                       ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
                       : isNearingEnd
                         ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
                         : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                    }`}>
-                    <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
-                    {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
-                    {isOverdue && ` (${t('device.status.overdue')})`}
-                    {isNearingEnd && ` (${t('device.status.soon')})`}
-                  </div>
-                )}
+                      }`}>
+                      <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
+                      {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
+                      {isOverdue && ` (${t('device.status.overdue')})`}
+                      {isNearingEnd && ` (${t('device.status.soon')})`}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* メモ（ある場合） */}
-            {device.notes && (
-              <div className="mt-3 flex items-start">
-                <Info className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 mt-0.5 mr-1.5 flex-shrink-0" />
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{device.notes}</p>
-              </div>
-            )}
+              {/* メモ（ある場合） */}
+              {device.notes && (
+                <div className="mt-3 flex items-start">
+                  <Info className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 mt-0.5 mr-1.5 flex-shrink-0" />
+                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{device.notes}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
