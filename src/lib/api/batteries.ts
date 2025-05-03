@@ -96,11 +96,11 @@ export async function getBatteries(groupId?: string) {
       battery_groups (*),
       devices (*)
     `);
-    
+
   if (groupId) {
     query = query.eq('group_id', groupId);
   }
-  
+
   const { data, error } = await query;
 
   if (error) throw error;
@@ -134,7 +134,7 @@ export async function updateBattery(id: string, data: BatteryUpdate) {
 // 複数電池の更新
 export async function updateBatteries(batteryIds: string[], data: BatteryUpdate) {
   if (batteryIds.length === 0) return [];
-  
+
   const { data: updatedData, error } = await supabase
     .from('batteries')
     .update(data)
@@ -188,7 +188,7 @@ export async function getAvailableBatteries(batteryType: string) {
         )
       )
     `)
-    .eq('type', batteryType)
+    .eq('shape', batteryType)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
@@ -197,7 +197,7 @@ export async function getAvailableBatteries(batteryType: string) {
 
 // 電池の状態を更新
 export async function updateBatteryStatus(
-  batteryId: string, 
+  batteryId: string,
   newStatus: BatteryStatus
 ) {
   const now = new Date().toISOString();
@@ -231,9 +231,9 @@ export async function getBatteryStatusCounts(groupId: string) {
     .from('batteries')
     .select('status, device_id')
     .eq('group_id', groupId);
-  
+
   if (error) throw error;
-  
+
   // 状態別のカウントを計算
   const counts = {
     charged: 0,
@@ -241,16 +241,16 @@ export async function getBatteryStatusCounts(groupId: string) {
     empty: 0,
     disposed: 0
   };
-  
+
   data?.forEach(battery => {
     if (battery.status in counts) {
       counts[battery.status as keyof typeof counts]++;
     }
   });
-  
+
   // 設置済み電池数も計算
   const installed = data?.filter(b => b.device_id !== null).length || 0;
-  
+
   return { counts, installed };
 }
 
@@ -259,19 +259,19 @@ export async function removeBatteryFromDevice(batteryId: string) {
   try {
     // 現在時刻を取得
     const now = new Date().toISOString();
-    
+
     // 電池情報を取得
     const { data: batteryData, error: batteryError } = await supabase
       .from('batteries')
       .select('device_id')
       .eq('id', batteryId)
       .single();
-      
+
     if (batteryError) throw batteryError;
     if (!batteryData.device_id) return false; // すでにデバイスに設定されていない場合は何もしない
-    
+
     const deviceId = batteryData.device_id;
-    
+
     // 1. 電池の状態を更新
     const { error: updateBatteryError } = await supabase
       .from('batteries')
@@ -281,9 +281,9 @@ export async function removeBatteryFromDevice(batteryId: string) {
         last_changed_at: now
       })
       .eq('id', batteryId);
-      
+
     if (updateBatteryError) throw updateBatteryError;
-    
+
     // 2. 使用履歴を更新
     const { error: updateHistoryError } = await supabase
       .from('battery_usage_history')
@@ -292,17 +292,17 @@ export async function removeBatteryFromDevice(batteryId: string) {
       })
       .eq('battery_id', batteryId)
       .is('ended_at', null);
-      
+
     if (updateHistoryError) throw updateHistoryError;
-    
+
     // 3. デバイスの電池装着状態を確認・更新
     const { data: deviceBatteries, error: deviceBatteriesError } = await supabase
       .from('batteries')
       .select('id')
       .eq('device_id', deviceId);
-      
+
     if (deviceBatteriesError) throw deviceBatteriesError;
-    
+
     // 取り外し後の電池数が0の場合、デバイスのhas_batteriesをfalseに更新
     if (deviceBatteries.length <= 1) { // 現在の電池を含めて1以下なら、取り外し後は0になる
       const { error: updateDeviceError } = await supabase
@@ -311,10 +311,10 @@ export async function removeBatteryFromDevice(batteryId: string) {
           has_batteries: false
         })
         .eq('id', deviceId);
-        
+
       if (updateDeviceError) throw updateDeviceError;
     }
-    
+
     return true;
   } catch (err) {
     console.error('電池取り外しエラー:', err);
