@@ -7,7 +7,7 @@
     "devices": "デバイス",
     "new": "新規登録",
     "selectBattery": "電池選択",
-    "detail": "詳細"
+    "detail": "デバイス詳細"
   },
   "battery": {
     "image": {
@@ -32,10 +32,10 @@
         "lastChanged": "最終交換",
         "removeFromDevice": "デバイスから取り外す",
         "usageHistory": "使用履歴",
-      "removeError": "電池の取り外しに失敗しました",
-      "updateStatusError": "電池の状態の更新に失敗しました",
-      "removeConfirmMessage": "{{deviceName}}から電池を取り外しますか？",
-      "removeConfirm": "取り外す"
+        "removeError": "電池の取り外しに失敗しました",
+        "updateStatusError": "電池の状態の更新に失敗しました",
+        "removeConfirmMessage": "{{deviceName}}から電池を取り外しますか？",
+        "removeConfirm": "取り外す"
       },
       "cannotChangeCount": "使用中の電池があるため変更できません",
       "cannotReduceCount": "デバイスに設定されている電池があるため、本数を減らすことはできません",

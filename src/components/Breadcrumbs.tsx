@@ -38,8 +38,16 @@ export function Breadcrumbs() {
           name = t('nav.selectBattery');
           break;
         default:
-          if (idx === pathSegments.length - 1 && !isNaN(Number('0x' + curr.substring(0, 2)))) {
-            name = t('nav.detail');
+          // デバイスIDまたは電池IDの場合（16進数のような文字列）
+          if (curr.length >= 2 && !isNaN(Number('0x' + curr.substring(0, 2)))) {
+            // 前のパスセグメントがdevicesの場合はデバイス詳細
+            if (idx > 0 && pathSegments[idx - 1] === 'devices') {
+              name = t('nav.detail');
+            }
+            // 前のパスセグメントがbatteriesの場合は電池詳細
+            else if (idx > 0 && pathSegments[idx - 1] === 'batteries') {
+              name = t('nav.detail');
+            }
           }
       }
 
@@ -62,9 +70,8 @@ export function Breadcrumbs() {
           <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
           <Link
             to={item.href}
-            className={`hover:text-gray-700 dark:hover:text-gray-300 ${
-              index === breadcrumbs.length - 1 ? 'text-gray-900 dark:text-dark-text font-medium' : ''
-            }`}
+            className={`hover:text-gray-700 dark:hover:text-gray-300 ${index === breadcrumbs.length - 1 ? 'text-gray-900 dark:text-dark-text font-medium' : ''
+              }`}
           >
             {item.name}
           </Link>

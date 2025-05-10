@@ -1,260 +1,260 @@
 {
-  "app": {
-    "title": "Battery & Device Management"
-  },
-  "nav": {
-    "batteries": "Battery",
-    "devices": "Device",
-    "new": "New",
-    "selectBattery": "Select Battery",
-    "detail": "Details"
-  },
-  "battery": {
-    "image": {
-      "alt": "Image of {{type}}"
+    "app": {
+        "title": "Battery & Device Management"
     },
-    "comments": {
-      "detailItem": "Battery item component for battery details screen"
+    "nav": {
+        "batteries": "Battery",
+        "devices": "Device",
+        "new": "New",
+        "selectBattery": "Select Battery",
+        "detail": "Device Details"
     },
-    "voltage": "Voltage",
-    "detail": {
-      "memo": "Memo",
-      "count": "Quantity",
-      "shape": "Shape",
-      "kind": "Type",
-      "title": "Title",
-      "item": {
-        "changeStatus": "Change Status",
-        "installationStatus": "Installation Status",
-        "notInstalled": "Not Installed",
-        "changeStatusTitle": "Change Battery #{{number}} Status",
-        "lastChecked": "Last Checked",
-        "lastChanged": "Last Changed",
-        "removeFromDevice": "Remove from Device",
-        "usageHistory": "Usage History",
-      "removeError": "Failed to remove battery from device",
-      "updateStatusError": "Failed to update battery status",
-      "removeConfirmMessage": "Do you want to remove the battery from {{deviceName}}?",
-      "removeConfirm": "Remove"
-      },
-      "cannotChangeCount": "Cannot change quantity while batteries are in use",
-      "cannotReduceCount": "Cannot reduce quantity while batteries are installed in devices",
-      "cannotChangeKind": "Cannot change battery type while batteries are in use",
-      "memoPlaceholder": "Enter memo here",
-      "cannotChangeShape": "Cannot change battery shape while batteries are in use",
-      "titlePlaceholder": "Enter title here",
-      "imageSelectError": "Image selection error:",
-      "imageSelectFailed": "Failed to select image",
-      "imageUploadError": "Image upload error:",
-      "imageUploadFailed": "Failed to upload image",
-      "imageAlt": "Image of {{type}}",
-      "cannotDelete": "Cannot delete while batteries are installed in devices"
+    "battery": {
+        "image": {
+            "alt": "Image of {{type}}"
+        },
+        "comments": {
+            "detailItem": "Battery item component for battery details screen"
+        },
+        "voltage": "Voltage",
+        "detail": {
+            "memo": "Memo",
+            "count": "Quantity",
+            "shape": "Shape",
+            "kind": "Type",
+            "title": "Title",
+            "item": {
+                "changeStatus": "Change Status",
+                "installationStatus": "Installation Status",
+                "notInstalled": "Not Installed",
+                "changeStatusTitle": "Change Battery #{{number}} Status",
+                "lastChecked": "Last Checked",
+                "lastChanged": "Last Changed",
+                "removeFromDevice": "Remove from Device",
+                "usageHistory": "Usage History",
+                "removeError": "Failed to remove battery from device",
+                "updateStatusError": "Failed to update battery status",
+                "removeConfirmMessage": "Do you want to remove the battery from {{deviceName}}?",
+                "removeConfirm": "Remove"
+            },
+            "cannotChangeCount": "Cannot change quantity while batteries are in use",
+            "cannotReduceCount": "Cannot reduce quantity while batteries are installed in devices",
+            "cannotChangeKind": "Cannot change battery type while batteries are in use",
+            "memoPlaceholder": "Enter memo here",
+            "cannotChangeShape": "Cannot change battery shape while batteries are in use",
+            "titlePlaceholder": "Enter title here",
+            "imageSelectError": "Image selection error:",
+            "imageSelectFailed": "Failed to select image",
+            "imageUploadError": "Image upload error:",
+            "imageUploadFailed": "Failed to upload image",
+            "imageAlt": "Image of {{type}}",
+            "cannotDelete": "Cannot delete while batteries are installed in devices"
+        },
+        "shape": {
+            "d": "D Size",
+            "c": "C Size",
+            "aa": "AA Size",
+            "aaa": "AAA Size",
+            "9v": "9V Size"
+        },
+        "list": {
+            "filter": "Filter",
+            "status": "Status",
+            "backToList": "Back to List",
+            "individualSettings": "Individual Settings",
+            "deleteGroup": "Delete Battery Group",
+            "deleteConfirmation": "Are you sure you want to delete \"{{name}}\"?\n\nThis action cannot be undone.",
+            "batteryStatus": "Battery Status:",
+            "installedDevices": "Installed Devices:",
+            "unit": "pcs",
+            "total": "Total: {{count}} pcs",
+            "title": "Battery List",
+            "noBatteries": "No Batteries",
+            "noMatchingBatteries": "No Matching Batteries",
+            "emptyStateMessage": "Register new batteries to start efficient management.",
+            "noMatchingMessage": "Try changing your search criteria or filter settings.",
+            "addNew": "Add New",
+            "groupCount": "Battery Groups: {{current}} / {{max}}",
+            "limitReached": " (Limit Reached)",
+            "limitReachedSettings": "You can change the limit in the settings screen",
+            "changeInSettings": "Change in Settings",
+            "searchPlaceholder": "Search battery name or comments...",
+            "batteryType": "Battery Category",
+            "resetFilter": "Reset Filters"
+        },
+        "status": {
+            "charged": "Fully Charged",
+            "in_use": "In Use",
+            "empty": "Empty",
+            "disposed": "Disposed",
+            "unknown": "Unknown"
+        },
+        "kind": {
+            "rechargeable": "Rechargeable",
+            "disposable": "Disposable"
+        },
+        "form": {
+            "title": "Register New Battery Group",
+            "nameLabel": "Group Name",
+            "namePlaceholder": "e.g. AA Batteries for Remote",
+            "statusLabel": "Battery Status",
+            "saving": "Registering...",
+            "submit": "Register",
+            "limitReachedError": "You have reached the battery group limit. You can change the limit on user setting page.",
+            "createError": "Failed to register battery",
+            "limitReachedWarning": "You have reached the battery group limit ({{current}}/{{max}}).",
+            "upgradePlan": "Upgrade Plan",
+            "upgradeInDevelopment": "This feature is currently under development.",
+            "imageLabel": "Image",
+            "uploadImage": "Select Image",
+            "imageHelp": "JPG, PNG, WebP images (max 5MB)"
+        }
     },
-    "shape": {
-      "d": "D Size",
-      "c": "C Size",
-      "aa": "AA Size",
-      "aaa": "AAA Size",
-      "9v": "9V Size"
+    "device": {
+        "detail": {
+            "type": "Type",
+            "deviceType": "Device Type",
+            "batteryLife": "Battery Life",
+            "batteryShape": "Battery Shape",
+            "batteryCount": "Battery Count",
+            "purchaseDate": "Purchase Date",
+            "lastChange": "Last Change Date",
+            "lastCheck": "Last Check Date",
+            "notes": "Notes",
+            "backToList": "Back to List",
+            "imageAlt": "Image of {{name}}",
+            "cannotChangeBatteryShape": "Cannot change battery shape while batteries are installed",
+            "batteryLifePlaceholder": "e.g. 12",
+            "weeks": "weeks",
+            "weeksValue": "{{weeks}} weeks",
+            "notesPlaceholder": "Enter notes here",
+            "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs"
+        },
+        "list": {
+            "title": "Device List",
+            "searchPlaceholder": "Search device name or notes...",
+            "sortOptions": {
+                "none": "Sort by",
+                "batteryEndAsc": "Due date (soonest first)",
+                "batteryEndDesc": "Due date (latest first)",
+                "changeAsc": "Change date (oldest first)",
+                "changeDesc": "Change date (newest first)",
+                "nameAsc": "Name (A-Z)",
+                "nameDesc": "Name (Z-A)"
+            },
+            "deviceType": "Device Type",
+            "batteryType": "Battery Type",
+            "resetFilter": "Reset Filters",
+            "noDevices": "No Devices",
+            "emptyStateMessage": "Register new devices to start efficient management.",
+            "noMatchingDevices": "No Matching Devices",
+            "noMatchingMessage": "Try changing your search criteria or filter settings.",
+            "withBatteries": "Devices with Batteries",
+            "withoutBatteries": "Devices without Batteries",
+            "limitReached": "Device limit reached",
+            "changeInSettings": "Change in Settings",
+            "deviceCount": "Devices: {{current}} / {{max}}",
+            "addNew": "Add New",
+            "upgrade": "Upgrade",
+            "upgradeInDevelopment": "This feature is currently under development."
+        },
+        "types": {
+            "remotecontroller": "Remote Controller",
+            "speaker": "Radio/Speaker",
+            "camera": "Camera",
+            "gadget": "Gadget",
+            "light": "Light",
+            "toy": "Toy",
+            "other": "Other"
+        },
+        "batterySection": "Battery Information",
+        "batterySlot": "Battery Slot",
+        "selectBattery": "Select Battery",
+        "status": {
+            "batteryStatus": "Battery Status:",
+            "hasBatteries": "Batteries Set",
+            "partiallySet": "Partially Set",
+            "notSet": "Not Set",
+            "exchangeDate": "Changed: {{date}}",
+            "scheduleDate": "Due: {{date}}",
+            "overdue": "Overdue",
+            "soon": "Soon",
+            "installedIn": "Installed in {{deviceName}}"
+        },
+        "select": {
+            "backToDevice": "Back to Device",
+            "filter": "Filter",
+            "history": "Change History",
+            "confirm": "Confirm Selection",
+            "saving": "Saving...",
+            "deviceNotFound": "Device Not Found",
+            "filterTitle": "Filter",
+            "reset": "Reset",
+            "batteryStatus": "Battery Status",
+            "batteryType": "Battery Type",
+            "settingTitle": "Battery Settings",
+            "settingDescription": "Select batteries ({{batteryType}}) for {{deviceName}} (max {{count}} pcs)",
+            "noBatteries": "No Available Batteries",
+            "registerNew": "Please register new {{batteryType}} batteries"
+        },
+        "form": {
+            "title": "Register New Device",
+            "nameLabel": "Device Name",
+            "batteryCountLabel": "Required Quantity",
+            "batteryLifeHelp": "Set the expected battery life in weeks. Leave blank if you don't want notifications.",
+            "saving": "Registering...",
+            "submit": "Register",
+            "limitReachedError": "You have reached the device limit. You can change the limit on user setting page.",
+            "createError": "Failed to register device",
+            "limitReachedWarning": "You have reached the device limit ({{current}}/{{max}}).",
+            "upgradePlan": "Upgrade Plan",
+            "upgradeInDevelopment": "This feature is currently under development."
+        }
     },
-    "list": {
-      "filter": "Filter",
-      "status": "Status",
-      "backToList": "Back to List",
-      "individualSettings": "Individual Settings",
-      "deleteGroup": "Delete Battery Group",
-      "deleteConfirmation": "Are you sure you want to delete \"{{name}}\"?\n\nThis action cannot be undone.",
-      "batteryStatus": "Battery Status:",
-      "installedDevices": "Installed Devices:",
-      "unit": "pcs",
-      "total": "Total: {{count}} pcs",
-      "title": "Battery List",
-      "noBatteries": "No Batteries",
-      "noMatchingBatteries": "No Matching Batteries",
-      "emptyStateMessage": "Register new batteries to start efficient management.",
-      "noMatchingMessage": "Try changing your search criteria or filter settings.",
-      "addNew": "Add New",
-      "groupCount": "Battery Groups: {{current}} / {{max}}",
-      "limitReached": " (Limit Reached)",
-      "limitReachedSettings": "You can change the limit in the settings screen",
-      "changeInSettings": "Change in Settings",
-      "searchPlaceholder": "Search battery name or comments...",
-      "batteryType": "Battery Category",
-      "resetFilter": "Reset Filters"
+    "plan": {
+        "free": "Free",
+        "premium": "Premium",
+        "business": "Business"
     },
-    "status": {
-      "charged": "Fully Charged",
-      "in_use": "In Use",
-      "empty": "Empty",
-      "disposed": "Disposed",
-      "unknown": "Unknown"
+    "userSettings": {
+        "title": "User Settings",
+        "language": "Language Settings",
+        "darkMode": {
+            "title": "Dark Mode",
+            "description": "Toggle dark mode on/off",
+            "enabled": "Enabled",
+            "disabled": "Disabled"
+        },
+        "planLimits": {
+            "title": "Plan Limits",
+            "batteryGroups": "Maximum Battery Groups",
+            "devices": "Maximum Devices",
+            "of": "/ {{max}}",
+            "upgrade": {
+                "batteryGroups": "Increase Battery Group Limit",
+                "devices": "Increase Device Limit"
+            }
+        },
+        "logout": {
+            "title": "Logout",
+            "description": "Sign out from your account",
+            "button": "Logout",
+            "processing": "Logging out...",
+            "error": "Failed to logout"
+        }
     },
-    "kind": {
-      "rechargeable": "Rechargeable",
-      "disposable": "Disposable"
-    },
-    "form": {
-      "title": "Register New Battery Group",
-      "nameLabel": "Group Name",
-      "namePlaceholder": "e.g. AA Batteries for Remote",
-      "statusLabel": "Battery Status",
-      "saving": "Registering...",
-      "submit": "Register",
-      "limitReachedError": "You have reached the battery group limit. You can change the limit on user setting page.",
-      "createError": "Failed to register battery",
-      "limitReachedWarning": "You have reached the battery group limit ({{current}}/{{max}}).",
-      "upgradePlan": "Upgrade Plan",
-      "upgradeInDevelopment": "This feature is currently under development.",
-      "imageLabel": "Image",
-      "uploadImage": "Select Image",
-      "imageHelp": "JPG, PNG, WebP images (max 5MB)"
+    "common": {
+        "edit": "Edit",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "loading": "Loading...",
+        "confirm": "Confirm",
+        "yes": "Yes",
+        "no": "No",
+        "unit": "pcs",
+        "purchase": "Purchased: {{date}}",
+        "all": "All",
+        "registrationDate": "Registered: {{date}}"
     }
-  },
-  "device": {
-    "detail": {
-      "type": "Type",
-      "deviceType": "Device Type",
-      "batteryLife": "Battery Life",
-      "batteryShape": "Battery Shape",
-      "batteryCount": "Battery Count",
-      "purchaseDate": "Purchase Date",
-      "lastChange": "Last Change Date",
-      "lastCheck": "Last Check Date",
-      "notes": "Notes",
-      "backToList": "Back to List",
-      "imageAlt": "Image of {{name}}",
-      "cannotChangeBatteryShape": "Cannot change battery shape while batteries are installed",
-      "batteryLifePlaceholder": "e.g. 12",
-      "weeks": "weeks",
-      "weeksValue": "{{weeks}} weeks",
-      "notesPlaceholder": "Enter notes here",
-      "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs"
-    },
-    "list": {
-      "title": "Device List",
-      "searchPlaceholder": "Search device name or notes...",
-      "sortOptions": {
-        "none": "Sort by",
-        "batteryEndAsc": "Due date (soonest first)",
-        "batteryEndDesc": "Due date (latest first)",
-        "changeAsc": "Change date (oldest first)",
-        "changeDesc": "Change date (newest first)",
-        "nameAsc": "Name (A-Z)",
-        "nameDesc": "Name (Z-A)"
-      },
-      "deviceType": "Device Type",
-      "batteryType": "Battery Type",
-      "resetFilter": "Reset Filters",
-      "noDevices": "No Devices",
-      "emptyStateMessage": "Register new devices to start efficient management.",
-      "noMatchingDevices": "No Matching Devices",
-      "noMatchingMessage": "Try changing your search criteria or filter settings.",
-      "withBatteries": "Devices with Batteries",
-      "withoutBatteries": "Devices without Batteries",
-      "limitReached": "Device limit reached",
-      "changeInSettings": "Change in Settings",
-      "deviceCount": "Devices: {{current}} / {{max}}",
-      "addNew": "Add New",
-      "upgrade": "Upgrade",
-      "upgradeInDevelopment": "This feature is currently under development."
-    },
-    "types": {
-      "remotecontroller": "Remote Controller",
-      "speaker": "Radio/Speaker",
-      "camera": "Camera",
-      "gadget": "Gadget",
-      "light": "Light",
-      "toy": "Toy",
-      "other": "Other"
-    },
-    "batterySection": "Battery Information",
-    "batterySlot": "Battery Slot",
-    "selectBattery": "Select Battery",
-    "status": {
-      "batteryStatus": "Battery Status:",
-      "hasBatteries": "Batteries Set",
-      "partiallySet": "Partially Set",
-      "notSet": "Not Set",
-      "exchangeDate": "Changed: {{date}}",
-      "scheduleDate": "Due: {{date}}",
-      "overdue": "Overdue",
-      "soon": "Soon",
-      "installedIn": "Installed in {{deviceName}}"
-    },
-    "select": {
-      "backToDevice": "Back to Device",
-      "filter": "Filter",
-      "history": "Change History",
-      "confirm": "Confirm Selection",
-      "saving": "Saving...",
-      "deviceNotFound": "Device Not Found",
-      "filterTitle": "Filter",
-      "reset": "Reset",
-      "batteryStatus": "Battery Status",
-      "batteryType": "Battery Type",
-      "settingTitle": "Battery Settings",
-      "settingDescription": "Select batteries ({{batteryType}}) for {{deviceName}} (max {{count}} pcs)",
-      "noBatteries": "No Available Batteries",
-      "registerNew": "Please register new {{batteryType}} batteries"
-    },
-    "form": {
-      "title": "Register New Device",
-      "nameLabel": "Device Name",
-      "batteryCountLabel": "Required Quantity",
-      "batteryLifeHelp": "Set the expected battery life in weeks. Leave blank if you don't want notifications.",
-      "saving": "Registering...",
-      "submit": "Register",
-      "limitReachedError": "You have reached the device limit. You can change the limit on user setting page.",
-      "createError": "Failed to register device",
-      "limitReachedWarning": "You have reached the device limit ({{current}}/{{max}}).",
-      "upgradePlan": "Upgrade Plan",
-      "upgradeInDevelopment": "This feature is currently under development."
-    }
-  },
-  "plan": {
-    "free": "Free",
-    "premium": "Premium",
-    "business": "Business"
-  },
-  "userSettings": {
-    "title": "User Settings",
-    "language": "Language Settings",
-    "darkMode": {
-      "title": "Dark Mode",
-      "description": "Toggle dark mode on/off",
-      "enabled": "Enabled",
-      "disabled": "Disabled"
-    },
-    "planLimits": {
-      "title": "Plan Limits",
-      "batteryGroups": "Maximum Battery Groups",
-      "devices": "Maximum Devices",
-      "of": "/ {{max}}",
-      "upgrade": {
-        "batteryGroups": "Increase Battery Group Limit",
-        "devices": "Increase Device Limit"
-      }
-    },
-    "logout": {
-      "title": "Logout",
-      "description": "Sign out from your account",
-      "button": "Logout",
-      "processing": "Logging out...",
-      "error": "Failed to logout"
-    }
-  },
-  "common": {
-    "edit": "Edit",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "confirm": "Confirm",
-    "yes": "Yes",
-    "no": "No",
-    "unit": "pcs",
-    "purchase": "Purchased: {{date}}",
-    "all": "All",
-    "registrationDate": "Registered: {{date}}"
-  }
 }
