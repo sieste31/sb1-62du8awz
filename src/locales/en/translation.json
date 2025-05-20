@@ -176,7 +176,7 @@
             "partiallySet": "Partially Set",
             "notSet": "Not Set",
             "exchangeDate": "Changed: {{date}}",
-            "scheduleDate": "Due: {{date}}",
+            "scheduleDate": "Due Day: {{date}}",
             "overdue": "Overdue",
             "soon": "Soon",
             "installedIn": "Installed in {{deviceName}}"

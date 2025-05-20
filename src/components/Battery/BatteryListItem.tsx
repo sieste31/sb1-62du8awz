@@ -61,8 +61,8 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
         <div className="flex flex-col">
           {/* タイトル部分 */}
           <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col w-full">
+              <div className="flex items-center justify-between">
                 <span className="text-xl font-medium text-gray-900 dark:text-dark-text max-w-[70%] truncate">
                   {group.name}
                 </span>

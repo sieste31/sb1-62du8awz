@@ -172,11 +172,12 @@
     "selectBattery": "電池を選択",
     "status": {
       "batteryStatus": "電池状態:",
+      "batteryExchange": "電池交換:",
       "hasBatteries": "電池設定完了",
       "partiallySet": "電池設定不足",
       "notSet": "電池未設定",
-      "exchangeDate": "交換: {{date}}",
-      "scheduleDate": "予定: {{date}}",
+      "exchangeDate": "交換日: {{date}}",
+      "scheduleDate": "予定日: {{date}}",
       "overdue": "超過",
       "soon": "まもなく",
       "installedIn": "{{deviceName}}に設置中"
