@@ -5,14 +5,14 @@ const LandingFeatures: React.FC = () => {
     const { t } = useTranslation();
 
     const getDetailsArray = (key: string): string[] => {
-        const details = t(key);
+        const details = t(key, { returnObjects: true });
         // 文字列の場合は配列に変換
         if (typeof details === 'string') {
             return [details];
         }
         // 配列の場合はそのまま返す
         if (Array.isArray(details)) {
-            return details;
+            return details.filter((item): item is string => typeof item === 'string');
         }
         // それ以外の場合（オブジェクトなど）は空配列を返す
         return [];
