@@ -9,6 +9,75 @@
         "selectBattery": "Select Battery",
         "detail": "Device Details"
     },
+    "landingPage": {
+        "hero": {
+            "title": "Smart Battery Management App - Never Run Out of Power",
+            "subtitle": "Track and Manage Device Battery Status in Real-Time",
+            "existingUser": "Already have an account?"
+        },
+        "features": {
+            "title": "App Features",
+            "notification": {
+                "title": "Battery Depletion Alerts",
+                "description": "Get proactive notifications when device battery levels are low, preventing unexpected power failures.",
+                "details": [
+                    "Real-time battery level monitoring",
+                    "Customizable notification settings",
+                    "Manage multiple devices simultaneously"
+                ]
+            },
+            "inventory": {
+                "title": "Battery Inventory Tracking",
+                "description": "Easily track your battery inventory and see which batteries are used in which devices at a glance.",
+                "details": [
+                    "Create and manage battery groups",
+                    "Track in-use and spare batteries",
+                    "Manage battery status (charged, in-use, disposed)"
+                ]
+            },
+            "deviceTracking": {
+                "title": "Device Battery Tracking",
+                "description": "Track battery usage for each device and know exactly when to replace batteries.",
+                "details": [
+                    "Device-specific battery life prediction",
+                    "Record battery change history",
+                    "Link devices and batteries"
+                ]
+            }
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "steps": [
+                {
+                    "title": "Register Devices",
+                    "description": "Easily add your devices and set the required battery type and quantity"
+                },
+                {
+                    "title": "Create Battery Groups",
+                    "description": "Manage battery inventory and select the right batteries for each device"
+                },
+                {
+                    "title": "Real-Time Tracking",
+                    "description": "Always monitor battery levels and replacement times, and take proactive measures"
+                }
+            ]
+        },
+        "cta": {
+            "login": "Login and Get Started",
+            "signup": "Sign Up for Free"
+        },
+        "planInfo": {
+            "title": "Flexible Plan Options",
+            "description": "Free plan allows managing up to 5 battery groups and devices. Upgrade in the future to manage more devices and batteries."
+        },
+        "footer": {
+            "contact": "Contact Us",
+            "privacyPolicy": "Privacy Policy",
+            "termsOfService": "Terms of Service",
+            "faq": "Frequently Asked Questions",
+            "copyright": "© 2025 Battery & Device Management. All rights reserved."
+        }
+    },
     "battery": {
         "image": {
             "alt": "Image of {{type}}"

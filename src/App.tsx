@@ -14,6 +14,7 @@ import { Login } from './components/Login';
 import { AuthRequired } from './components/AuthRequired';
 import { useAuth } from './lib/auth-provider';
 import { useDarkMode } from './lib/hooks';
+import LandingPage from './components/LandingPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -34,15 +35,8 @@ function App() {
         <main className={user ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" : ""}>
           {user && <Breadcrumbs />}
           <Routes>
+            <Route path="/" element={user ? <Navigate to="/batteries" replace /> : <LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <AuthRequired>
-                  <Navigate to="/batteries" replace />
-                </AuthRequired>
-              }
-            />
             <Route
               path="/batteries"
               element={
