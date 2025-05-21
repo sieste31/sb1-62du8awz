@@ -4,23 +4,37 @@ import { useTranslation } from 'react-i18next';
 const LandingFeatures: React.FC = () => {
     const { t } = useTranslation();
 
+    const getDetailsArray = (key: string): string[] => {
+        const details = t(key);
+        // 文字列の場合は配列に変換
+        if (typeof details === 'string') {
+            return [details];
+        }
+        // 配列の場合はそのまま返す
+        if (Array.isArray(details)) {
+            return details;
+        }
+        // それ以外の場合（オブジェクトなど）は空配列を返す
+        return [];
+    };
+
     const features = [
         {
             title: t('landingPage.features.notification.title'),
             description: t('landingPage.features.notification.description'),
-            details: t('landingPage.features.notification.details', { returnObjects: true }),
+            details: getDetailsArray('landingPage.features.notification.details'),
             icon: '🔔'
         },
         {
             title: t('landingPage.features.inventory.title'),
             description: t('landingPage.features.inventory.description'),
-            details: t('landingPage.features.inventory.details', { returnObjects: true }),
+            details: getDetailsArray('landingPage.features.inventory.details'),
             icon: '📦'
         },
         {
             title: t('landingPage.features.deviceTracking.title'),
             description: t('landingPage.features.deviceTracking.description'),
-            details: t('landingPage.features.deviceTracking.details', { returnObjects: true }),
+            details: getDetailsArray('landingPage.features.deviceTracking.details'),
             icon: '🔋'
         }
     ];
