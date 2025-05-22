@@ -1,6 +1,6 @@
 {
     "app": {
-        "title": "Battery & Device Management"
+        "title": "BattDevy"
     },
     "nav": {
         "batteries": "Battery",
@@ -75,7 +75,7 @@
             "privacyPolicy": "Privacy Policy",
             "termsOfService": "Terms of Service",
             "faq": "Frequently Asked Questions",
-            "copyright": "© 2025 Battery & Device Management. All rights reserved."
+            "copyright": "© 2025 BattDevy. All rights reserved."
         }
     },
     "battery": {

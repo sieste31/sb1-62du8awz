@@ -18,7 +18,7 @@ export function Login() {
 
   const handleGoogleLogin = async () => {
     if (loading) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -34,7 +34,7 @@ export function Login() {
 
   const handleAppleLogin = async () => {
     if (loading) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -52,13 +52,13 @@ export function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            電池＆デバイス管理
+            BattDevy
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Googleアカウントでログインしてください
           </p>
         </div>
-        
+
         {error && (
           <div className="text-sm text-center text-red-600">
             {error}
@@ -82,7 +82,7 @@ export function Login() {
               {loading ? 'ログイン中...' : 'Googleでログイン'}
             </span>
           </button>
-          
+
           {/* appleログインは中止
            <button
             type="button"

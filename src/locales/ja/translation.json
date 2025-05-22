@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "電池＆デバイス管理"
+    "title": "BattDevy"
   },
   "nav": {
     "batteries": "電池",
@@ -75,7 +75,7 @@
       "privacyPolicy": "プライバシーポリシー",
       "termsOfService": "利用規約",
       "faq": "よくある質問",
-      "copyright": "© 2025 電池＆デバイス管理. All rights reserved."
+      "copyright": "© 2025 BattDevy. All rights reserved."
     }
   },
   "battery": {
