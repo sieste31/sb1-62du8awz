@@ -8,7 +8,7 @@ import { BatteryForm } from './components/Battery/BatteryForm';
 import { DeviceList } from './components/Device/DeviceList';
 import { DeviceDetail } from './components/Device/DeviceDetail';
 import { DeviceForm } from './components/Device/DeviceForm';
-import { SelectBattery } from './components/Device/SelectBattery';
+import { SelectBattery } from './components/Device/SelectBattery/index';
 import { UserSettings } from './components/UserSettings';
 import { Login } from './components/Login';
 import { AuthRequired } from './components/AuthRequired';
