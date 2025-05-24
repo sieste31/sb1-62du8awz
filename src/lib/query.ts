@@ -35,7 +35,7 @@ export const QUERY_KEYS = {
  */
 export function useUserPlanQuery() {
   const { user } = useAuth();
-  
+
   return useQuery({
     queryKey: [QUERY_KEYS.USER_PLAN, user?.id],
     queryFn: async () => {

@@ -157,7 +157,7 @@ export async function deleteBattery(id: string) {
 }
 
 // 利用可能な電池の取得
-export async function getAvailableBatteries(batteryType: string) {
+export async function getAvailableBatteries(batteryType: string): Promise<BatteryGroup[]> {
   const { data, error } = await supabase
     .from('battery_groups')
     .select(`
