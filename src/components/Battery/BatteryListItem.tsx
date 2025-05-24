@@ -1,22 +1,19 @@
 // 電池一覧画面の各電池グループの表示を担当するコンポーネント
 
 import React, { useEffect, useState } from 'react';
-import { Battery, Smartphone, Info, Calendar, Hash } from 'lucide-react';
-import { BatteryStatusBadge } from './BatteryStatusBadge';
+import { Smartphone, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { getBatteryImage, defaultBatteryImages } from '@/lib/batteryImages';
-import { getBatteryStatusCounts } from '@/lib/api';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
-import type { Database } from '@/lib/database.types';
-import { useTranslation } from 'react-i18next';
-
-type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
-  batteries?: (Database['public']['Tables']['batteries']['Row'] & {
-    devices?: Database['public']['Tables']['devices']['Row'] | null;
-  })[];
-};
+import { BatteryGroup } from './types';
+import { BatteryStatusDisplay } from './components/BatteryStatusDisplay';
+import { getDeviceBatteryCounts, getBatteryStatusCounts } from './utils/batteryUtils';
 
 interface BatteryListItemProps {
+  /**
+   * 表示する電池グループ
+   */
   group: BatteryGroup;
 }
 
@@ -24,33 +21,34 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [installedCount, setInstalledCount] = useState(0);
   const [batteryStatusCounts, setBatteryStatusCounts] = useState({
     charged: 0,
     in_use: 0,
     empty: 0,
     disposed: 0
   });
+  const [deviceBatteryCounts, setDeviceBatteryCounts] = useState<Array<{
+    deviceId: string;
+    deviceName: string;
+    batteryCount: number;
+  }>>([]);
+
   const totalCount = group.count;
   const shortId = group.id.slice(0, 8);
 
   useEffect(() => {
+    // 画像の取得
     getBatteryImage((group.shape || group.type) as keyof typeof defaultBatteryImages, group.image_url)
       .then(url => setImageUrl(url));
 
     // 電池の状態別カウントと設置状況を取得
-    async function fetchBatteryStatusCounts() {
-      try {
-        const { counts, installed } = await getBatteryStatusCounts(group.id);
-        setBatteryStatusCounts(counts);
-        setInstalledCount(installed);
-      } catch (err) {
-        console.error('Error fetching battery status counts:', err);
-      }
-    }
+    const statusCounts = getBatteryStatusCounts(group);
+    setBatteryStatusCounts(statusCounts);
 
-    fetchBatteryStatusCounts();
-  }, [group.type, group.image_url, group.id]);
+    // デバイス別電池数の集計
+    const deviceCounts = getDeviceBatteryCounts(group);
+    setDeviceBatteryCounts(deviceCounts);
+  }, [group]);
 
   return (
     <Link
@@ -103,100 +101,39 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
 
             {/* 上部右：電池状態 */}
             <div className="flex-1 min-w-0">
-              <div className="flex justify-between text-xs text-gray-500 mb-2">
-                <span>{t('battery.list.batteryStatus')} (全{totalCount}本)</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {/* 満充電 */}
-                <div className={`inline-flex items-center px-2.5 py-1 rounded-full ${batteryStatusCounts.charged > 0
-                  ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-50'
-                  }`}>
-                  <BatteryStatusBadge status="charged" className="!bg-transparent !p-0" />
-                  <span className={`ml-1 rounded-full px-1.5 py-0.5 text-xs font-medium ${batteryStatusCounts.charged > 0
-                    ? 'bg-green-200 dark:bg-green-900/40 text-green-800 dark:text-green-300'
-                    : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                    }`}>
-                    {batteryStatusCounts.charged}{t('battery.list.unit')}
-                  </span>
-                </div>
-
-                {/* 使用中 */}
-                <div className={`inline-flex items-center px-2.5 py-1 rounded-full ${batteryStatusCounts.in_use > 0
-                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-50'
-                  }`}>
-                  <BatteryStatusBadge status="in_use" className="!bg-transparent !p-0" />
-                  <span className={`ml-1 rounded-full px-1.5 py-0.5 text-xs font-medium ${batteryStatusCounts.in_use > 0
-                    ? 'bg-blue-200 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300'
-                    : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                    }`}>
-                    {batteryStatusCounts.in_use}{t('battery.list.unit')}
-                  </span>
-                </div>
-
-                {/* 空 */}
-                <div className={`inline-flex items-center px-2.5 py-1 rounded-full ${batteryStatusCounts.empty > 0
-                  ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-50'
-                  }`}>
-                  <BatteryStatusBadge status="empty" className="!bg-transparent !p-0" />
-                  <span className={`ml-1 rounded-full px-1.5 py-0.5 text-xs font-medium ${batteryStatusCounts.empty > 0
-                    ? 'bg-yellow-200 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300'
-                    : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                    }`}>
-                    {batteryStatusCounts.empty}{t('battery.list.unit')}
-                  </span>
-                </div>
-              </div>
+              <BatteryStatusDisplay
+                statusCounts={batteryStatusCounts}
+                totalCount={totalCount}
+                interactive={false}
+              />
             </div>
           </div>
 
           {/* 下部セクション：電池情報 */}
           <div>
             {/* 設置中デバイス */}
-            {group.batteries?.some(b => b.device_id && b.devices) && (
+            {deviceBatteryCounts.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-100 dark:border-dark-border">
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-300 flex items-center">
                   <Smartphone className="h-3 w-3 mr-1.5" />
                   {t('battery.list.installedDevices')}
                 </p>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {(() => {
-                    // デバイスIDごとに電池数をカウント
-                    const deviceCounts: Record<string, { count: number; name: string; id: string }> = {};
-
-                    group.batteries
-                      ?.filter(b => b.device_id && b.devices)
-                      .forEach(b => {
-                        const deviceId = b.device_id as string;
-                        if (!deviceCounts[deviceId]) {
-                          deviceCounts[deviceId] = {
-                            count: 0,
-                            name: b.devices?.name || '',
-                            id: deviceId
-                          };
-                        }
-                        deviceCounts[deviceId].count++;
-                      });
-
-                    // デバイスごとにまとめて表示
-                    return Object.values(deviceCounts).map(device => (
-                      <button
-                        key={device.id}
-                        className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation(); // クリックイベントの伝播を停止
-                          navigate(`/devices/${device.id}`);
-                        }}
-                      >
-                        <span className="max-w-[120px] truncate">{device.name}</span>
-                        <span className="ml-1 bg-blue-200 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full px-1.5 py-0.5 text-xs font-medium">
-                          {device.count}{t('battery.list.unit')}
-                        </span>
-                      </button>
-                    ));
-                  })()}
+                  {deviceBatteryCounts.map(device => (
+                    <button
+                      key={device.deviceId}
+                      className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation(); // クリックイベントの伝播を停止
+                        navigate(`/devices/${device.deviceId}`);
+                      }}
+                    >
+                      <span className="max-w-[120px] truncate">{device.deviceName}</span>
+                      <span className="ml-1 bg-blue-200 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full px-1.5 py-0.5 text-xs font-medium">
+                        {device.batteryCount}{t('battery.list.unit')}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

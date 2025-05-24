@@ -5,6 +5,8 @@ import { useBatteryDetailStore } from '@/lib/batteryDetailStore';
 import { useTranslation } from 'react-i18next';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
 import { DetailInfoElem } from '@/components/common/DetailInfoElem';
+import { BatteryShapeSelect } from '@/components/Battery/components/BatteryShapeSelect';
+import { BatteryShape } from '@/components/Battery/types';
 
 export function BatteryDetailElemShape() {
   const { t } = useTranslation();
@@ -16,27 +18,17 @@ export function BatteryDetailElemShape() {
 
   if (!editData || !batteryGroup) return null;
   return (
-    <DetailInfoElem title={t('battery.detail.shape')} value={t(batteryShapeToTranslationKey(batteryGroup.shape))} isEditing={isEditing}>
-      <div>
-        <select
-          value={editData.shape}
-          onChange={(e) => setEditData({ shape: e.target.value })}
-          disabled={restrictTypeAndCountEditing}
-          className={`block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text ${restrictTypeAndCountEditing ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed' : ''
-            }`}
-        >
-          <option value="単1形">{t('battery.shape.d')}</option>
-          <option value="単2形">{t('battery.shape.c')}</option>
-          <option value="単3形">{t('battery.shape.aa')}</option>
-          <option value="単4形">{t('battery.shape.aaa')}</option>
-          <option value="9V形">{t('battery.shape.9v')}</option>
-        </select>
-        {restrictTypeAndCountEditing && (
-          <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-            {t('battery.detail.cannotChangeShape')}
-          </p>
-        )}
-      </div>
+    <DetailInfoElem
+      title={t('battery.detail.shape')}
+      value={t(batteryShapeToTranslationKey(batteryGroup.shape))}
+      isEditing={isEditing}
+    >
+      <BatteryShapeSelect
+        value={editData.shape as BatteryShape}
+        onChange={(shape) => setEditData({ shape })}
+        disabled={restrictTypeAndCountEditing}
+        restrictionMessage={restrictTypeAndCountEditing ? t('battery.detail.cannotChangeShape') : undefined}
+      />
     </DetailInfoElem>
   );
 }

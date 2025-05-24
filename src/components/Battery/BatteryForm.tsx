@@ -9,33 +9,10 @@ import { createBatteryGroupWithBatteries, uploadBatteryGroupImage } from '@/lib/
 import { useTranslation } from 'react-i18next';
 import { validateImage } from '@/lib/imageUtils';
 import { ImageCropper } from '@/components/ImageCropper';
-
-type BatteryKind = 'disposable' | 'rechargeable';
-type BatteryStatus = 'charged' | 'empty';
-
-function BatteryShapeForm({ shape, onChange }: { shape: string; onChange: (shape: string) => void }) {
-  const { t } = useTranslation();
-  const batteryShapes = [ '単1形', '単2形', '単3形', '単4形', '9V形' ];
-  return (
-    <div>
-    <label htmlFor="shape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-      {t('battery.detail.shape')}
-    </label>
-    <select
-      id="shape"
-      value={shape}
-      onChange={(e) => onChange(e.target.value)}
-      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text"
-    >
-      <option value="単1形">{t('battery.shape.d')}</option>
-      <option value="単2形">{t('battery.shape.c')}</option>
-      <option value="単3形">{t('battery.shape.aa')}</option>
-      <option value="単4形">{t('battery.shape.aaa')}</option>
-      <option value="9V形">{t('battery.shape.9v')}</option>
-    </select>
-  </div>
-  );
-}
+import { BatteryShapeSelect } from './components/BatteryShapeSelect';
+import { BatteryKindSelector } from './components/BatteryKindSelector';
+import { BatteryShape, BatteryKind, BatteryCreationStatus } from './types';
+import { UserPlanInfo } from './components/UserPlanInfo';
 
 export function BatteryForm() {
   const { t } = useTranslation();
@@ -46,26 +23,27 @@ export function BatteryForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
-  
+
   // 制限チェック
   const isBatteryGroupLimitReached = isLimitReached.batteryGroups(batteryGroups.length);
-  
+
   useEffect(() => {
     // ページ読み込み時に制限チェック
     if (isBatteryGroupLimitReached) {
       setShowLimitWarning(true);
     }
   }, [isBatteryGroupLimitReached]);
+
   const [formData, setFormData] = useState({
     name: '',
-    shape: '単3形',
+    shape: '単3形' as BatteryShape,
     kind: 'disposable' as BatteryKind,
-    status: 'charged' as BatteryStatus,
+    status: 'charged' as BatteryCreationStatus,
     count: 1,
     voltage: 1.5,
     notes: '',
   });
-  
+
   // 画像アップロード関連のステート
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -104,7 +82,7 @@ export function BatteryForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    
+
     // 制限チェック
     if (isBatteryGroupLimitReached) {
       setError(t('battery.form.limitReachedError'));
@@ -172,27 +150,11 @@ export function BatteryForm() {
               <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('battery.form.title')}</h2>
             </div>
           </div>
-          
-          {showLimitWarning && (
-            <div className="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-900/30">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-amber-400 dark:text-amber-300" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-amber-700 dark:text-amber-300">
-                    {t('battery.form.limitReachedWarning', { current: batteryGroups.length, max: userPlan?.max_battery_groups || 5 })}
-                    <button 
-                      className="ml-2 font-medium text-amber-700 dark:text-amber-300 underline"
-                      onClick={() => alert(t('battery.form.upgradeInDevelopment'))}
-                    >
-                      {t('battery.form.upgradePlan')}
-                    </button>
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+
+          <UserPlanInfo
+            batteryGroups={batteryGroups}
+            planType={userPlan?.plan_type as 'free' | 'premium' | 'business'}
+          />
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             {/* 画像アップロード */}
@@ -200,7 +162,7 @@ export function BatteryForm() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t('battery.form.imageLabel')}
               </label>
-              
+
               {selectedImage ? (
                 <div className="relative group">
                   <img
@@ -228,7 +190,7 @@ export function BatteryForm() {
                   </span>
                 </button>
               )}
-              
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -236,7 +198,7 @@ export function BatteryForm() {
                 className="hidden"
                 onChange={handleImageSelect}
               />
-              
+
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 {t('battery.form.imageHelp')}
               </p>
@@ -257,56 +219,28 @@ export function BatteryForm() {
               />
             </div>
 
-            <BatteryShapeForm
-              shape={formData.shape}
-              onChange={(shape: string) => setFormData({ ...formData, shape })}
-            />
-            {/* 電池の種類と状態 */}
+            <div>
+              <label htmlFor="shape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('battery.detail.shape')}
+              </label>
+              <BatteryShapeSelect
+                value={formData.shape}
+                onChange={(shape) => setFormData({ ...formData, shape })}
+              />
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t('battery.detail.kind')}
               </label>
-              <div className="mt-2 grid grid-cols-2 gap-3">
-                <div
-                  className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                    formData.kind === 'disposable'
-                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
-                  }`}
-                  onClick ={() => {
-                    setFormData({ 
-                      ...formData, 
-                      kind: 'disposable',
-                      status: 'empty'
-                    });
-                  }}
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="text-sm">
-                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.kind.disposable')}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                    formData.kind === 'rechargeable'
-                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
-                  }`}
-                  onClick={() => setFormData({ ...formData, kind: 'rechargeable' })}
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="text-sm">
-                        <p className="font-medium text-gray-900 dark:text-dark-text">{t('battery.kind.rechargeable')}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BatteryKindSelector
+                value={formData.kind}
+                onChange={(kind) => setFormData({
+                  ...formData,
+                  kind,
+                  status: kind === 'disposable' ? 'empty' : formData.status
+                })}
+              />
             </div>
 
             <div>
@@ -315,15 +249,13 @@ export function BatteryForm() {
               </label>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div
-                  className={`relative flex rounded-lg border p-4 ${
-                    formData.status === 'charged'
-                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
-                  } ${
-                    formData.kind === 'disposable'
+                  className={`relative flex rounded-lg border p-4 ${formData.status === 'charged'
+                    ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
+                    } ${formData.kind === 'disposable'
                       ? 'opacity-50 cursor-not-allowed'
                       : 'cursor-pointer'
-                  }`}
+                    }`}
                   onClick={() => {
                     if (formData.kind === 'rechargeable') {
                       setFormData({ ...formData, status: 'charged' });
@@ -339,11 +271,10 @@ export function BatteryForm() {
                   </div>
                 </div>
                 <div
-                  className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${
-                    formData.status === 'empty'
-                      ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
-                  }`}
+                  className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${formData.status === 'empty'
+                    ? 'border-blue-500 dark:border-blue-700 ring-2 ring-blue-500 dark:ring-blue-700 bg-white dark:bg-dark-card'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-card'
+                    }`}
                   onClick={() => setFormData({ ...formData, status: 'empty' })}
                 >
                   <div className="flex w-full items-center justify-between">
@@ -417,7 +348,7 @@ export function BatteryForm() {
           </form>
         </div>
       </div>
-      
+
       {/* 画像クロッパー */}
       {showCropper && selectedImage && (
         <ImageCropper
