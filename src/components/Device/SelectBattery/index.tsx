@@ -182,17 +182,17 @@ export function SelectBattery() {
         {/* 電池スロットの選択 */}
         {sortedBatteryGroups.length === 0 ? (
           <div className="p-6 text-center">
-            <Battery className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+            <Battery className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-dark-text">
               {t('device.select.noBatteries')}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               {t('device.select.registerNew', { batteryType: t(noBatteriesTypeKey) })}
             </p>
           </div>
         ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden mb-6">
-            <div className="divide-y divide-gray-200">
+          <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden mb-6">
+            <div className="divide-y divide-gray-200 dark:divide-dark-border">
               {/* 電池グループごと */
                 sortedBatteryGroups.map((group) => {
                   const batteries = (group.batteries || [])
@@ -207,18 +207,18 @@ export function SelectBattery() {
                     <div key={group.id} className="p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-medium text-gray-900">
+                          <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text">
                             {group.name}
                           </h3>
-                          <p className="mt-1 text-sm text-gray-500">
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {t('battery.list.total', { count: batteries.length })}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${group.kind === 'rechargeable'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
+                              ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                               }`}
                           >
                             {group.kind === 'rechargeable'
@@ -250,8 +250,8 @@ export function SelectBattery() {
         )}
 
         {error && (
-          <div className="mt-4 p-4 bg-red-50 rounded-md">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-md">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
 

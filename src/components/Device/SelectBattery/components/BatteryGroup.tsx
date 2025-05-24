@@ -5,21 +5,6 @@ import { Battery, BatteryGroup, Device, BatteryStatus } from '../types';
 import { SelectedBatteries } from '../types';
 import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
 
-// type BatteryStatus = string; // Replace with your actual BatteryStatus type
-
-// interface Device {
-//     id: number;
-//     battery_count: number;
-// }
-
-// interface Battery {
-//     id: number;
-//     slot_number: number;
-//     device_id: number | null;
-//     status: BatteryStatus;
-//     devices?: { name: string };
-// }
-
 interface BatteryGroupProps {
     battery: Battery;
     group: BatteryGroup;
@@ -27,7 +12,6 @@ interface BatteryGroupProps {
     deviceId: string;
     selectedBatteries: SelectedBatteries;
     handleToggleBattery: (groupId: string, batteryId: string, status: BatteryStatus) => void;
-    // BatteryStatusBadge: React.ComponentType<{ status: BatteryStatus }>;
 }
 
 export function BatteryGroups({
@@ -37,7 +21,6 @@ export function BatteryGroups({
     deviceId,
     selectedBatteries,
     handleToggleBattery
-    // BatteryStatusBadge,
 }: BatteryGroupProps) {
     const { t } = useTranslation();
     const isSelected = selectedBatteries.some(
@@ -64,17 +47,17 @@ export function BatteryGroups({
             }
             disabled={isDisabled}
             className={`relative flex items-center p-4 border rounded-lg ${isSelected
-                ? 'border-blue-500 ring-2 ring-blue-500'
+                ? 'border-blue-500 ring-2 ring-blue-500 dark:border-blue-600 dark:ring-blue-600'
                 : isInstalledInOtherDevice
-                    ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
-                    : 'border-gray-300 hover:border-gray-400'
+                    ? 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 cursor-not-allowed'
+                    : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
                 } ${isDisabled && !isInstalledInOtherDevice
                     ? 'opacity-50 cursor-not-allowed'
                     : ''
-                }`}
+                } bg-white dark:bg-dark-card`}
         >
             <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-gray-900 dark:text-dark-text">
                     #{battery.slot_number}
                 </p>
                 <div className="mt-1">
@@ -83,12 +66,11 @@ export function BatteryGroups({
                     />
                 </div>
                 {isInstalledInOtherDevice && battery.devices && (
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                         {t('device.status.installedIn', { deviceName: battery.devices.name })}
                     </p>
                 )}
             </div>
         </button>
     );
-
 }
