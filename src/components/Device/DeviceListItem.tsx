@@ -1,61 +1,35 @@
 // デバイス一覧画面の各デバイスを表示するコンポーネント
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle, BatteryFull, BatteryLow, BatteryMedium, BatteryWarning, Battery, Clock, Hash, Info } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getDeviceImage } from '@/lib/deviceImages';
-import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { Clock, Hash, Info } from 'lucide-react';
+import { getDeviceImage } from '@/lib/deviceImages';
 import { batteryShapeToTranslationKey } from '@/lib/i18nUtils';
+import { DEVICE_TYPE_ICONS, DEVICE_BATTERY_STATUS_STYLES } from './constants';
+import { calculateBatteryEndDate, getDeviceBatteryStatus } from './utils/deviceUtils';
+import type { Device } from './types';
 
-type Device = Database['public']['Tables']['devices']['Row'];
-
-const iconMap = {
-  remotecontroller: Smartphone,
-  speaker: Radio,
-  camera: Camera,
-  gadget: Gamepad,
-  light: Lightbulb,
-  toy: ToyBrick,
-  other: HelpCircle,
-};
-
-// 電池切れ予想日を計算する関数
-function calculateBatteryEndDate(device: Device) {
-  // 電池未設定の場合はnullを返す
-  if (!device.last_battery_change || !device.has_batteries || device.battery_life_weeks === null || device.battery_life_weeks === undefined) {
-    return null;
-  }
-  const lastChange = new Date(device.last_battery_change);
-  const endDate = new Date(lastChange);
-  endDate.setDate(endDate.getDate() + (device.battery_life_weeks * 7));
-  return endDate;
-}
-
-interface DeviceListItemProps {
-  device: Device;
-}
-
-export function DeviceListItem({ device }: DeviceListItemProps) {
+export function DeviceListItem({ device }: { device: Device }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const Icon = iconMap[device.type as keyof typeof iconMap];
-  const shortId = device.id.slice(0, 8);
 
-  // 電池切れ予想日を計算
+  // デバイスタイプに対応するアイコン
+  const Icon = DEVICE_TYPE_ICONS[device.type];
+
+  // 電池切れ予想日の計算
   const batteryEndDate = calculateBatteryEndDate(device);
-  const today = new Date();
-  const daysUntilEnd = batteryEndDate
-    ? (new Date(batteryEndDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-    : null;
-  const isOverdue = daysUntilEnd !== null && daysUntilEnd <= 0;
-  const isNearingEnd = daysUntilEnd !== null && daysUntilEnd > 0 && daysUntilEnd <= 7;
+  const batteryStatus = getDeviceBatteryStatus(device);
 
+  // デバイス画像の取得
   useEffect(() => {
-    getDeviceImage(device.type as keyof typeof iconMap, device.image_url)
+    getDeviceImage(device.type, device.image_url)
       .then(url => setImageUrl(url));
   }, [device.type, device.image_url]);
+
+  // バッテリーステータスのスタイル取得
+  const statusStyle = DEVICE_BATTERY_STATUS_STYLES[batteryStatus];
 
   return (
     <Link
@@ -64,10 +38,11 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
     >
       <div className="p-5">
         <div className="flex flex-col">
-          {/* 名称とデバイス情報を一緒に表示 */}
+          {/* デバイス情報のヘッダー */}
           <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
             <div className="flex flex-col w-full">
               <div className="flex items-center justify-between">
+                {/* デバイスタイプと名称 */}
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300 mr-2">
                     <Icon className="h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
@@ -77,6 +52,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                     {device.name}
                   </span>
                 </div>
+                {/* 電池形状と数 */}
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-50 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-300">
                     {t(batteryShapeToTranslationKey(device.battery_shape))}
@@ -86,7 +62,8 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                   </span>
                 </div>
               </div>
-              {/* メモと購入日（ある場合） */}
+
+              {/* メモと購入日 */}
               {(device.notes || device.purchase_date) && (
                 <div className="mt-1.5 flex items-start justify-between">
                   {device.notes ? (
@@ -108,9 +85,9 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
             </div>
           </div>
 
-          {/* 上部セクション：左に画像、右に電池状態 */}
+          {/* デバイス画像と電池状態 */}
           <div className="flex mb-4">
-            {/* 上部左：画像 */}
+            {/* デバイス画像 */}
             <div className="flex-shrink-0 mr-4">
               <img
                 src={imageUrl || ''}
@@ -119,7 +96,7 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
               />
             </div>
 
-            {/* 上部右：電池状態 */}
+            {/* 電池状態 */}
             <div className="flex-1 min-w-0">
               <div className="flex justify-between text-xs text-gray-500 mb-2">
                 <span>{t('device.status.batteryExchange')}</span>
@@ -133,16 +110,11 @@ export function DeviceListItem({ device }: DeviceListItemProps) {
                 )}
 
                 {batteryEndDate ? (
-                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${isOverdue
-                    ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-                    : isNearingEnd
-                      ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
-                      : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                    }`}>
+                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs ${statusStyle.color.background} ${statusStyle.color.text}`}>
                     <Clock className="h-4 w-4 mr-1 text-gray-400 dark:text-gray-500" />
                     {t('device.status.scheduleDate', { date: batteryEndDate.toLocaleDateString() })}
-                    {isOverdue && ` (${t('device.status.overdue')})`}
-                    {isNearingEnd && ` (${t('device.status.soon')})`}
+                    {batteryStatus === 'overdue' && ` (${t('device.status.overdue')})`}
+                    {batteryStatus === 'nearingEnd' && ` (${t('device.status.soon')})`}
                   </div>
                 ) : (
                   <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-gray-50 dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-300">

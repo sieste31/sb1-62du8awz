@@ -1,9 +1,10 @@
-//  デバイスの電池スロットを表示するコンポーネント
+// デバイスの電池スロットを表示するコンポーネント
 
 import React from 'react';
 import { Battery } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
+import { BATTERY_STATUS_STYLES } from '@/components/Battery/constants';
 
 type InstalledBattery = Database['public']['Tables']['batteries']['Row'] & {
   battery_groups?: Database['public']['Tables']['battery_groups']['Row'];
@@ -19,8 +20,8 @@ export function DeviceBatterySlot({
   battery,
 }: DeviceBatterySlotProps) {
   const { t } = useTranslation();
-  console.log('battery:', battery);
-  console.log('battery_groups:', battery?.battery_groups);
+
+  // バッテリーが設定されていない場合のレンダリング
   if (!battery) {
     return (
       <div className="px-4 py-4 sm:px-6 bg-gray-50 dark:bg-gray-800">
@@ -45,6 +46,10 @@ export function DeviceBatterySlot({
       </div>
     );
   }
+
+  // バッテリーステータスのスタイル取得
+  const statusStyle = BATTERY_STATUS_STYLES[battery.status];
+  const StatusIcon = statusStyle.icon;
 
   return (
     <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -77,22 +82,10 @@ export function DeviceBatterySlot({
         </div>
         <div className="flex items-center">
           <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${battery.status === 'charged'
-                ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300'
-                : battery.status === 'in_use'
-                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300'
-                  : battery.status === 'empty'
-                    ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300'
-                    : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300'
-              }`}
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusStyle.color.background} ${statusStyle.color.text}`}
           >
-            {battery.status === 'charged'
-              ? t('battery.status.charged')
-              : battery.status === 'in_use'
-                ? t('battery.status.in_use')
-                : battery.status === 'empty'
-                  ? t('battery.status.empty')
-                  : t('battery.status.disposed')}
+            <StatusIcon className="h-4 w-4 mr-1" />
+            {t(`battery.status.${battery.status}`)}
           </span>
         </div>
       </div>

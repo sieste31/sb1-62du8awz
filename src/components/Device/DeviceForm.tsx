@@ -2,63 +2,57 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Smartphone, Radio, Camera, Lightbulb, Gamepad, ArrowLeft, ToyBrick, AlertCircle, HelpCircle, Upload } from 'lucide-react';
+import { ArrowLeft, Upload, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { createDevice } from '@/lib/api';
 import { uploadDeviceImage } from '@/lib/api/storage';
-import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
 import { validateImage } from '@/lib/imageUtils';
 import { ImageCropper } from '@/components/ImageCropper';
 
-type DeviceType = Database['public']['Tables']['devices']['Row']['type'];
-
+import { DEVICE_TYPE_OPTIONS } from './constants';
+import { DeviceTypeSelect } from './components/DeviceTypeSelect';
+import type { DeviceType, DeviceFormData } from './types';
 
 export function DeviceForm() {
   const { t } = useTranslation();
-
-  const deviceTypeOptions = [
-    { value: 'remotecontroller', label: t('device.types.remotecontroller'), icon: Smartphone },
-    { value: 'speaker', label: t('device.types.speaker'), icon: Radio },
-    { value: 'camera', label: t('device.types.camera'), icon: Camera },
-    { value: 'gadget', label: t('device.types.gadget'), icon: Gamepad },
-    { value: 'light', label: t('device.types.light'), icon: Lightbulb },
-    { value: 'toy', label: t('device.types.toy'), icon: ToyBrick },
-    { value: 'other', label: t('device.types.other'), icon: HelpCircle },
-  ];
   const navigate = useNavigate();
   const { user } = useAuth();
   const { devices } = useDevices();
   const { userPlan, isLimitReached } = useUserPlan();
+
+  // 状態管理
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
 
-  // 制限チェック
-  const isDeviceLimitReached = isLimitReached.devices(devices.length);
-
-  useEffect(() => {
-    // ページ読み込み時に制限チェック
-    if (isDeviceLimitReached) {
-      setShowLimitWarning(true);
-    }
-  }, [isDeviceLimitReached]);
-  const [formData, setFormData] = useState({
+  // フォームデータの初期状態
+  const [formData, setFormData] = useState<DeviceFormData>({
     name: '',
-    type: 'remotecontroller' as DeviceType,
+    type: 'remotecontroller',
     batteryShape: '単3形',
     batteryCount: 1,
-    batteryLifeWeeks: '' as string | number,
-    purchaseDate: '',
-    notes: '',
+    batteryLifeWeeks: null,
+    purchaseDate: null,
+    notes: null,
   });
 
-  // 画像アップロード関連のステート
+  // 画像アップロード関連の状態
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showCropper, setShowCropper] = useState(false);
   const [uploadedImageBlob, setUploadedImageBlob] = useState<Blob | null>(null);
+
+  // 制限チェック
+  const isDeviceLimitReached = isLimitReached.devices(devices.length);
+
+  // 制限警告の表示
+  useEffect(() => {
+    if (isDeviceLimitReached) {
+      setShowLimitWarning(true);
+    }
+  }, [isDeviceLimitReached]);
 
   // 画像選択ハンドラ
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,10 +60,8 @@ export function DeviceForm() {
     if (!file || !user) return;
 
     try {
-      // 画像のバリデーション
       validateImage(file);
 
-      // 画像をData URLに変換
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -89,6 +81,7 @@ export function DeviceForm() {
     setSelectedImage(URL.createObjectURL(croppedBlob));
   };
 
+  // フォーム送信ハンドラ
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -125,7 +118,6 @@ export function DeviceForm() {
           );
         } catch (imageError) {
           console.error(t('battery.detail.imageUploadError'), imageError);
-          // 画像アップロードエラーは致命的ではないので、続行する
         }
       }
 
@@ -140,6 +132,7 @@ export function DeviceForm() {
     <>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          {/* 戻るボタン */}
           <div className="mb-6">
             <button
               onClick={() => navigate('/devices')}
@@ -151,10 +144,14 @@ export function DeviceForm() {
           </div>
 
           <div className="bg-white dark:bg-dark-card shadow rounded-lg overflow-hidden">
+            {/* ヘッダー */}
             <div className="px-4 py-5 sm:px-6 bg-gray-50 dark:bg-gray-800">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('device.form.title')}</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">
+                {t('device.form.title')}
+              </h2>
             </div>
 
+            {/* 制限警告 */}
             {showLimitWarning && (
               <div className="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-800/30">
                 <div className="flex">
@@ -163,7 +160,10 @@ export function DeviceForm() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-amber-700 dark:text-amber-400">
-                      {t('device.form.limitReachedWarning', { current: devices.length, max: userPlan?.max_devices || 5 })}
+                      {t('device.form.limitReachedWarning', {
+                        current: devices.length,
+                        max: userPlan?.max_devices || 5
+                      })}
                       <button
                         className="ml-2 font-medium text-amber-700 underline"
                         onClick={() => alert(t('device.form.upgradeInDevelopment'))}
@@ -176,6 +176,7 @@ export function DeviceForm() {
               </div>
             )}
 
+            {/* フォーム */}
             <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
               {/* 画像アップロード */}
               <div>
@@ -224,6 +225,7 @@ export function DeviceForm() {
                 </p>
               </div>
 
+              {/* デバイス名 */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.form.nameLabel')}
@@ -238,36 +240,18 @@ export function DeviceForm() {
                 />
               </div>
 
+              {/* デバイスタイプ選択 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('device.detail.deviceType')}
                 </label>
-                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  {deviceTypeOptions.map((option) => {
-                    const Icon = option.icon;
-                    return (
-                      <div
-                        key={option.value}
-                        className={`relative flex cursor-pointer rounded-lg border p-4 focus:outline-none ${formData.type === option.value
-                          ? 'border-blue-500 ring-2 ring-blue-500 dark:border-blue-600 dark:ring-blue-600'
-                          : 'border-gray-300 dark:border-gray-600'
-                          }`}
-                        onClick={() => setFormData({ ...formData, type: option.value as DeviceType })}
-                      >
-                        <div className="flex w-full items-center justify-between">
-                          <div className="flex items-center">
-                            <div className="text-sm">
-                              <Icon className="h-5 w-5 text-gray-400 dark:text-gray-500 mr-2" />
-                              <p className="font-medium text-gray-900 dark:text-dark-text">{option.label}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <DeviceTypeSelect
+                  value={formData.type}
+                  onChange={(type) => setFormData({ ...formData, type })}
+                />
               </div>
 
+              {/* 電池形状と数 */}
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="batteryShape" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -303,6 +287,7 @@ export function DeviceForm() {
                 </div>
               </div>
 
+              {/* 電池寿命 */}
               <div>
                 <label htmlFor="batteryLifeWeeks" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.detail.batteryLife')}
@@ -312,8 +297,11 @@ export function DeviceForm() {
                     type="number"
                     id="batteryLifeWeeks"
                     min="1"
-                    value={formData.batteryLifeWeeks}
-                    onChange={(e) => setFormData({ ...formData, batteryLifeWeeks: e.target.value })}
+                    value={formData.batteryLifeWeeks || ''}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      batteryLifeWeeks: e.target.value ? parseInt(e.target.value) : null
+                    })}
                     placeholder={t('device.detail.batteryLifePlaceholder')}
                     className="block w-full border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
                   />
@@ -326,6 +314,7 @@ export function DeviceForm() {
                 </p>
               </div>
 
+              {/* 購入日 */}
               <div>
                 <label htmlFor="purchaseDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.detail.purchaseDate')}
@@ -333,12 +322,13 @@ export function DeviceForm() {
                 <input
                   type="date"
                   id="purchaseDate"
-                  value={formData.purchaseDate}
+                  value={formData.purchaseDate || ''}
                   onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
                   className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
                 />
               </div>
 
+              {/* メモ */}
               <div>
                 <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('device.detail.notes')}
@@ -346,16 +336,18 @@ export function DeviceForm() {
                 <textarea
                   id="notes"
                   rows={3}
-                  value={formData.notes}
+                  value={formData.notes || ''}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm dark:bg-gray-700 dark:text-gray-300"
                 />
               </div>
 
+              {/* エラー表示 */}
               {error && (
                 <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
               )}
 
+              {/* 送信ボタン */}
               <div className="flex justify-end">
                 <button
                   type="submit"
