@@ -83,11 +83,15 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
   // 状態に応じたカードのスタイルを取得
   const getCardStyle = () => {
     const status = battery.status as BatteryStatus;
-    return `border-l-4 ${batteryStatusColors[status].split(' ')[2] || 'border-gray-200'}`;
+    const statusColors = batteryStatusColors[status];
+    const borderColorMatch = statusColors.match(/border-\w+-\d+/);
+    const borderColor = borderColorMatch ? borderColorMatch[0] : 'border-gray-200';
+    const darkBorderColor = borderColor.replace('border-', 'dark:border-');
+    return `border-l-4 ${borderColor} ${darkBorderColor}`;
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-card rounded-lg shadow-sm border ${getCardStyle()} p-4 transition-all hover:shadow-md`}>
+    <div className={`bg-white dark:bg-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 ${getCardStyle()} p-4 transition-all hover:shadow-md`}>
       {/* ヘッダー部分 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center">
@@ -143,7 +147,7 @@ export function BatteryDetailItem({ battery, batteryGroup, setError }: BatteryIt
               className="inline-block align-bottom bg-white dark:bg-dark-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="bg-white dark:bg-dark-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text mb-3">
                   {t('battery.detail.item.changeStatusTitle', { number: battery.slot_number })}
                 </h3>
