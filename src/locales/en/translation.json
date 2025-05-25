@@ -197,7 +197,10 @@
             "weeks": "weeks",
             "weeksValue": "{{weeks}} weeks",
             "notesPlaceholder": "Enter memo",
-            "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs"
+            "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs",
+            "deleteConfirmTitle": "Delete Device",
+            "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+            "cannotDelete": "Cannot delete device with installed batteries"
         },
         "list": {
             "title": "Device List",
@@ -225,7 +228,8 @@
             "deviceCount": "Devices: {{current}} / {{max}}",
             "addNew": "New Registration",
             "upgrade": "Upgrade",
-            "upgradeInDevelopment": "This feature is currently under development."
+            "upgradeInDevelopment": "This feature is currently under development.",
+            "deleteGroup": "Delete Device"
         },
         "types": {
             "remotecontroller": "Remote Control",

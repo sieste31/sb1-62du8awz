@@ -5,7 +5,7 @@ import type { Database } from './database.types';
 import { validateImage } from './imageUtils';
 import { invalidateQueries } from './query';
 import { useQueryClient } from '@tanstack/react-query';
-import { updateDevice } from './api/devices';
+import { updateDevice, deleteDevice } from './api/devices';
 import { uploadDeviceImage } from './api/storage';
 import { getCurrentUser } from './api/auth';
 
@@ -32,6 +32,8 @@ interface DeviceDetailState {
   error: string | null;
   saving: boolean;
   showHistory: boolean;
+  deleting: boolean;
+  showDeleteConfirm: boolean;
 
   // アクション
   setId: (id: string | null) => void;
@@ -43,6 +45,8 @@ interface DeviceDetailState {
   setShowCropper: (show: boolean) => void;
   setSaving: (saving: boolean) => void;
   setShowHistory: (show: boolean) => void;
+  setDeleting: (deleting: boolean) => void;
+  setShowDeleteConfirm: (show: boolean) => void;
 
   // 初期化
   initializeEditData: (device: Device) => void;
@@ -53,6 +57,7 @@ interface DeviceDetailState {
   handleCancelEdit: (device: Device) => void;
   handleImageSelect: (file: File, userId: string) => Promise<void>;
   handleCropComplete: (croppedBlob: Blob, deviceId: string) => Promise<void>;
+  handleDelete: () => Promise<void>;
   calculateBatteryEndDate: (device: Device) => Date | null;
 }
 
@@ -67,6 +72,8 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   error: null,
   saving: false,
   showHistory: false,
+  deleting: false,
+  showDeleteConfirm: false,
 
   // アクション
   setId: (id) => set({ id }),
@@ -80,6 +87,8 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
   setShowCropper: (showCropper) => set({ showCropper }),
   setSaving: (saving) => set({ saving }),
   setShowHistory: (showHistory) => set({ showHistory }),
+  setDeleting: (deleting) => set({ deleting }),
+  setShowDeleteConfirm: (showDeleteConfirm) => set({ showDeleteConfirm }),
 
   // 初期化
   initializeEditData: (device) => set({
@@ -146,6 +155,27 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
     get().resetEditData(device);
   },
 
+  handleDelete: async () => {
+    const { id } = get();
+    if (!id) return;
+
+    set({ deleting: true, error: null });
+
+    try {
+      // デバイスを削除
+      await deleteDevice(id);
+
+      // 一覧ページに戻る
+      window.location.href = '/devices';
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : '削除に失敗しました',
+        deleting: false,
+        showDeleteConfirm: false
+      });
+    }
+  },
+
   handleImageSelect: async (file: File, userId: string) => {
     try {
       validateImage(file);
@@ -186,7 +216,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
         showCropper: false,
         selectedImage: null
       });
-      
+
       window.location.reload();
     } catch (err) {
       console.error('画像アップロード処理エラー:', err);
@@ -198,7 +228,7 @@ export const useDeviceDetailStore = create<DeviceDetailState>((set, get) => ({
 
   calculateBatteryEndDate: (device) => {
     if (!device || !device.last_battery_change || !device.battery_life_weeks) return null;
-    
+
     const lastChange = new Date(device.last_battery_change);
     const endDate = new Date(lastChange);
     endDate.setDate(endDate.getDate() + (device.battery_life_weeks * 7));

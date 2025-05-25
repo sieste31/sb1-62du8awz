@@ -11,6 +11,7 @@ import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
 import { DeviceDetailInfo } from './DeviceDetailInfoSection';
 import { DeviceDetailBatterySection } from './DeviceDetailBatterySection';
 import { useTranslation } from 'react-i18next';
+import { DeleteConfirmDialog } from '@/components/common/DeleteConfirmDialog';
 
 export function DeviceDetail() {
   const { t } = useTranslation();
@@ -26,7 +27,10 @@ export function DeviceDetail() {
     imageUrl, setImageUrl,
     showHistory,
     selectedImage, showCropper,
-    setIsEditing
+    setIsEditing,
+    showDeleteConfirm, setShowDeleteConfirm,
+    handleDelete,
+    deleting
   } = useDeviceDetailStore();
 
   // 初期データをセット
@@ -88,8 +92,6 @@ export function DeviceDetail() {
         {/* デバイス詳細画面　電池一覧部分 */}
         <DeviceDetailBatterySection device={device} batteries={batteries} />
 
-
-
         <DeviceUsageHistory
           isOpen={showHistory}
           onClose={() => useDeviceDetailStore.getState().setShowHistory(false)}
@@ -107,6 +109,16 @@ export function DeviceDetail() {
             onCropComplete={handleCropCompleteWrapper}
           />
         )}
+
+        {/* 削除確認ダイアログ */}
+        <DeleteConfirmDialog
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDelete}
+          title={t('device.detail.deleteConfirmTitle')}
+          message={t('device.detail.deleteConfirmMessage', { name: device.name })}
+          loading={deleting}
+        />
       </div>
     </div>
   );

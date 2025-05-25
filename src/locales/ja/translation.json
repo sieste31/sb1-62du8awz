@@ -197,7 +197,10 @@
       "weeks": "週",
       "weeksValue": "{{weeks}}週",
       "notesPlaceholder": "メモを入力してください",
-      "installedBatteries": "設置済み: {{installed}}本 / 未設置: {{remaining}}本"
+      "installedBatteries": "設置済み: {{installed}}本 / 未設置: {{remaining}}本",
+      "deleteConfirmTitle": "デバイスの削除",
+      "deleteConfirmMessage": "「{{name}}」を削除してもよろしいですか？この操作は取り消せません。",
+      "cannotDelete": "電池が設置されているため削除できません"
     },
     "list": {
       "title": "デバイス一覧",
@@ -225,7 +228,8 @@
       "deviceCount": "デバイス: {{current}} / {{max}}",
       "addNew": "新規登録",
       "upgrade": "アップグレード",
-      "upgradeInDevelopment": "この機能は現在開発中です。"
+      "upgradeInDevelopment": "この機能は現在開発中です。",
+      "deleteGroup": "デバイスを削除"
     },
     "types": {
       "remotecontroller": "リモコン",
