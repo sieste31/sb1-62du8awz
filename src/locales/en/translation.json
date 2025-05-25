@@ -120,11 +120,11 @@
             "cannotDelete": "Cannot delete due to batteries set in device"
         },
         "shape": {
-            "d": "D Size",
-            "c": "C Size",
-            "aa": "AA Size",
-            "aaa": "AAA Size",
-            "9v": "9V Size"
+            "d": "D",
+            "c": "C",
+            "aa": "AA",
+            "aaa": "AAA",
+            "9v": "9V"
         },
         "list": {
             "filter": "Filter",
