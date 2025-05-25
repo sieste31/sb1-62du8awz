@@ -1,5 +1,5 @@
 import { BatteryGroup, Battery, BatteryStatus } from '../types';
-import { USER_PLAN_LIMITS } from '../constants';
+import { isLimitReached, UserPlanType } from '../../../lib/planUtils';
 
 /**
  * 電池グループ内の電池状態別カウントを取得
@@ -68,44 +68,32 @@ export class UserPlanLimitChecker {
     /**
      * 電池グループ数の制限をチェック
      * @param currentGroupCount 現在の電池グループ数
-     * @param planType ユーザープランの種類
+     * @param userPlan ユーザープラン情報
      * @returns 制限に達しているかどうか
      */
     static checkBatteryGroupLimit(
         currentGroupCount: number,
-        planType: 'free' | 'premium' | 'business' = 'free'
+        userPlan: UserPlanType
     ): boolean {
-        switch (planType) {
-            case 'free':
-                return currentGroupCount >= USER_PLAN_LIMITS.FREE_MAX_BATTERY_GROUPS;
-            case 'premium':
-                return currentGroupCount >= 10; // プレミアムプランの制限（仮）
-            case 'business':
-                return currentGroupCount >= 50; // ビジネスプランの制限（仮）
-            default:
-                return false;
-        }
+        return isLimitReached(currentGroupCount,
+            { ...userPlan, max_devices: 5 },
+            'batteryGroups'
+        );
     }
 
     /**
      * 電池グループ内の電池数の制限をチェック
      * @param currentBatteryCount 現在の電池数
-     * @param planType ユーザープランの種類
+     * @param userPlan ユーザープラン情報
      * @returns 制限に達しているかどうか
      */
     static checkBatteriesPerGroupLimit(
         currentBatteryCount: number,
-        planType: 'free' | 'premium' | 'business' = 'free'
+        userPlan: UserPlanType
     ): boolean {
-        switch (planType) {
-            case 'free':
-                return currentBatteryCount >= USER_PLAN_LIMITS.FREE_MAX_BATTERIES_PER_GROUP;
-            case 'premium':
-                return currentBatteryCount >= 10; // プレミアムプランの制限（仮）
-            case 'business':
-                return currentBatteryCount >= 50; // ビジネスプランの制限（仮）
-            default:
-                return false;
-        }
+        return isLimitReached(currentBatteryCount,
+            { ...userPlan, max_devices: 5 },
+            'batteryGroups'
+        );
     }
 }

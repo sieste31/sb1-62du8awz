@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { useEffect } from 'react';
 import type { Database } from './database.types';
-import { 
-  useBatteryGroupsQuery, 
-  useBatteryGroupQuery, 
+import {
+  useBatteryGroupsQuery,
+  useBatteryGroupQuery,
   useBatteriesQuery,
   useDevicesQuery,
   useDeviceQuery,
@@ -78,16 +78,16 @@ export const useStore = create<AppState>((set, get) => ({
 export function useBatteryGroupsStore() {
   const { data, isLoading } = useBatteryGroupsQuery();
   const setBatteryGroups = useStore((state) => state.setBatteryGroups);
-  
+
   useEffect(() => {
     if (data) {
       setBatteryGroups(data);
     }
   }, [data, setBatteryGroups]);
 
-  return { 
-    batteryGroups: useStore((state) => state.batteryGroups), 
-    loading: isLoading 
+  return {
+    batteryGroups: useStore((state) => state.batteryGroups),
+    loading: isLoading
   };
 }
 
@@ -118,16 +118,16 @@ export function useBatteryGroupStore(id: string) {
 export function useDevicesStore() {
   const { data, isLoading } = useDevicesQuery();
   const setDevices = useStore((state) => state.setDevices);
-  
+
   useEffect(() => {
     if (data) {
       setDevices(data);
     }
   }, [data, setDevices]);
 
-  return { 
-    devices: useStore((state) => state.devices), 
-    loading: isLoading 
+  return {
+    devices: useStore((state) => state.devices),
+    loading: isLoading
   };
 }
 
@@ -157,15 +157,15 @@ export function useDeviceStore(id: string) {
  */
 export function useUserPlanStore() {
   const { data, isLoading } = useUserPlanQuery();
-  
+
   return {
     userPlan: data,
     loading: isLoading,
     isLimitReached: {
-      batteryGroups: (currentCount: number) => 
-        data ? isLimitReached(data, 'batteryGroups', currentCount) : false,
-      devices: (currentCount: number) => 
-        data ? isLimitReached(data, 'devices', currentCount) : false,
+      batteryGroups: (currentCount: number) =>
+        data ? isLimitReached(currentCount, data, 'batteryGroups') : false,
+      devices: (currentCount: number) =>
+        data ? isLimitReached(currentCount, data, 'devices') : false,
     }
   };
 }
@@ -175,9 +175,9 @@ export function useUserPlanStore() {
  */
 export function useAvailableBatteriesStore(batteryType: string) {
   const { data, isLoading } = useAvailableBatteriesQuery(batteryType);
-  
-  return { 
-    availableBatteryGroups: data ?? [], 
-    loading: isLoading 
+
+  return {
+    availableBatteryGroups: data ?? [],
+    loading: isLoading
   };
 }

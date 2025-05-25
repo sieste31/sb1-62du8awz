@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Battery, ArrowLeft, AlertCircle, Upload } from 'lucide-react';
+import { Battery, ArrowLeft, Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
 import { createBatteryGroupWithBatteries, uploadBatteryGroupImage } from '@/lib/api';
@@ -12,7 +12,6 @@ import { ImageCropper } from '@/components/ImageCropper';
 import { BatteryShapeSelect } from './components/BatteryShapeSelect';
 import { BatteryKindSelector } from './components/BatteryKindSelector';
 import { BatteryShape, BatteryKind, BatteryCreationStatus } from './types';
-import { UserPlanInfo } from './components/UserPlanInfo';
 
 export function BatteryForm() {
   const { t } = useTranslation();
@@ -150,11 +149,6 @@ export function BatteryForm() {
               <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('battery.form.title')}</h2>
             </div>
           </div>
-
-          <UserPlanInfo
-            batteryGroups={batteryGroups}
-            planType={userPlan?.plan_type as 'free' | 'premium' | 'business'}
-          />
 
           <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">
             {/* 画像アップロード */}

@@ -8,13 +8,12 @@ import { useTranslation } from 'react-i18next';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { DeviceListItem } from './DeviceListItem';
 import type { Database } from '@/lib/database.types';
+import { getActualPlanLimits } from '@/lib/planUtils';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type DeviceType = 'all' | 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other';
 type BatteryType = 'all' | '単1形' | '単2形' | '単3形' | '単4形' | '9V形';
 type SortOrder = 'none' | 'asc' | 'desc' | 'battery-end-asc' | 'battery-end-desc' | 'name-asc' | 'name-desc';
-
-// デバイスタイプのラベルは翻訳関数を使用するため、後で定義
 
 // 電池切れ予想日を計算する関数
 function calculateBatteryEndDate(device: Device) {
@@ -397,10 +396,11 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
   if (loading || !userPlan) return null;
 
   const deviceCount = devices.length;
-  const maxDevices = userPlan.max_devices;
+  const actualLimits = getActualPlanLimits(userPlan);
+  const maxDevices = actualLimits.devices;
   const isLimitReached = deviceCount >= maxDevices;
-  const planTypeDisplay = userPlan.plan_type === 'free' ? t('common.planType.free') :
-    userPlan.plan_type === 'premium' ? t('common.planType.premium') : t('common.planType.business');
+  const planTypeDisplay = userPlan.plan_type === 'free' ? t('plan.free') :
+    userPlan.plan_type === 'standard' ? t('plan.standard') : t('plan.pro');
 
   return (
     <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>

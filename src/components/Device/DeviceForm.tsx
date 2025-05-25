@@ -1,8 +1,8 @@
 // デバイス作成画面のコンポーネント
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
 import { useDevices, useUserPlan } from '@/lib/hooks';
 import { createDevice } from '@/lib/api';
@@ -25,7 +25,6 @@ export function DeviceForm() {
   // 状態管理
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showLimitWarning, setShowLimitWarning] = useState(false);
 
   // フォームデータの初期状態
   const [formData, setFormData] = useState<DeviceFormData>({
@@ -46,13 +45,6 @@ export function DeviceForm() {
 
   // 制限チェック
   const isDeviceLimitReached = isLimitReached.devices(devices.length);
-
-  // 制限警告の表示
-  useEffect(() => {
-    if (isDeviceLimitReached) {
-      setShowLimitWarning(true);
-    }
-  }, [isDeviceLimitReached]);
 
   // 画像選択ハンドラ
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,31 +142,6 @@ export function DeviceForm() {
                 {t('device.form.title')}
               </h2>
             </div>
-
-            {/* 制限警告 */}
-            {showLimitWarning && (
-              <div className="px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-800/30">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <AlertCircle className="h-5 w-5 text-amber-400" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-amber-700 dark:text-amber-400">
-                      {t('device.form.limitReachedWarning', {
-                        current: devices.length,
-                        max: userPlan?.max_devices || 5
-                      })}
-                      <button
-                        className="ml-2 font-medium text-amber-700 underline"
-                        onClick={() => alert(t('device.form.upgradeInDevelopment'))}
-                      >
-                        {t('device.form.upgradePlan')}
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* フォーム */}
             <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6">

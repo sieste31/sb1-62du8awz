@@ -12,11 +12,11 @@ import type { Database } from '@/lib/database.types';
 import { BatteryListItem } from './BatteryListItem';
 import { BatteryListFilter } from './BatteryListFilter';
 import { BatteryListFilterButton } from './BatteryListFilterButton';
-import { 
-  useBatteryFilterStore, 
-  SORT_OPTIONS 
+import {
+  useBatteryFilterStore,
+  SORT_OPTIONS
 } from '@/lib/batteryFilterStore';
-
+import { getActualPlanLimits } from '@/lib/planUtils';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
@@ -24,12 +24,11 @@ type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   })[];
 };
 
-
 export function BatteryList() {
   const { t } = useTranslation();
   const { batteryGroups, loading } = useBatteryGroups();
   const isDesktop = useMediaQuery({ minWidth: 768 });
-  
+
   // Zustandストアから状態と関数を取得
   const {
     getFilteredAndSortedGroups
@@ -69,8 +68,8 @@ export function BatteryList() {
               {batteryGroups.length === 0 ? t('battery.list.noBatteries') : t('battery.list.noMatchingBatteries')}
             </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-              {batteryGroups.length === 0 
-                ? t('battery.list.emptyStateMessage') 
+              {batteryGroups.length === 0
+                ? t('battery.list.emptyStateMessage')
                 : t('battery.list.noMatchingMessage')}
             </p>
             {batteryGroups.length === 0 && (
@@ -139,10 +138,11 @@ function UserPlanInfo({ batteryGroups }: { batteryGroups: BatteryGroup[] }) {
   if (loading || !userPlan) return null;
 
   const batteryGroupCount = batteryGroups.length;
-  const maxBatteryGroups = userPlan.max_battery_groups;
+  const actualLimits = getActualPlanLimits(userPlan);
+  const maxBatteryGroups = actualLimits.batteryGroups;
   const isLimitReached = batteryGroupCount >= maxBatteryGroups;
-  const planTypeDisplay = userPlan.plan_type === 'free' ? t('plan.free') : 
-                          userPlan.plan_type === 'premium' ? t('plan.premium') : t('plan.business');
+  const planTypeDisplay = userPlan.plan_type === 'free' ? t('plan.free') :
+    userPlan.plan_type === 'standard' ? t('plan.standard') : t('plan.pro');
 
   return (
     <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>

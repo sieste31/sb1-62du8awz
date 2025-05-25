@@ -1,67 +1,76 @@
 import { supabase } from '../supabase';
-import type { Database } from '../database.types';
+import { PLAN_BONUS } from '../planUtils';
 
-type UserPlan = Database['public']['Tables']['user_plans']['Row'];
-type UserPlanInsert = Database['public']['Tables']['user_plans']['Insert'];
-type UserPlanUpdate = Database['public']['Tables']['user_plans']['Update'];
+type SupabasePlanType = 'free' | 'premium' | 'business';
+type AppPlanType = 'free' | 'standard' | 'pro';
 
-// ユーザープランの取得
-export async function getUserPlan(userId: string) {
+export interface PlanLimits {
+  max_battery_groups: number;
+  max_devices: number;
+  plan_type: AppPlanType;
+}
+
+function convertPlanType(planType: SupabasePlanType): AppPlanType {
+  switch (planType) {
+    case 'premium':
+      return 'standard';
+    case 'business':
+      return 'pro';
+    default:
+      return planType;
+  }
+}
+
+export function isLimitReached(
+  currentCount: number,
+  userPlan: PlanLimits,
+  type: 'batteryGroups' | 'devices'
+): boolean {
+  const bonus = PLAN_BONUS[userPlan.plan_type];
+  const limit = type === 'batteryGroups'
+    ? userPlan.max_battery_groups + bonus.batteryGroups
+    : userPlan.max_devices + bonus.devices;
+
+  return currentCount >= limit;
+}
+
+export async function getUserPlan(userId: string): Promise<PlanLimits> {
   const { data, error } = await supabase
     .from('user_plans')
     .select('*')
     .eq('user_id', userId)
     .single();
-    
+
   if (error) {
-    // ユーザープランが見つからない場合は、デフォルト値を返す
-    if (error.code === 'PGRST116') {
-      return {
-        id: '',
-        user_id: userId,
-        plan_type: 'free' as const,
-        max_battery_groups: 5,
-        max_devices: 5,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-    }
     throw error;
   }
-  
-  return data as UserPlan;
+
+  return {
+    max_battery_groups: data.max_battery_groups,
+    max_devices: data.max_devices,
+    plan_type: convertPlanType(data.plan_type)
+  };
 }
 
-// ユーザープランの作成
-export async function createUserPlan(data: UserPlanInsert) {
-  const { data: planData, error } = await supabase
-    .from('user_plans')
-    .insert(data)
-    .select()
-    .single();
+export async function updateUserPlan(userId: string, planType: AppPlanType) {
+  const supbasePlanType = planType === 'standard' ? 'premium' :
+    planType === 'pro' ? 'business' :
+      planType;
 
-  if (error) throw error;
-  return planData as UserPlan;
-}
-
-// ユーザープランの更新
-export async function updateUserPlan(userId: string, data: UserPlanUpdate) {
-  const { data: updatedData, error } = await supabase
+  const { data, error } = await supabase
     .from('user_plans')
-    .update(data)
+    .update({ plan_type: supbasePlanType })
     .eq('user_id', userId)
     .select()
     .single();
 
-  if (error) throw error;
-  return updatedData as UserPlan;
-}
-
-// ユーザープランの制限チェック
-export function isLimitReached(userPlan: UserPlan, type: 'batteryGroups' | 'devices', currentCount: number) {
-  if (type === 'batteryGroups') {
-    return currentCount >= userPlan.max_battery_groups;
-  } else {
-    return currentCount >= userPlan.max_devices;
+  if (error) {
+    throw error;
   }
+
+  return {
+    max_battery_groups: data.max_battery_groups,
+    max_devices: data.max_devices,
+    plan_type: convertPlanType(data.plan_type)
+  };
 }

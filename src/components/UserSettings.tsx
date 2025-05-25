@@ -6,7 +6,7 @@ import { useAuth } from '../lib/auth';
 import { signOut } from '../lib/api/auth';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useDarkMode } from '../lib/hooks';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, ArrowUpRight } from 'lucide-react';
 
 export function UserSettings() {
     const { t } = useTranslation();
@@ -18,6 +18,7 @@ export function UserSettings() {
     const [userPlan, setUserPlan] = useState<{
         max_battery_groups: number;
         max_devices: number;
+        plan_type: 'free' | 'standard' | 'pro';
     } | null>(null);
 
     useEffect(() => {
@@ -29,6 +30,11 @@ export function UserSettings() {
     if (!userPlan) {
         return <div className="p-4 dark:text-dark-text">{t('common.loading')}</div>;
     }
+
+    const handleUpgrade = (targetPlan: 'standard' | 'pro') => {
+        // TODO: 実際の支払いプロセスを実装
+        alert(t('userSettings.planLimits.upgrade.upgradeInDevelopment'));
+    };
 
     return (
         <div className="max-w-4xl mx-auto p-4 dark:bg-dark-bg min-h-screen">
@@ -57,14 +63,12 @@ export function UserSettings() {
                         >
                             <Sun className={`w-5 h-5 transition-transform ${darkMode.isDark ? 'text-gray-400' : 'text-yellow-500 rotate-0'}`} />
                             <div
-                                className={`relative w-14 h-7 rounded-full transition-colors ${
-                                    darkMode.isDark ? 'bg-blue-600' : 'bg-gray-200'
-                                }`}
+                                className={`relative w-14 h-7 rounded-full transition-colors ${darkMode.isDark ? 'bg-blue-600' : 'bg-gray-200'
+                                    }`}
                             >
                                 <div
-                                    className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transform transition-transform ${
-                                        darkMode.isDark ? 'translate-x-7' : 'translate-x-0'
-                                    }`}
+                                    className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white transform transition-transform ${darkMode.isDark ? 'translate-x-7' : 'translate-x-0'
+                                        }`}
                                 />
                             </div>
                             <Moon className={`w-5 h-5 transition-transform ${darkMode.isDark ? 'text-blue-200' : 'text-gray-400'}`} />
@@ -81,9 +85,22 @@ export function UserSettings() {
                 </div>
             </section>
 
-            {/* プラン制限セクション */}
+            {/* プラン情報セクション */}
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-4 dark:text-dark-text">{t('userSettings.planLimits.title')}</h2>
+
+                {/* 現在のプラン */}
+                <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4 mb-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="text-gray-700 dark:text-dark-text font-medium">
+                                {t('userSettings.planLimits.currentPlan', {
+                                    plan: t(`plan.${userPlan.plan_type}`)
+                                })}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
                 {/* 電池グループ制限 */}
                 <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4 mb-4">
@@ -92,40 +109,49 @@ export function UserSettings() {
                         <span className="text-gray-900 dark:text-dark-text font-medium">
                             {t('userSettings.planLimits.of', { max: userPlan.max_battery_groups })}
                         </span>
-                        <span>
-                            <button
-                                className="w-full bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition-colors"
-                                onClick={() => {
-                                    // TODO: 購入ページへのリンク
-                                    alert(t('battery.form.upgradeInDevelopment'));
-                                }}
-                            >
-                                {t('userSettings.planLimits.upgrade.batteryGroups')}
-                            </button>
-                        </span>
                     </div>
                 </div>
 
                 {/* デバイス制限 */}
-                <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4">
+                <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4 mb-4">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-700 dark:text-dark-text">{t('userSettings.planLimits.devices')}</span>
                         <span className="text-gray-900 dark:text-dark-text font-medium">
                             {t('userSettings.planLimits.of', { max: userPlan.max_devices })}
                         </span>
-                        <span>
-                            <button
-                                className="w-full bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition-colors"
-                                onClick={() => {
-                                    // TODO: 購入ページへのリンク
-                                    alert(t('device.form.upgradeInDevelopment'));
-                                }}
-                            >
-                                {t('userSettings.planLimits.upgrade.devices')}
-                            </button>
-                        </span>
                     </div>
                 </div>
+
+                {/* プランアップグレードセクション */}
+                {userPlan.plan_type !== 'pro' && (
+                    <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4">
+                        <div className="flex flex-col space-y-4">
+                            <p className="text-gray-700 dark:text-dark-text">
+                                {t(`userSettings.planLimits.upgrade.description.${userPlan.plan_type}`)}
+                            </p>
+
+                            {userPlan.plan_type === 'free' && (
+                                <button
+                                    onClick={() => handleUpgrade('standard')}
+                                    className="w-full flex items-center justify-center bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition-colors"
+                                >
+                                    {t('userSettings.planLimits.upgrade.toStandard')}
+                                    <ArrowUpRight className="ml-2 h-4 w-4" />
+                                </button>
+                            )}
+
+                            {(userPlan.plan_type === 'free' || userPlan.plan_type === 'standard') && (
+                                <button
+                                    onClick={() => handleUpgrade('pro')}
+                                    className="w-full flex items-center justify-center bg-purple-500 text-white rounded-md py-2 px-4 hover:bg-purple-600 transition-colors"
+                                >
+                                    {t('userSettings.planLimits.upgrade.toPro')}
+                                    <ArrowUpRight className="ml-2 h-4 w-4" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
             </section>
 
             {/* ログアウトセクション */}
@@ -134,13 +160,13 @@ export function UserSettings() {
                 <div className="bg-white dark:bg-dark-card rounded-lg shadow p-4">
                     <div className="flex flex-col space-y-4">
                         <p className="text-gray-700 dark:text-dark-text">{t('userSettings.logout.description')}</p>
-                        
+
                         {logoutError && (
                             <div className="text-sm text-center text-red-600">
                                 {logoutError}
                             </div>
                         )}
-                        
+
                         <button
                             onClick={async () => {
                                 try {
@@ -150,8 +176,8 @@ export function UserSettings() {
                                     navigate('/login');
                                 } catch (err) {
                                     setLogoutError(
-                                        err instanceof Error 
-                                            ? err.message 
+                                        err instanceof Error
+                                            ? err.message
                                             : t('userSettings.logout.error')
                                     );
                                 } finally {

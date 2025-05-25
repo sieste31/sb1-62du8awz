@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BatteryGroup } from '../types';
 import { UserPlanLimitChecker } from '../utils/batteryUtils';
+import { UserPlanType } from '../../../lib/planUtils';
 
 interface UserPlanInfoProps {
     /**
@@ -14,7 +15,7 @@ interface UserPlanInfoProps {
     /**
      * ユーザープランの種類
      */
-    planType?: 'free' | 'premium' | 'business';
+    userPlan: UserPlanType;
 
     /**
      * カスタムクラス名
@@ -24,26 +25,25 @@ interface UserPlanInfoProps {
 
 export function UserPlanInfo({
     batteryGroups,
-    planType = 'free',
+    userPlan,
     className = ''
 }: UserPlanInfoProps) {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
     // プランの最大電池グループ数
-    const maxBatteryGroups = planType === 'free' ? 5 :
-        planType === 'premium' ? 10 : 50;
+    const maxBatteryGroups = userPlan.max_battery_groups;
 
     // 制限チェック
     const isLimitReached = UserPlanLimitChecker.checkBatteryGroupLimit(
         batteryGroups.length,
-        planType
+        userPlan
     );
 
     // プラン種別の表示テキスト
-    const planTypeDisplay = planType === 'free' ? t('plan.free') :
-        planType === 'premium' ? t('plan.premium') :
-            t('plan.business');
+    const planTypeDisplay = userPlan.plan_type === 'free' ? t('plan.free') :
+        userPlan.plan_type === 'standard' ? t('plan.standard') :
+            t('plan.pro');
 
     // コンポーネントが表示されない場合
     if (!isLimitReached && batteryGroups.length < maxBatteryGroups) {
@@ -52,8 +52,8 @@ export function UserPlanInfo({
 
     return (
         <div className={`p-4 rounded-lg mb-4 ${isLimitReached
-                ? 'bg-amber-50 dark:bg-amber-900/20'
-                : 'bg-blue-50 dark:bg-blue-900/20'
+            ? 'bg-amber-50 dark:bg-amber-900/20'
+            : 'bg-blue-50 dark:bg-blue-900/20'
             } ${className}`}>
             <div className="flex justify-between items-center">
                 <div className="flex items-start gap-3">
@@ -62,8 +62,8 @@ export function UserPlanInfo({
                     )}
                     <div>
                         <p className={`text-sm mt-1 ${isLimitReached
-                                ? 'text-amber-600 dark:text-amber-400'
-                                : 'text-blue-600 dark:text-blue-400'
+                            ? 'text-amber-600 dark:text-amber-400'
+                            : 'text-blue-600 dark:text-blue-400'
                             }`}>
                             {t('battery.list.groupCount', {
                                 current: batteryGroups.length,

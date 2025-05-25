@@ -283,8 +283,8 @@
   },
   "plan": {
     "free": "無料",
-    "premium": "プレミアム",
-    "business": "ビジネス"
+    "standard": "スタンダード",
+    "pro": "プロ"
   },
   "userSettings": {
     "title": "ユーザー設定",
@@ -296,13 +296,20 @@
       "disabled": "無効"
     },
     "planLimits": {
-      "title": "プラン制限",
+      "title": "プラン情報",
+      "currentPlan": "現在のプラン: {{plan}}",
       "batteryGroups": "電池グループ作成可能数",
       "devices": "デバイス作成可能数",
       "of": "/ {{max}}",
       "upgrade": {
-        "batteryGroups": "電池グループ数を増やす",
-        "devices": "デバイス数を増やす"
+        "title": "プランをアップグレード",
+        "description": {
+          "free": "現在のプランをstandardまたはproにアップグレードできます。",
+          "standard": "現在のプランをproにアップグレードできます。"
+        },
+        "toStandard": "Standardプランへアップグレード",
+        "toPro": "Proプランへアップグレード",
+        "upgradeInDevelopment": "この機能は現在開発中です。"
       }
     },
     "logout": {
