@@ -1,4 +1,4 @@
-import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle } from 'lucide-react';
+import { Smartphone, Radio, Camera, Gamepad, Lightbulb, ToyBrick, HelpCircle, Pencil, Speaker } from 'lucide-react';
 import type { Database } from '@/lib/database.types';
 
 /**
@@ -6,13 +6,13 @@ import type { Database } from '@/lib/database.types';
  * デバイスタイプに対応するLucideアイコンを定義
  */
 export const DEVICE_TYPE_ICONS = {
-    remotecontroller: Smartphone,
-    speaker: Radio,
+    remotecontroller: Radio,
+    speaker: Speaker,
     camera: Camera,
     gadget: Gamepad,
     light: Lightbulb,
     toy: ToyBrick,
-    other: HelpCircle,
+    other: Pencil,
 } as const;
 
 /**
@@ -20,13 +20,13 @@ export const DEVICE_TYPE_ICONS = {
  * 翻訳キーと組み合わせて使用
  */
 export const DEVICE_TYPE_OPTIONS = [
-    { value: 'remotecontroller', labelKey: 'device.types.remotecontroller', icon: Smartphone },
-    { value: 'speaker', labelKey: 'device.types.speaker', icon: Radio },
+    { value: 'remotecontroller', labelKey: 'device.types.remotecontroller', icon: Radio },
+    { value: 'speaker', labelKey: 'device.types.speaker', icon: Speaker },
     { value: 'camera', labelKey: 'device.types.camera', icon: Camera },
     { value: 'gadget', labelKey: 'device.types.gadget', icon: Gamepad },
     { value: 'light', labelKey: 'device.types.light', icon: Lightbulb },
     { value: 'toy', labelKey: 'device.types.toy', icon: ToyBrick },
-    { value: 'other', labelKey: 'device.types.other', icon: HelpCircle },
+    { value: 'other', labelKey: 'device.types.other', icon: Pencil },
 ] as const;
 
 /**

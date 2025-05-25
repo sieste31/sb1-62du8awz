@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useDeviceDetailStore } from '@/lib/deviceDetailStore';
-import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, Pencil, X, Check, ToyBrick } from 'lucide-react';
+import { Smartphone, Speaker, Camera, Gamepad, Lightbulb, Pencil, Radio, X, Check, ToyBrick } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Database } from '@/lib/database.types';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,8 @@ const deviceTypeIcons = {
   gadget: Gamepad,
   light: Lightbulb,
   toy: ToyBrick,
+  remotecontroller: Radio,
+  other: Pencil, // 他のデバイスはPencilアイコンを使用
 };
 
 export function DeviceDetailElemHead({ device }: DeviceDetailElemHeadProps) {

@@ -228,7 +228,7 @@
             "upgradeInDevelopment": "This feature is currently under development."
         },
         "types": {
-            "remotecontroller": "Remote Controller",
+            "remotecontroller": "Remote",
             "speaker": "Radio/Speaker",
             "camera": "Camera",
             "gadget": "Gadget",

@@ -188,16 +188,16 @@ export function DeviceList() {
     <div>
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">{t('device.list.title')}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text">{t('device.list.title')}</h2>
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <Filter className="h-4 w-4 mr-2" />
               {t('battery.list.filter')}
               {activeFiltersCount > 0 && (
-                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300">
                   {activeFiltersCount}
                 </span>
               )}
@@ -215,21 +215,21 @@ export function DeviceList() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 <div className="relative flex-grow">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
+                    <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                   </div>
                   <input
                     type="text"
                     placeholder={t('device.list.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-300"
                   />
                 </div>
                 <div className="relative">
                   <select
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                    className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                    className="block w-full pl-3 pr-10 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 appearance-none text-gray-900 dark:text-gray-300"
                   >
                     <option value="none">{t('device.list.sortOptions.none')}</option>
                     <option value="battery-end-asc">{t('device.list.sortOptions.batteryEndAsc')}</option>
@@ -240,7 +240,7 @@ export function DeviceList() {
                     <option value="name-desc">{t('device.list.sortOptions.nameDesc')}</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <SortDesc className="h-4 w-4 text-gray-400" />
+                    <SortDesc className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                   </div>
                 </div>
               </div>
@@ -368,7 +368,7 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
       <div className="relative inline-block">
         <button
           disabled
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
         >
           <Plus className="h-4 w-4 mr-2" />
           {t('device.list.addNew')}
@@ -380,7 +380,7 @@ function DeviceAddButton({ devices }: { devices: Device[] }) {
   return (
     <Link
       to="/devices/new"
-      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
     >
       <Plus className="h-4 w-4 mr-2" />
       {t('device.list.addNew')}
@@ -403,14 +403,14 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
     userPlan.plan_type === 'premium' ? t('common.planType.premium') : t('common.planType.business');
 
   return (
-    <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50' : 'bg-blue-50'}`}>
+    <div className={`p-4 rounded-lg mb-4 ${isLimitReached ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
       <div className="flex justify-between items-center">
         <div className="flex items-start gap-3">
           {isLimitReached && (
-            <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           )}
           <div>
-            <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600' : 'text-blue-600'}`}>
+            <p className={`text-sm mt-1 ${isLimitReached ? 'text-amber-600 dark:text-amber-300' : 'text-blue-600 dark:text-blue-300'}`}>
               {t('device.list.deviceCount', { current: deviceCount, max: maxDevices })}
               {isLimitReached && ` ${t('device.list.limitReached')}`}
             </p>
@@ -418,7 +418,7 @@ function UserPlanInfo({ devices }: { devices: Device[] }) {
         </div>
         {isLimitReached && (
           <button
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             onClick={() => navigate('/settings')}
           >
             {t('device.list.changeInSettings')}

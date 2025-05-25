@@ -24,10 +24,10 @@ export function DeviceBatterySlot({
   // バッテリーが設定されていない場合のレンダリング
   if (!battery) {
     return (
-      <div className="px-4 py-4 sm:px-6 bg-gray-50 dark:bg-gray-800">
+      <div className="px-4 py-4 sm:px-6 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-gray-700">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between">
           <div className="mb-2 sm:mb-0">
-            <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center">
+            <h4 className="text-sm font-medium text-gray-900 dark:text-dark-text flex items-center">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs mr-2 flex-shrink-0">
                 {slotNumber}
               </span>
@@ -52,10 +52,10 @@ export function DeviceBatterySlot({
   const StatusIcon = statusStyle.icon;
 
   return (
-    <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+    <div className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between">
         <div className="mb-2 sm:mb-0">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center">
+          <h4 className="text-sm font-medium text-gray-900 dark:text-dark-text flex items-center">
             <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs mr-2 flex-shrink-0">
               {slotNumber}
             </span>
