@@ -124,7 +124,13 @@
             "c": "C",
             "aa": "AA",
             "aaa": "AAA",
-            "9v": "9V"
+            "n": "N",
+            "lr44": "LR44/SR44",
+            "cr2032": "CR2032",
+            "cr2025": "CR2025",
+            "cr2016": "CR2016",
+            "9v": "9V",
+            "other": "Other"
         },
         "list": {
             "filter": "Filter",

@@ -10,7 +10,13 @@ export const BATTERY_SHAPE_OPTIONS = [
     { value: '単2形', labelKey: 'battery.shape.c' },
     { value: '単3形', labelKey: 'battery.shape.aa' },
     { value: '単4形', labelKey: 'battery.shape.aaa' },
+    { value: '単５形', labelKey: 'battery.shape.n' },
+    { value: 'LR44/SR44', labelKey: 'battery.shape.lr44' },
+    { value: 'CR2032', labelKey: 'battery.shape.cr2032' },
+    { value: 'CR2025', labelKey: 'battery.shape.cr2025' },
+    { value: 'CR2016', labelKey: 'battery.shape.cr2016' },
     { value: '9V形', labelKey: 'battery.shape.9v' },
+    { value: 'その他', labelKey: 'battery.shape.other' },
 ] as const;
 
 /**

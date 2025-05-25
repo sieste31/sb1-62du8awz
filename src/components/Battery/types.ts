@@ -19,7 +19,7 @@ export type BatteryKind = 'disposable' | 'rechargeable';
 /**
  * 電池形状の定数
  */
-export const BATTERY_SHAPES = ['単1形', '単2形', '単3形', '単4形', '9V形'] as const;
+export const BATTERY_SHAPES = ['単1形', '単2形', '単3形', '単4形', '単５形', 'LR44/SR44', 'CR2032', 'CR2025', 'CR2016', '9V形', 'その他'] as const;
 
 /**
  * 電池形状の型
