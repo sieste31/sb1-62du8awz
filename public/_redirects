@@ -1,28 +1,26 @@
 # デフォルトは日本語ページにリダイレクト
-/ /ja 302
+/ /ja/index.html 302
 
 # 言語別ページ
 /ja /ja/index.html 200
 /en /en/index.html 200
 
 # 認証ページ
-/login /login 200
-/signup /signup 200
-
-# Accept-Language による言語判定
-/ /ja 302 Language=ja
-/ /en 302 Language=en
-
-# 地理的判定（日本）
-/ /ja 302 Country=JP
-
-# その他の言語は日本語にリダイレクト
-/ /ja 302
-
-# アプリケーションルート
-/app/* /index.html 200
 /login /index.html 200
 /signup /index.html 200
 
+# Accept-Language による言語判定
+/ /ja/index.html 302 Language=ja
+/ /en/index.html 302 Language=en
+
+# 地理的判定（日本）
+/ /ja/index.html 302 Country=JP
+
+# その他の言語は日本語にリダイレクト
+/ /ja/index.html 302
+
+# アプリケーションルート
+/app/* /index.html 200
+
 # 404ページは日本語ページにリダイレクト
-/* /ja 302
+/* /ja/index.html 302
