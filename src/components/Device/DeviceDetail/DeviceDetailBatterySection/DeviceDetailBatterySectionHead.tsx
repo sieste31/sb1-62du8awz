@@ -38,7 +38,7 @@ export function DeviceDetailBatterySectionHead({ device, batteries, onClickShowH
                     {t('device.select.history')}
                 </button>
                 <Link
-                    to={`/devices/${device.id}/select-battery`}
+                    to={`/app/devices/${device.id}/select-battery`}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
                 >
                     <Battery className="h-4 w-4 mr-2" />
