@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth-provider';
 
-export function AuthRequired({ children }: { children: React.ReactNode }) {
+export function AuthRequired() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -24,5 +24,5 @@ export function AuthRequired({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }

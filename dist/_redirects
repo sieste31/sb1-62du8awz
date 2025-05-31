@@ -1,0 +1,20 @@
+# デフォルトは日本語ページにリダイレクト
+/ /ja 302
+
+# 言語別ページ
+/ja /ja 200
+/en /en 200
+
+# Accept-Language による言語判定
+/ja Accept-Language=ja 302
+/en Accept-Language=en 302
+
+# 地理的判定（日本）
+/ja Country=JP 302
+
+# その他の言語は日本語にリダイレクト
+/en Accept-Language=ja 302
+/ Accept-Language=ja 302
+
+# デフォルトは日本語
+/* /ja 302

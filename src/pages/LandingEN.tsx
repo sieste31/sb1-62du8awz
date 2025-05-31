@@ -1,17 +1,25 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import LandingHeader from './LandingHeader';
-import LandingFeatures from './LandingFeatures';
-import LandingPlanInfo from './LandingPlanInfo';
-import LandingFooter from './LandingFooter';
+import { generateLandingPageSEO, renderSEOMetaTags } from '../lib/seoUtils';
+import LandingHeader from '../components/LandingHeader';
+import LandingFeatures from '../components/LandingFeatures';
+import LandingPlanInfo from '../components/LandingPlanInfo';
+import LandingFooter from '../components/LandingFooter';
 
-const LandingPage: React.FC = () => {
-    const { t, i18n } = useTranslation();
-    const currentLang = i18n.language;
+const LandingPageEN: React.FC = () => {
+    const { t } = useTranslation();
+    const seo = generateLandingPageSEO(t, 'en');
+    const seoTags = renderSEOMetaTags(seo);
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
+            <Helmet>
+                <title>{seoTags.title}</title>
+                {seoTags.meta.map((tag, index) => (
+                    <meta key={index} {...tag} />
+                ))}
+            </Helmet>
             <LandingHeader />
 
             <main className="flex-grow container mx-auto px-4 py-16">
@@ -24,18 +32,18 @@ const LandingPage: React.FC = () => {
                     </p>
 
                     <div className="flex justify-center items-center space-x-4">
-                        <Link
-                            to={currentLang === 'ja' ? '/signup' : '/en/signup'}
+                        <a
+                            href="/signup"
                             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
                         >
                             {t('landingPage.cta.signup')}
-                        </Link>
-                        <Link
-                            to={currentLang === 'ja' ? '/login' : '/en/login'}
+                        </a>
+                        <a
+                            href="/login"
                             className="text-blue-600 hover:text-blue-800 transition duration-300"
                         >
                             {t('landingPage.hero.existingUser')}
-                        </Link>
+                        </a>
                     </div>
                 </section>
 
@@ -48,4 +56,4 @@ const LandingPage: React.FC = () => {
     );
 };
 
-export default LandingPage;
+export default LandingPageEN;

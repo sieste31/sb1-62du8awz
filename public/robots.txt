@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /ja
+Allow: /en
+Sitemap: https://battdevy.com/sitemap.xml
+
+# クローリング制限
+Disallow: /app/
+Disallow: /login
+Disallow: /signup
+Disallow: /settings

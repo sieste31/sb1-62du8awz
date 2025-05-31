@@ -33,7 +33,7 @@ export function DeviceListItem({ device }: { device: Device }) {
 
   return (
     <Link
-      to={`/devices/${device.id}`}
+      to={`/app/devices/${device.id}`}
       className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
     >
       <div className="p-5">

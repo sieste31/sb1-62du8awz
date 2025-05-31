@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- 日本語ページ -->
+  <url>
+    <loc>https://battdevy.com/ja</loc>
+    <lastmod>2025-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link 
+      rel="alternate"
+      hreflang="en"
+      href="https://battdevy.com/en"/>
+    <xhtml:link 
+      rel="alternate"
+      hreflang="ja"
+      href="https://battdevy.com/ja"/>
+  </url>
+
+  <!-- 英語ページ -->
+  <url>
+    <loc>https://battdevy.com/en</loc>
+    <lastmod>2025-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link 
+      rel="alternate"
+      hreflang="en"
+      href="https://battdevy.com/en"/>
+    <xhtml:link 
+      rel="alternate"
+      hreflang="ja"
+      href="https://battdevy.com/ja"/>
+  </url>
+</urlset>

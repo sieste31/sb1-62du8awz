@@ -10,7 +10,7 @@ export function Navigation() {
   const pathname = location.pathname;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isRoot = pathname === '/';
-  const activeTab = isRoot || pathname.startsWith('/batteries') ? 'batteries' : 'devices';
+  const activeTab = isRoot || pathname.startsWith('/app/batteries') ? 'batteries' : 'devices';
 
   return (
     <nav className="bg-white dark:bg-dark-card shadow">
@@ -22,23 +22,21 @@ export function Navigation() {
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                to="/batteries"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  activeTab === 'batteries'
+                to="/app/batteries"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${activeTab === 'batteries'
                     ? 'border-blue-500 text-gray-900 dark:text-dark-text'
                     : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
+                  }`}
               >
                 <Battery className="mr-2 h-5 w-5" />
                 {t('nav.batteries')}
               </Link>
               <Link
-                to="/devices"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                  activeTab === 'devices'
+                to="/app/devices"
+                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${activeTab === 'devices'
                     ? 'border-blue-500 text-gray-900 dark:text-dark-text'
                     : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
+                  }`}
               >
                 <Smartphone className="mr-2 h-5 w-5" />
                 {t('nav.devices')}
@@ -47,7 +45,7 @@ export function Navigation() {
           </div>
           <div className="flex items-center space-x-4">
             <Link
-              to="/settings"
+              to="/app/settings"
               className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               title={t('userSettings.title')}
             >
@@ -73,12 +71,11 @@ export function Navigation() {
       <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
           <Link
-            to="/batteries"
-            className={`${
-              activeTab === 'batteries'
+            to="/app/batteries"
+            className={`${activeTab === 'batteries'
                 ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
                 : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-            } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+              } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
             onClick={() => setIsMenuOpen(false)}
           >
             <div className="flex items-center">
@@ -87,12 +84,11 @@ export function Navigation() {
             </div>
           </Link>
           <Link
-            to="/devices"
-            className={`${
-              activeTab === 'devices'
+            to="/app/devices"
+            className={`${activeTab === 'devices'
                 ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
                 : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-            } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
+              } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
             onClick={() => setIsMenuOpen(false)}
           >
             <div className="flex items-center">
@@ -101,7 +97,7 @@ export function Navigation() {
             </div>
           </Link>
           <Link
-            to="/settings"
+            to="/app/settings"
             className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
             onClick={() => setIsMenuOpen(false)}
           >

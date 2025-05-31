@@ -52,7 +52,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
 
   return (
     <Link
-      to={`/batteries/${group.id}`}
+      to={`/app/batteries/${group.id}`}
       className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
     >
       <div className="p-5">
@@ -125,7 +125,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                       className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation(); // クリックイベントの伝播を停止
-                        navigate(`/devices/${device.deviceId}`);
+                        navigate(`/app/devices/${device.deviceId}`);
                       }}
                     >
                       <span className="max-w-[120px] truncate">{device.deviceName}</span>
