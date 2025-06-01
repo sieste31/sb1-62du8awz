@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
+import { setLanguageFromPath } from '../lib/i18nUtils';
 
 const PrivacyPolicy: React.FC = () => {
+    useEffect(() => {
+        setLanguageFromPath();
+    }, []);
+
     const { t } = useTranslation();
 
     return (

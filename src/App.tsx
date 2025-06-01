@@ -18,6 +18,7 @@ import { useDarkMode } from './lib/hooks';
 import LandingPageJA from './pages/LandingJA';
 import LandingPageEN from './pages/LandingEN';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 
 function App() {
   const { user, loading } = useAuth();
@@ -51,6 +52,10 @@ function App() {
               {/* プライバシーポリシー */}
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/en/privacy" element={<PrivacyPolicy />} />
+
+              {/* 利用規約 */}
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/en/terms" element={<TermsOfService />} />
 
               {/* アプリケーションルート */}
               <Route path="/app" element={<AuthRequired />}>

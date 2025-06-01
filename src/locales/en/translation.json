@@ -33,67 +33,45 @@
             "description": "We may update our privacy policy as necessary. For significant changes, we will announce them on our website or notify you via the registered email address."
         }
     },
-    "landingPage": {
-        "hero": {
-            "title": "Eliminate Battery Anxiety with Smart Battery Management",
-            "subtitle": "Track and Manage Device Battery Status in Real-Time",
-            "existingUser": "Already have an account?"
+    "termsOfService": {
+        "pageTitle": "Terms of Service - BattDevy",
+        "title": "Terms of Service",
+        "serviceUsage": {
+            "title": "Service Usage",
+            "description": "BattDevy service is available only for personal and non-commercial purposes. Unauthorized use of the service or actions that infringe on other users' rights are strictly prohibited."
         },
-        "features": {
-            "title": "Key Features",
-            "notification": {
-                "title": "Battery Depletion Alerts",
-                "description": "Get notified before your devices run out of battery. Prevent unexpected power failures.",
-                "details": [
-                    "Real-time battery level monitoring",
-                    "Customizable notification settings",
-                    "Manage multiple devices simultaneously"
-                ]
-            },
-            "inventory": {
-                "title": "Battery Inventory Management",
-                "description": "Easily track your battery inventory. See which batteries are used in which devices at a glance.",
-                "details": [
-                    "Create and manage battery groups",
-                    "Track used and spare batteries",
-                    "Manage battery states (charged, in use, disposed)"
-                ]
-            },
-            "deviceTracking": {
-                "title": "Device Battery Tracking",
-                "description": "Track battery usage for each device. Know exactly when to replace batteries.",
-                "details": [
-                    "Battery life prediction per device",
-                    "Record battery replacement history",
-                    "Link devices with batteries"
-                ]
-            }
+        "userResponsibilities": {
+            "title": "User Responsibilities",
+            "description": "Users are responsible for maintaining the confidentiality of their account information and managing access to their account. Any unauthorized access or misuse must be reported to us immediately."
         },
-        "howItWorks": {
-            "title": "How It Works",
-            "steps": [
-                {
-                    "title": "Register Devices",
-                    "description": "Easily add your devices and set the battery type and quantity needed"
-                },
-                {
-                    "title": "Create Battery Groups",
-                    "description": "Manage battery inventory and select batteries for each device"
-                },
-                {
-                    "title": "Real-time Tracking",
-                    "description": "Always know battery levels and replacement times, plan ahead"
-                }
+        "prohibitedActions": {
+            "title": "Prohibited Actions",
+            "list": [
+                "Unauthorized use or intentional disruption of the service",
+                "Violation of other users' privacy or rights",
+                "Posting illegal or harmful content",
+                "Infringement of our intellectual property rights",
+                "Providing false or misleading information"
             ]
         },
-        "cta": {
-            "login": "Login to Get Started",
-            "signup": "Sign Up for Free"
+        "intellectualProperty": {
+            "title": "Intellectual Property Rights",
+            "description": "All content, design, logos, and software of BattDevy belong to our company or our licensors. Users must respect these intellectual property rights and are prohibited from reproducing, distributing, or modifying them without authorization."
         },
-        "planInfo": {
-            "title": "Flexible Plan Settings",
-            "description": "Free plan allows managing up to 5 battery groups and devices. Upgrade plans in the future to manage more devices and batteries."
+        "disclaimer": {
+            "title": "Disclaimer",
+            "description": "We strive to provide continuous service, but we are not liable for direct or indirect damages resulting from service interruptions, errors, or security issues."
         },
+        "serviceModification": {
+            "title": "Service Modification and Termination",
+            "description": "We reserve the right to modify, suspend, or terminate all or part of the service for any reason. We will notify users as much as possible in advance."
+        },
+        "changes": {
+            "title": "Terms of Service Changes",
+            "description": "We may update our terms of service as necessary. For significant changes, we will announce them on our website or notify you via the registered email address. Continued use of the service is considered acceptance of the latest terms of service."
+        }
+    },
+    "landingPage": {
         "footer": {
             "contact": "Contact",
             "privacyPolicy": "Privacy Policy",
@@ -101,271 +79,5 @@
             "faq": "FAQ",
             "copyright": "© 2025 BattDevy. All rights reserved."
         }
-    },
-    "battery": {
-        "image": {
-            "alt": "{{type}} image"
-        },
-        "comments": {
-            "detailItem": "Battery detail screen battery item component"
-        },
-        "voltage": "Voltage",
-        "detail": {
-            "memo": "Memo",
-            "count": "Quantity",
-            "shape": "Shape",
-            "kind": "Type",
-            "title": "Title",
-            "item": {
-                "changeStatus": "Change Status",
-                "installationStatus": "Installation Status",
-                "notInstalled": "Not Installed",
-                "changeStatusTitle": "Change status of Battery #{{number}}",
-                "lastChecked": "Last Checked",
-                "lastChanged": "Last Changed",
-                "removeFromDevice": "Remove from Device",
-                "usageHistory": "Usage History",
-                "removeError": "Failed to remove battery",
-                "updateStatusError": "Failed to update battery status",
-                "removeConfirmMessage": "Remove battery from {{deviceName}}?",
-                "removeConfirm": "Remove"
-            },
-            "cannotChangeCount": "Cannot change count due to batteries in use",
-            "cannotReduceCount": "Cannot reduce count due to batteries set in device",
-            "cannotChangeKind": "Cannot change type due to batteries in use",
-            "memoPlaceholder": "Enter memo",
-            "cannotChangeShape": "Cannot change shape due to batteries in use",
-            "titlePlaceholder": "Enter title",
-            "imageSelectError": "Image selection error:",
-            "imageSelectFailed": "Failed to select image",
-            "imageUploadError": "Image upload processing error:",
-            "imageUploadFailed": "Failed to upload image",
-            "imageAlt": "{{type}} image",
-            "cannotDelete": "Cannot delete due to batteries set in device"
-        },
-        "shape": {
-            "d": "D",
-            "c": "C",
-            "aa": "AA",
-            "aaa": "AAA",
-            "n": "N",
-            "lr44": "LR44/SR44",
-            "cr2032": "CR2032",
-            "cr2025": "CR2025",
-            "cr2016": "CR2016",
-            "9v": "9V",
-            "other": "Other"
-        },
-        "list": {
-            "filter": "Filter",
-            "status": "Status",
-            "backToList": "Back to List",
-            "individualSettings": "Individual Settings",
-            "deleteGroup": "Delete Battery Group",
-            "deleteConfirmation": "Are you sure you want to delete \"{{name}}\"?\n\n※This operation cannot be undone.",
-            "batteryStatus": "Battery Status:",
-            "installedDevices": "Installed Devices:",
-            "unit": "pcs",
-            "total": "Total: {{count}} pcs",
-            "title": "Battery List",
-            "noBatteries": "No Batteries",
-            "noMatchingBatteries": "No batteries match the criteria",
-            "emptyStateMessage": "Register new batteries and start managing efficiently.",
-            "noMatchingMessage": "Change search conditions or filter settings and try again.",
-            "addNew": "New Registration",
-            "groupCount": "Battery Groups: {{current}} / {{max}}",
-            "limitReached": " (Limit Reached)",
-            "limitReachedSettings": "Change limit in settings",
-            "changeInSettings": "Change in Settings",
-            "searchPlaceholder": "Search battery name or comment...",
-            "batteryType": "Battery Type",
-            "resetFilter": "Reset Filter"
-        },
-        "status": {
-            "charged": "Fully Charged",
-            "in_use": "In Use",
-            "empty": "Depleted",
-            "disposed": "Disposed",
-            "unknown": "Unknown"
-        },
-        "kind": {
-            "rechargeable": "Rechargeable",
-            "disposable": "Disposable"
-        },
-        "form": {
-            "title": "New Battery Group Registration",
-            "nameLabel": "Group Name",
-            "namePlaceholder": "e.g., Remote Control AA Batteries",
-            "statusLabel": "Battery Status",
-            "saving": "Registering...",
-            "submit": "Register",
-            "limitReachedError": "Battery group limit reached. Unlock limit in settings page.",
-            "createError": "Failed to register battery",
-            "limitReachedWarning": "Battery group limit reached ({{current}}/{{max}}).",
-            "upgradePlan": "Upgrade Plan",
-            "upgradeInDevelopment": "This feature is currently under development.",
-            "imageLabel": "Image",
-            "uploadImage": "Select Image",
-            "imageHelp": "JPG, PNG, WebP formats (under 5MB)"
-        }
-    },
-    "device": {
-        "detail": {
-            "type": "Type",
-            "deviceType": "Device Type",
-            "batteryLife": "Battery Life",
-            "batteryShape": "Battery Shape",
-            "batteryCount": "Battery Count",
-            "purchaseDate": "Purchase Date",
-            "lastChange": "Last Replacement",
-            "lastCheck": "Last Check",
-            "notes": "Memo",
-            "backToList": "Back to List",
-            "imageAlt": "{{name}} image",
-            "cannotChangeBatteryShape": "Cannot change due to batteries set",
-            "batteryLifePlaceholder": "e.g., 12",
-            "weeks": "weeks",
-            "weeksValue": "{{weeks}} weeks",
-            "notesPlaceholder": "Enter memo",
-            "installedBatteries": "Installed: {{installed}} pcs / Remaining: {{remaining}} pcs",
-            "deleteConfirmTitle": "Delete Device",
-            "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
-            "cannotDelete": "Cannot delete device with installed batteries"
-        },
-        "list": {
-            "title": "Device List",
-            "searchPlaceholder": "Search device name or memo...",
-            "sortOptions": {
-                "none": "Sort",
-                "batteryEndAsc": "Nearest replacement date",
-                "batteryEndDesc": "Farthest replacement date",
-                "changeAsc": "Oldest replacement",
-                "changeDesc": "Newest replacement",
-                "nameAsc": "Name (Ascending)",
-                "nameDesc": "Name (Descending)"
-            },
-            "deviceType": "Device Type",
-            "batteryType": "Battery Type",
-            "resetFilter": "Reset Filter",
-            "noDevices": "No Devices",
-            "emptyStateMessage": "Register new devices and start managing efficiently.",
-            "noMatchingDevices": "No devices match the criteria",
-            "noMatchingMessage": "Change search conditions or filter settings and try again.",
-            "withBatteries": "Devices with Batteries",
-            "withoutBatteries": "Devices without Batteries",
-            "limitReached": "Device limit reached",
-            "changeInSettings": "Change in Settings",
-            "deviceCount": "Devices: {{current}} / {{max}}",
-            "addNew": "New Registration",
-            "upgrade": "Upgrade",
-            "upgradeInDevelopment": "This feature is currently under development.",
-            "deleteGroup": "Delete Device"
-        },
-        "types": {
-            "remotecontroller": "Remote Control",
-            "speaker": "Radio/Speaker",
-            "camera": "Camera",
-            "gadget": "Gadget",
-            "light": "Light",
-            "toy": "Toy",
-            "other": "Other"
-        },
-        "batterySection": "Battery Information",
-        "batterySlot": "Battery Slot",
-        "selectBattery": "Select Battery",
-        "status": {
-            "batteryStatus": "Battery Status:",
-            "batteryExchange": "Battery Exchange:",
-            "hasBatteries": "Batteries Set",
-            "partiallySet": "Batteries Partially Set",
-            "notSet": "No Batteries Set",
-            "exchangeDate": "Exchange Date: {{date}}",
-            "scheduleDate": "Scheduled Date: {{date}}",
-            "overdue": "Overdue",
-            "soon": "Soon",
-            "installedIn": "Installed in {{deviceName}}"
-        },
-        "select": {
-            "backToDevice": "Back to Device Details",
-            "filter": "Filter",
-            "history": "Exchange History",
-            "confirm": "Confirm Selection",
-            "saving": "Setting...",
-            "deviceNotFound": "Device Not Found",
-            "filterTitle": "Filter",
-            "reset": "Reset",
-            "batteryStatus": "Battery Status",
-            "batteryType": "Battery Type",
-            "settingTitle": "Battery Setting",
-            "settingDescription": "Select batteries ({{batteryType}}) to set for {{deviceName}} (Max {{count}} pcs)",
-            "noBatteries": "No available batteries",
-            "registerNew": "Register new {{batteryType}} batteries"
-        },
-        "form": {
-            "title": "New Device Registration",
-            "nameLabel": "Device Name",
-            "batteryCountLabel": "Required Quantity",
-            "batteryLifeHelp": "Set expected battery life in weeks. Leave blank for no notifications.",
-            "saving": "Registering...",
-            "submit": "Register",
-            "limitReachedError": "Device limit reached. Unlock limit in settings page.",
-            "createError": "Failed to register device",
-            "limitReachedWarning": "Device limit reached ({{current}}/{{max}}).",
-            "upgradePlan": "Upgrade Plan",
-            "upgradeInDevelopment": "This feature is currently under development."
-        }
-    },
-    "plan": {
-        "free": "Free",
-        "standard": "Standard",
-        "pro": "Pro"
-    },
-    "userSettings": {
-        "title": "User Settings",
-        "language": "Language Settings",
-        "darkMode": {
-            "title": "Dark Mode",
-            "description": "Toggle dark mode on/off",
-            "enabled": "Enabled",
-            "disabled": "Disabled"
-        },
-        "planLimits": {
-            "title": "Plan Information",
-            "currentPlan": "Current Plan: {{plan}}",
-            "batteryGroups": "Maximum Battery Groups",
-            "devices": "Maximum Devices",
-            "of": "/ {{max}}",
-            "upgrade": {
-                "title": "Upgrade Plan",
-                "description": {
-                    "free": "You can upgrade to standard or pro plan.",
-                    "standard": "You can upgrade to pro plan."
-                },
-                "toStandard": "Upgrade to Standard Plan",
-                "toPro": "Upgrade to Pro Plan",
-                "upgradeInDevelopment": "This feature is currently under development."
-            }
-        },
-        "logout": {
-            "title": "Logout",
-            "description": "Sign out from your account",
-            "button": "Logout",
-            "processing": "Logging out...",
-            "error": "Failed to logout"
-        }
-    },
-    "common": {
-        "edit": "Edit",
-        "save": "Save",
-        "cancel": "Cancel",
-        "delete": "Delete",
-        "loading": "Loading...",
-        "confirm": "Confirm",
-        "yes": "Yes",
-        "no": "No",
-        "unit": "pcs",
-        "purchase": "Purchased: {{date}}",
-        "all": "All",
-        "registrationDate": "Registered: {{date}}"
     }
 }

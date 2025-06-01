@@ -30,21 +30,6 @@ const LandingPageJA: React.FC = () => {
                     <p className="text-xl text-gray-600 mb-8">
                         {t('landingPage.hero.subtitle')}
                     </p>
-
-                    <div className="flex justify-center items-center space-x-4">
-                        <a
-                            href="/signup"
-                            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
-                        >
-                            {t('landingPage.cta.signup')}
-                        </a>
-                        <a
-                            href="/login"
-                            className="text-blue-600 hover:text-blue-800 transition duration-300"
-                        >
-                            {t('landingPage.hero.existingUser')}
-                        </a>
-                    </div>
                 </section>
 
                 <LandingFeatures />

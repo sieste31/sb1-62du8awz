@@ -1,4 +1,5 @@
 // 国際化対応のためのユーティリティ関数
+import i18n from '../i18n';
 
 /**
  * 電池形状のデータベース値（日本語）を翻訳キーに変換する
@@ -20,4 +21,24 @@ export const batteryShapeToTranslationKey = (shape: string): string => {
     'その他': 'battery.shape.other'
   };
   return mapping[shape] || shape;
+};
+
+/**
+ * URLパスから言語コードを抽出する
+ * @returns 抽出された言語コード（'ja' または 'en'）
+ */
+export const extractLanguageFromPath = (): string => {
+  const path = window.location.pathname;
+  if (path.startsWith('/en/')) {
+    return 'en';
+  }
+  return 'ja';
+};
+
+/**
+ * URLパスに基づいて言語を設定する
+ */
+export const setLanguageFromPath = () => {
+  const language = extractLanguageFromPath();
+  i18n.changeLanguage(language);
 };
