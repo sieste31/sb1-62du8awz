@@ -7,6 +7,7 @@ import LandingFeatures from '../components/LandingFeatures';
 import LandingPlanInfo from '../components/LandingPlanInfo';
 import LandingFooter from '../components/LandingFooter';
 import LandingUseCases from '../components/LandingUseCases';
+import { DemoLandingSection } from '../components/Demo/DemoLandingSection';
 
 const LandingPageJA: React.FC = () => {
     const { t } = useTranslation();
@@ -34,6 +35,7 @@ const LandingPageJA: React.FC = () => {
                 </section>
                 <LandingUseCases />
                 <LandingFeatures />
+                <DemoLandingSection />
                 <LandingPlanInfo />
             </main>
 
