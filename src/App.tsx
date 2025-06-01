@@ -17,6 +17,7 @@ import { useAuth } from './lib/auth-provider';
 import { useDarkMode } from './lib/hooks';
 import LandingPageJA from './pages/LandingJA';
 import LandingPageEN from './pages/LandingEN';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 function App() {
   const { user, loading } = useAuth();
@@ -46,6 +47,10 @@ function App() {
               {/* 認証ページ */}
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/app/batteries" replace />} />
               <Route path="/signup" element={!user ? <Login isSignUp /> : <Navigate to="/app/batteries" replace />} />
+
+              {/* プライバシーポリシー */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/en/privacy" element={<PrivacyPolicy />} />
 
               {/* アプリケーションルート */}
               <Route path="/app" element={<AuthRequired />}>

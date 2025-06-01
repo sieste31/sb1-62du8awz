@@ -9,6 +9,30 @@
         "selectBattery": "Select Battery",
         "detail": "Device Details"
     },
+    "privacyPolicy": {
+        "pageTitle": "Privacy Policy - BattDevy",
+        "title": "Privacy Policy",
+        "emailCollection": {
+            "title": "Email Address Collection",
+            "description": "We collect email addresses for service provision, communication with customers, and important notifications. We will not provide email addresses to third parties without customer consent."
+        },
+        "emailUsage": {
+            "title": "Email Address Usage",
+            "description": "We use collected email addresses for the following purposes:\n- Important service notifications\n- Account-related information\n- Security alerts\n- Product update information"
+        },
+        "dataHandling": {
+            "title": "Personal Information Handling",
+            "description": "We manage and protect customer personal information in accordance with the law. We implement reasonable security measures against risks such as unauthorized access, loss, destruction, alteration, and leakage."
+        },
+        "contact": {
+            "title": "Contact",
+            "description": "For questions or inquiries about personal information handling, please contact support@battdevy.com."
+        },
+        "changes": {
+            "title": "Privacy Policy Changes",
+            "description": "We may update our privacy policy as necessary. For significant changes, we will announce them on our website or notify you via the registered email address."
+        }
+    },
     "landingPage": {
         "hero": {
             "title": "Eliminate Battery Anxiety with Smart Battery Management",

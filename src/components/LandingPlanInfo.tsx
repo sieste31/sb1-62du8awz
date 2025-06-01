@@ -17,12 +17,18 @@ const LandingPlanInfo: React.FC = () => {
                         {t('landingPage.planInfo.description')}
                     </p>
 
-                    <div className="flex justify-center space-x-4">
+                    <div className="flex justify-center items-center space-x-4">
                         <Link
-                            to="/signup"
+                            to={'/signup'}
                             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
                         >
                             {t('landingPage.cta.signup')}
+                        </Link>
+                        <Link
+                            to={'/login'}
+                            className="text-blue-600 hover:text-blue-800 transition duration-300"
+                        >
+                            {t('landingPage.hero.existingUser')}
                         </Link>
                     </div>
                 </div>
