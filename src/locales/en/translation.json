@@ -72,6 +72,141 @@
         }
     },
     "landingPage": {
+        "hero": {
+            "title": "Eliminate Battery Anxiety with Smart Battery Management",
+            "subtitle": "Track Device Battery Status in Real-Time and Manage Efficiently",
+            "existingUser": "Existing Users"
+        },
+        "useCases": {
+            "title": "Have You Ever Experienced This?",
+            "subtitle": "Battery Troubles BattDevy Solves in Daily Life",
+            "cases": [
+                {
+                    "id": "battery_dead",
+                    "problem": {
+                        "title": "Dead Battery When You Need It Most",
+                        "icon": "⚠️",
+                        "scenarios": [
+                            "Presentation remote fails during important meeting",
+                            "Camera won't start at child's recital",
+                            "Flashlight doesn't work during power outage",
+                            "Game controller becomes unresponsive"
+                        ]
+                    },
+                    "solution": {
+                        "title": "Prevent Dead Batteries with Advance Notifications",
+                        "icon": "🔔",
+                        "description": "Track battery levels and get notified before replacement time",
+                        "features": [
+                            "Real-time battery monitoring",
+                            "Customizable notification settings",
+                            "Manage multiple devices at once"
+                        ]
+                    }
+                },
+                {
+                    "id": "no_stock",
+                    "problem": {
+                        "title": "No Spare Batteries When You Need to Replace",
+                        "icon": "📦❌",
+                        "scenarios": [
+                            "Need AA batteries but only have AAA",
+                            "Forgot to charge rechargeable batteries",
+                            "Don't know which batteries are compatible",
+                            "Can't find where spare batteries are stored"
+                        ]
+                    },
+                    "solution": {
+                        "title": "Inventory Management for Proper Battery Tracking",
+                        "icon": "📦✅",
+                        "description": "Check battery stock status at a glance and achieve proper management",
+                        "features": [
+                            "Create and manage battery groups",
+                            "Track batteries in use and spares",
+                            "Manage battery status (charged, in use, disposed)"
+                        ]
+                    }
+                },
+                {
+                    "id": "lost_battery",
+                    "problem": {
+                        "title": "Which Device Was That Rechargeable Battery In?",
+                        "icon": "❓",
+                        "scenarios": [
+                            "Forgot which device contains the rechargeable battery",
+                            "Difficult to manage multiple batteries of same type",
+                            "Unknown battery usage history",
+                            "Confused about which battery to charge"
+                        ]
+                    },
+                    "solution": {
+                        "title": "Device Tracking Clarifies Battery Location",
+                        "icon": "🔍",
+                        "description": "Accurately track which battery is used in which device",
+                        "features": [
+                            "Battery life prediction per device",
+                            "Record battery replacement history",
+                            "Associate devices with batteries"
+                        ]
+                    }
+                }
+            ]
+        },
+        "features": {
+            "title": "App Main Features",
+            "notification": {
+                "title": "Battery Depletion Notification",
+                "description": "Get notified in advance when device battery levels are low. Prevent battery-related inconveniences.",
+                "details": [
+                    "Real-time battery level monitoring",
+                    "Customizable notification settings",
+                    "Manage multiple devices simultaneously"
+                ]
+            },
+            "inventory": {
+                "title": "Battery Inventory Management",
+                "description": "Easily track current battery inventory. Quickly see which batteries are used in which devices.",
+                "details": [
+                    "Create and manage battery groups",
+                    "Track batteries in use and spare batteries",
+                    "Manage battery status (charged, in use, disposed)"
+                ]
+            },
+            "deviceTracking": {
+                "title": "Device Battery Tracking",
+                "description": "Track battery usage for each device. Accurately determine when to replace batteries.",
+                "details": [
+                    "Battery life prediction per device",
+                    "Record battery replacement history",
+                    "Associate devices with batteries"
+                ]
+            }
+        },
+        "howItWorks": {
+            "title": "How It Works",
+            "steps": [
+                {
+                    "title": "Register Devices",
+                    "description": "Easily add devices in use and set the required battery type and quantity"
+                },
+                {
+                    "title": "Create Battery Groups",
+                    "description": "Manage battery inventory and select appropriate batteries for each device"
+                },
+                {
+                    "title": "Real-Time Tracking",
+                    "description": "Always monitor battery levels and replacement timing, and take preventive measures"
+                }
+            ]
+        },
+        "cta": {
+            "login": "Start with Login",
+            "signup": "Sign Up for Free"
+        },
+        "planInfo": {
+            "title": "Flexible Plan Settings",
+            "description": "Free plan allows management of up to 5 battery groups and devices. Upgrade your plan in the future to manage more devices and batteries."
+        },
         "footer": {
             "contact": "Contact",
             "privacyPolicy": "Privacy Policy",
