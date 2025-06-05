@@ -9,6 +9,7 @@ import { useDevices, useUserPlan } from '@/lib/hooks';
 import { DeviceListItem } from './DeviceListItem';
 import type { Database } from '@/lib/database.types';
 import { getActualPlanLimits } from '@/lib/planUtils';
+import { useDemoMode } from '@/components/Demo/DemoModeContext';
 
 type Device = Database['public']['Tables']['devices']['Row'];
 type DeviceType = 'all' | 'remotecontroller' | 'speaker' | 'camera' | 'gadget' | 'light' | 'toy' | 'other';
@@ -30,9 +31,10 @@ interface DeviceListSectionProps {
   isOpen: boolean;
   onToggle: () => void;
   isDesktop: boolean;
+  isDemoMode?: boolean;
 }
 
-function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop }: DeviceListSectionProps) {
+function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop, isDemoMode = false }: DeviceListSectionProps) {
   if (devices.length === 0) return null;
 
   return (
@@ -50,7 +52,7 @@ function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop }: Devi
       {isOpen && (
         <div className={`p-4 grid gap-4 ${isDesktop ? 'grid-cols-2' : 'grid-cols-1'}`}>
           {devices.map((device) => (
-            <DeviceListItem key={device.id} device={device} />
+            <DeviceListItem key={device.id} device={device} isDemoMode={isDemoMode} />
           ))}
         </div>
       )}
@@ -58,9 +60,14 @@ function DeviceListSection({ title, devices, isOpen, onToggle, isDesktop }: Devi
   );
 }
 
-export function DeviceList() {
+interface DeviceListProps {
+  isDemoMode?: boolean;
+}
+
+export function DeviceList({ isDemoMode = false }: DeviceListProps) {
   const { t } = useTranslation();
-  const { devices, loading } = useDevices();
+  const { devices: defaultDevices, loading } = useDevices();
+  const { devices: demoDevices } = isDemoMode ? useDemoMode() : { devices: [] };
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [showFilters, setShowFilters] = useState(false);
   const [deviceTypeFilter, setDeviceTypeFilter] = useState<DeviceType>('all');
@@ -69,6 +76,8 @@ export function DeviceList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showWithBatteries, setShowWithBatteries] = useState(true);
   const [showWithoutBatteries, setShowWithoutBatteries] = useState(true);
+
+  const devices = isDemoMode ? demoDevices : defaultDevices;
 
   // デバイスタイプのラベルを翻訳関数で定義
   const deviceTypeLabels: Record<DeviceType, string> = {
@@ -201,12 +210,12 @@ export function DeviceList() {
                 </span>
               )}
             </button>
-            <DeviceAddButton devices={devices} />
+            {!isDemoMode && <DeviceAddButton devices={devices} />}
           </div>
         </div>
 
         {/* ユーザープラン情報表示 */}
-        <UserPlanInfo devices={devices} />
+        {!isDemoMode && <UserPlanInfo devices={devices} />}
 
         {showFilters && (
           <div className="mb-4">
@@ -306,15 +315,17 @@ export function DeviceList() {
             <Smartphone className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
             <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-dark-text">{t('device.list.noDevices')}</h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">{t('device.list.emptyStateMessage')}</p>
-            <div className="mt-6">
-              <Link
-                to="/add/devices/new"
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                新規登録
-              </Link>
-            </div>
+            {!isDemoMode && (
+              <div className="mt-6">
+                <Link
+                  to="/add/devices/new"
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  新規登録
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       ) : filteredAndSortedDevices.length === 0 ? (
@@ -342,6 +353,7 @@ export function DeviceList() {
             isOpen={showWithBatteries}
             onToggle={() => setShowWithBatteries(!showWithBatteries)}
             isDesktop={isDesktop}
+            isDemoMode={isDemoMode}
           />
           <DeviceListSection
             title={t('device.list.withoutBatteries')}
@@ -349,6 +361,7 @@ export function DeviceList() {
             isOpen={showWithoutBatteries}
             onToggle={() => setShowWithoutBatteries(!showWithoutBatteries)}
             isDesktop={isDesktop}
+            isDemoMode={isDemoMode}
           />
         </div>
       )}

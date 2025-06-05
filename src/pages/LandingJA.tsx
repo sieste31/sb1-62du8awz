@@ -1,47 +1,42 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
-import { generateLandingPageSEO, renderSEOMetaTags } from '../lib/seoUtils';
-import LandingHeader from '../components/LandingHeader';
-import LandingFeatures from '../components/LandingFeatures';
-import LandingPlanInfo from '../components/LandingPlanInfo';
-import LandingFooter from '../components/LandingFooter';
-import LandingUseCases from '../components/LandingUseCases';
-import { DemoLandingSection } from '../components/Demo/DemoLandingSection';
+import { useNavigate } from 'react-router-dom';
+import LandingPage from '@/components/LandingPage';
+import { useAuth } from '@/lib/auth-provider';
+import { DEMO_USER_ID } from '@/lib/demo';
+import { supabase } from '@/lib/supabase';
 
-const LandingPageJA: React.FC = () => {
-    const { t } = useTranslation();
-    const seo = generateLandingPageSEO(t, 'ja');
-    const seoTags = renderSEOMetaTags(seo);
+export function LandingJA() {
+    const navigate = useNavigate();
+    const { signInWithGoogle } = useAuth();
+
+    const handleDemoLogin = async () => {
+        try {
+            // デモユーザーでログイン
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: 'demo@example.com', // デモユーザーのメールアドレス
+                password: 'DemoUserPassword123!' // 安全なデモユーザーパスワード
+            });
+
+            if (error) throw error;
+            if (data.user?.id !== DEMO_USER_ID) {
+                throw new Error('Invalid demo user');
+            }
+
+            // デモページへリダイレクト
+            navigate('/demo');
+        } catch (err) {
+            console.error('デモログインエラー:', err);
+            alert('デモモードへのログインに失敗しました。');
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col">
-            <Helmet>
-                <title>{seoTags.title}</title>
-                {seoTags.meta.map((tag, index) => (
-                    <meta key={index} {...tag} />
-                ))}
-            </Helmet>
-            <LandingHeader />
-
-            <main className="flex-grow container mx-auto px-4 py-16">
-                <section className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        {t('landingPage.hero.title')}
-                    </h1>
-                    <p className="text-xl text-gray-600 mb-8">
-                        {t('landingPage.hero.subtitle')}
-                    </p>
-                </section>
-                <LandingUseCases />
-                <LandingFeatures />
-                <DemoLandingSection />
-                <LandingPlanInfo />
-            </main>
-
-            <LandingFooter />
-        </div>
+        <LandingPage
+            onGoogleSignIn={signInWithGoogle}
+            onDemoLogin={handleDemoLogin}
+            language="ja"
+        />
     );
-};
+}
 
-export default LandingPageJA;
+export default LandingJA;

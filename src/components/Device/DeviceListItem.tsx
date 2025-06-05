@@ -10,7 +10,12 @@ import { DEVICE_TYPE_ICONS, DEVICE_BATTERY_STATUS_STYLES } from './constants';
 import { calculateBatteryEndDate, getDeviceBatteryStatus } from './utils/deviceUtils';
 import type { Device } from './types';
 
-export function DeviceListItem({ device }: { device: Device }) {
+interface DeviceListItemProps {
+  device: Device;
+  isDemoMode?: boolean;
+}
+
+export function DeviceListItem({ device, isDemoMode = false }: DeviceListItemProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -31,9 +36,13 @@ export function DeviceListItem({ device }: { device: Device }) {
   // バッテリーステータスのスタイル取得
   const statusStyle = DEVICE_BATTERY_STATUS_STYLES[batteryStatus];
 
+  const linkTo = isDemoMode
+    ? `/demo/devices/${device.id}`
+    : `/app/devices/${device.id}`;
+
   return (
     <Link
-      to={`/app/devices/${device.id}`}
+      to={linkTo}
       className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
     >
       <div className="p-5">

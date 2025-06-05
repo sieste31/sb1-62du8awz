@@ -1,15 +1,17 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { getSession, onAuthStateChange } from './api/auth';
+import { getSession, onAuthStateChange, signInWithGoogle } from './api/auth';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  signInWithGoogle: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
+  signInWithGoogle: async () => { },
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -31,8 +33,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  const handleSignInWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      signInWithGoogle: handleSignInWithGoogle
+    }}>
       {children}
     </AuthContext.Provider>
   );

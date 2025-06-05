@@ -12,6 +12,8 @@ import {
   useAvailableBatteriesQuery
 } from './query';
 import { isLimitReached } from './api/userPlans';
+import { isDemoUser, isDemoData, canEditData } from './demo';
+import { useAuth } from './auth-provider';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
@@ -21,28 +23,20 @@ type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
 
 type Device = Database['public']['Tables']['devices']['Row'];
 
-interface ImageCache {
-  [key: string]: string;
-}
-
 interface AppState {
   batteryGroups: BatteryGroup[];
   devices: Device[];
-  imageCache: ImageCache;
   setBatteryGroups: (batteryGroups: BatteryGroup[]) => void;
   setDevices: (devices: Device[]) => void;
   updateBatteryGroup: (id: string, updates: Partial<BatteryGroup>) => void;
   updateDevice: (id: string, updates: Partial<Device>) => void;
   addBatteryGroup: (batteryGroup: BatteryGroup) => void;
   addDevice: (device: Device) => void;
-  setCachedImage: (key: string, url: string) => void;
-  getCachedImage: (key: string) => string | null;
 }
 
-export const useStore = create<AppState>((set, get) => ({
+export const useStore = create<AppState>((set) => ({
   batteryGroups: [],
   devices: [],
-  imageCache: {},
   setBatteryGroups: (batteryGroups) => set({ batteryGroups }),
   setDevices: (devices) => set({ devices }),
   updateBatteryGroup: (id, updates) =>
@@ -65,17 +59,13 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({
       devices: [device, ...state.devices],
     })),
-  setCachedImage: (key, url) =>
-    set((state) => ({
-      imageCache: { ...state.imageCache, [key]: url }
-    })),
-  getCachedImage: (key) => get().imageCache[key] || null,
 }));
 
 /**
- * 電池グループ一覧を取得し、ストアに保存するフック
+ * 電池グループ一覧を取得するフック
  */
 export function useBatteryGroupsStore() {
+  const { user } = useAuth();
   const { data, isLoading } = useBatteryGroupsQuery();
   const setBatteryGroups = useStore((state) => state.setBatteryGroups);
 
@@ -87,14 +77,16 @@ export function useBatteryGroupsStore() {
 
   return {
     batteryGroups: useStore((state) => state.batteryGroups),
-    loading: isLoading
+    loading: isLoading,
+    canEdit: canEditData(user, data?.[0]?.user_id)
   };
 }
 
 /**
- * 特定の電池グループとその電池を取得し、ストアに保存するフック
+ * 特定の電池グループを取得するフック
  */
 export function useBatteryGroupStore(id: string) {
+  const { user } = useAuth();
   const { data: batteryGroup, isLoading: loadingGroup } = useBatteryGroupQuery(id);
   const { data: batteries, isLoading: loadingBatteries } = useBatteriesQuery(id);
   const updateBatteryGroup = useStore((state) => state.updateBatteryGroup);
@@ -109,13 +101,15 @@ export function useBatteryGroupStore(id: string) {
     batteryGroup: batteryGroup ?? null,
     batteries: batteries ?? [],
     loading: loadingGroup || loadingBatteries,
+    canEdit: canEditData(user, batteryGroup?.user_id)
   };
 }
 
 /**
- * デバイス一覧を取得し、ストアに保存するフック
+ * デバイス一覧を取得するフック
  */
 export function useDevicesStore() {
+  const { user } = useAuth();
   const { data, isLoading } = useDevicesQuery();
   const setDevices = useStore((state) => state.setDevices);
 
@@ -127,14 +121,16 @@ export function useDevicesStore() {
 
   return {
     devices: useStore((state) => state.devices),
-    loading: isLoading
+    loading: isLoading,
+    canEdit: canEditData(user, data?.[0]?.user_id)
   };
 }
 
 /**
- * 特定のデバイスとその電池を取得し、ストアに保存するフック
+ * 特定のデバイスを取得するフック
  */
 export function useDeviceStore(id: string) {
+  const { user } = useAuth();
   const { data: device, isLoading: loadingDevice } = useDeviceQuery(id);
   const { data: batteries, isLoading: loadingBatteries } = useDeviceBatteriesQuery(id);
   const updateDevice = useStore((state) => state.updateDevice);
@@ -149,6 +145,7 @@ export function useDeviceStore(id: string) {
     device: device ?? null,
     batteries: batteries ?? [],
     loading: loadingDevice || loadingBatteries,
+    canEdit: canEditData(user, device?.user_id)
   };
 }
 

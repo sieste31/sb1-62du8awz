@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { Battery, Smartphone, Menu, X, Settings } from 'lucide-react';
+import { Battery, Smartphone, Menu, X, Settings, Eye } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
-export function Navigation() {
+interface NavigationProps {
+  isDemoMode?: boolean;
+}
+
+export function Navigation({ isDemoMode = false }: NavigationProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
@@ -18,24 +22,35 @@ export function Navigation() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">{t('app.title')}</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">
+                {isDemoMode ? t('app.demoMode') : t('app.title')}
+              </h1>
+              {isDemoMode && (
+                <span
+                  className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full"
+                  title={t('app.demoModeTooltip')}
+                >
+                  <Eye className="inline-block h-4 w-4 mr-1" />
+                  {t('app.demo')}
+                </span>
+              )}
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                to="/app/batteries"
+                to={isDemoMode ? "/demo/batteries" : "/app/batteries"}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${activeTab === 'batteries'
-                    ? 'border-blue-500 text-gray-900 dark:text-dark-text'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
+                  ? 'border-blue-500 text-gray-900 dark:text-dark-text'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
               >
                 <Battery className="mr-2 h-5 w-5" />
                 {t('nav.batteries')}
               </Link>
               <Link
-                to="/app/devices"
+                to={isDemoMode ? "/demo/devices" : "/app/devices"}
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${activeTab === 'devices'
-                    ? 'border-blue-500 text-gray-900 dark:text-dark-text'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
+                  ? 'border-blue-500 text-gray-900 dark:text-dark-text'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
               >
                 <Smartphone className="mr-2 h-5 w-5" />
@@ -44,13 +59,15 @@ export function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <Link
-              to="/app/settings"
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-              title={t('userSettings.title')}
-            >
-              <Settings className="h-5 w-5" />
-            </Link>
+            {!isDemoMode && (
+              <Link
+                to="/app/settings"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                title={t('userSettings.title')}
+              >
+                <Settings className="h-5 w-5" />
+              </Link>
+            )}
             <div className="-mr-2 flex items-center sm:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -71,10 +88,10 @@ export function Navigation() {
       <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
           <Link
-            to="/app/batteries"
+            to={isDemoMode ? "/demo/batteries" : "/app/batteries"}
             className={`${activeTab === 'batteries'
-                ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
+              ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
               } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
             onClick={() => setIsMenuOpen(false)}
           >
@@ -84,10 +101,10 @@ export function Navigation() {
             </div>
           </Link>
           <Link
-            to="/app/devices"
+            to={isDemoMode ? "/demo/devices" : "/app/devices"}
             className={`${activeTab === 'devices'
-                ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
+              ? 'bg-blue-50 dark:bg-blue-900/50 border-blue-500 text-blue-700 dark:text-blue-300'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
               } block pl-3 pr-4 py-2 border-l-4 text-base font-medium`}
             onClick={() => setIsMenuOpen(false)}
           >
@@ -96,16 +113,18 @@ export function Navigation() {
               {t('nav.devices')}
             </div>
           </Link>
-          <Link
-            to="/app/settings"
-            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <div className="flex items-center">
-              <Settings className="mr-2 h-5 w-5" />
-              {t('userSettings.title')}
-            </div>
-          </Link>
+          {!isDemoMode && (
+            <Link
+              to="/app/settings"
+              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-dark-bg hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <div className="flex items-center">
+                <Settings className="mr-2 h-5 w-5" />
+                {t('userSettings.title')}
+              </div>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

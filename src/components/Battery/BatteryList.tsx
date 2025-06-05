@@ -5,9 +5,7 @@ import { Battery, Plus, Filter, Search, SortDesc, AlertCircle } from 'lucide-rea
 import { Link, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
-// 新しい構造を使用
 import { useBatteryGroups, useUserPlan } from '@/lib/hooks';
-// 注: 上記のインポートは内部的に store.ts の useBatteryGroupsStore と useUserPlanStore を使用しています
 import type { Database } from '@/lib/database.types';
 import { BatteryListItem } from './BatteryListItem';
 import { BatteryListFilter } from './BatteryListFilter';
@@ -17,6 +15,7 @@ import {
   SORT_OPTIONS
 } from '@/lib/batteryFilterStore';
 import { getActualPlanLimits } from '@/lib/planUtils';
+import { useDemoMode } from '@/components/Demo/DemoModeContext';
 
 type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   batteries?: (Database['public']['Tables']['batteries']['Row'] & {
@@ -24,10 +23,17 @@ type BatteryGroup = Database['public']['Tables']['battery_groups']['Row'] & {
   })[];
 };
 
-export function BatteryList() {
+interface BatteryListProps {
+  isDemoMode?: boolean;
+}
+
+export function BatteryList({ isDemoMode = false }: BatteryListProps) {
   const { t } = useTranslation();
-  const { batteryGroups, loading } = useBatteryGroups();
+  const { batteryGroups: defaultBatteryGroups, loading } = useBatteryGroups();
+  const { batteryGroups: demoBatteryGroups } = isDemoMode ? useDemoMode() : { batteryGroups: [] };
   const isDesktop = useMediaQuery({ minWidth: 768 });
+
+  const batteryGroups = isDemoMode ? demoBatteryGroups : defaultBatteryGroups;
 
   // Zustandストアから状態と関数を取得
   const {
@@ -52,11 +58,11 @@ export function BatteryList() {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text">{t('battery.list.title')}</h2>
           <div className="flex flex-wrap items-center gap-3">
             <BatteryListFilterButton />
-            <BatteryAddButton batteryGroups={batteryGroups} />
+            {!isDemoMode && <BatteryAddButton batteryGroups={batteryGroups} />}
           </div>
         </div>
         {/* ユーザープラン情報表示 */}
-        <UserPlanInfo batteryGroups={batteryGroups} />
+        {!isDemoMode && <UserPlanInfo batteryGroups={batteryGroups} />}
         <BatteryListFilter />
       </div>
 
@@ -72,7 +78,7 @@ export function BatteryList() {
                 ? t('battery.list.emptyStateMessage')
                 : t('battery.list.noMatchingMessage')}
             </p>
-            {batteryGroups.length === 0 && (
+            {!isDemoMode && batteryGroups.length === 0 && (
               <div className="mt-6">
                 <Link
                   to="/app/batteries/new"
@@ -88,7 +94,7 @@ export function BatteryList() {
           <div className="p-4 sm:p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {filteredAndSortedGroups.map((group) => (
-                <BatteryListItem key={group.id} group={group} />
+                <BatteryListItem key={group.id} group={group} isDemoMode={isDemoMode} />
               ))}
             </div>
           </div>

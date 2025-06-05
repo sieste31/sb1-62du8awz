@@ -15,9 +15,13 @@ interface BatteryListItemProps {
    * 表示する電池グループ
    */
   group: BatteryGroup;
+  /**
+   * デモモードかどうか
+   */
+  isDemoMode?: boolean;
 }
 
-export function BatteryListItem({ group }: BatteryListItemProps) {
+export function BatteryListItem({ group, isDemoMode = false }: BatteryListItemProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -50,9 +54,18 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
     setDeviceBatteryCounts(deviceCounts);
   }, [group]);
 
+  const linkTo = isDemoMode
+    ? `/demo/batteries/${group.id}`
+    : `/app/batteries/${group.id}`;
+
+  const navigateToDevice = (e: React.MouseEvent, deviceId: string) => {
+    e.stopPropagation(); // クリックイベントの伝播を停止
+    navigate(isDemoMode ? `/demo/devices/${deviceId}` : `/app/devices/${deviceId}`);
+  };
+
   return (
     <Link
-      to={`/app/batteries/${group.id}`}
+      to={linkTo}
       className="block bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-sm hover:shadow-md hover:border-gray-200 dark:hover:border-gray-600 hover:scale-[1.01] transition-all duration-200"
     >
       <div className="p-5">
@@ -123,10 +136,7 @@ export function BatteryListItem({ group }: BatteryListItemProps) {
                     <button
                       key={device.deviceId}
                       className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-xs text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation(); // クリックイベントの伝播を停止
-                        navigate(`/app/devices/${device.deviceId}`);
-                      }}
+                      onClick={(e) => navigateToDevice(e, device.deviceId)}
                     >
                       <span className="max-w-[120px] truncate">{device.deviceName}</span>
                       <span className="ml-1 bg-blue-200 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full px-1.5 py-0.5 text-xs font-medium">

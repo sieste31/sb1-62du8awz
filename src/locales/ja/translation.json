@@ -3,11 +3,8 @@
     "title": "BattDevy"
   },
   "nav": {
-    "batteries": "電池",
-    "devices": "デバイス",
-    "new": "新規登録",
-    "selectBattery": "電池選択",
-    "detail": "デバイス詳細"
+    "batteries": "電池グループ",
+    "devices": "デバイス"
   },
   "privacyPolicy": {
     "pageTitle": "プライバシーポリシー - BattDevy",
@@ -219,6 +216,10 @@
       "termsOfService": "利用規約",
       "faq": "よくある質問",
       "copyright": "© 2025 BattDevy. All rights reserved."
+    },
+    "login": {
+      "google": "Googleでログイン",
+      "demo": "デモを試す"
     }
   },
   "battery": {
