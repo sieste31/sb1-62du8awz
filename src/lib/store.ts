@@ -26,17 +26,21 @@ type Device = Database['public']['Tables']['devices']['Row'];
 interface AppState {
   batteryGroups: BatteryGroup[];
   devices: Device[];
+  imageCache: Record<string, string>;
   setBatteryGroups: (batteryGroups: BatteryGroup[]) => void;
   setDevices: (devices: Device[]) => void;
   updateBatteryGroup: (id: string, updates: Partial<BatteryGroup>) => void;
   updateDevice: (id: string, updates: Partial<Device>) => void;
   addBatteryGroup: (batteryGroup: BatteryGroup) => void;
   addDevice: (device: Device) => void;
+  setCachedImage: (key: string, url: string) => void;
+  getCachedImage: (key: string) => string | undefined;
 }
 
-export const useStore = create<AppState>((set) => ({
+export const useStore = create<AppState>((set, get) => ({
   batteryGroups: [],
   devices: [],
+  imageCache: {},
   setBatteryGroups: (batteryGroups) => set({ batteryGroups }),
   setDevices: (devices) => set({ devices }),
   updateBatteryGroup: (id, updates) =>
@@ -59,6 +63,11 @@ export const useStore = create<AppState>((set) => ({
     set((state) => ({
       devices: [device, ...state.devices],
     })),
+  setCachedImage: (key, url) =>
+    set((state) => ({
+      imageCache: { ...state.imageCache, [key]: url }
+    })),
+  getCachedImage: (key) => get().imageCache[key],
 }));
 
 /**

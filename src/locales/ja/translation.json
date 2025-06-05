@@ -4,7 +4,10 @@
   },
   "nav": {
     "batteries": "電池グループ",
-    "devices": "デバイス"
+    "devices": "デバイス",
+    "detail": "詳細",
+    "selectBattery": "電池選択",
+    "new": "作成"
   },
   "privacyPolicy": {
     "pageTitle": "プライバシーポリシー - BattDevy",
