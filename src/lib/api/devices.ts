@@ -224,8 +224,9 @@ export async function getDeviceUsageHistory(deviceId: string) {
     .from('battery_usage_history')
     .select(`
       *,
-      batteries (*),
-      devices (*)
+      batteries (*,
+            battery_groups (*)),
+      devices (*),
     `)
     .eq('device_id', deviceId)
     .order('started_at', { ascending: false });
