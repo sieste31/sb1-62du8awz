@@ -122,37 +122,30 @@ export async function removeBatteriesFromDevice(deviceId: string) {
       .select('id')
       .eq('device_id', deviceId);
 
-    if (batteriesError) throw batteriesError;
+    if (batteriesError) {
+      console.error('電池取得エラー:', batteriesError);
+      throw batteriesError;
+    }
 
     if (batteries.length === 0) return true; // 電池が既に存在しない場合は何もしない
 
     const batteryIds = batteries.map(battery => battery.id);
 
-    // 2. 電池の状態を更新（device_idをnullに、statusを'empty'に）
-    const { error: updateBatteriesError } = await supabase
-      .from('batteries')
-      .update({
-        device_id: null,
-        status: 'empty',
-        last_changed_at: now
-      })
-      .in('id', batteryIds);
+    // トランザクションを使用して、電池と デバイスの状態を一括更新
+    const { error } = await supabase.rpc('remove_batteries_from_device', {
+      p_dev_id: deviceId,
+      p_battery_ids: batteryIds,
+      p_timestamp: now
+    });
 
-    if (updateBatteriesError) throw updateBatteriesError;
-
-    // 3. デバイスの電池装着状態を更新
-    const { error: updateDeviceError } = await supabase
-      .from('devices')
-      .update({
-        has_batteries: false
-      })
-      .eq('id', deviceId);
-
-    if (updateDeviceError) throw updateDeviceError;
+    if (error) {
+      console.error('電池取り外しエラー:', error);
+      throw error;
+    }
 
     return true;
   } catch (error) {
-    console.error('電池取り外しエラー:', error);
+    console.error('電池取り外し処理エラー:', error);
     throw error;
   }
 }
@@ -178,38 +171,14 @@ export async function addBatteryToDevice(deviceId: string, batteryId: string) {
     // 現在時刻を取得
     const now = new Date().toISOString();
 
-    // 1. 電池の状態を更新
-    const { error: updateBatteryError } = await supabase
-      .from('batteries')
-      .update({
-        device_id: deviceId,
-        status: 'in_use',
-        last_changed_at: now
-      })
-      .eq('id', batteryId);
+    // トランザクション関数を使用して、電池とデバイスの状態を一括更新
+    const { error } = await supabase.rpc('add_battery_to_device', {
+      p_dev_id: deviceId,
+      p_battery_id: batteryId,
+      p_timestamp: now
+    });
 
-    if (updateBatteryError) throw updateBatteryError;
-
-    // 2. 使用履歴を作成
-    const { error: createHistoryError } = await supabase
-      .from('battery_usage_history')
-      .insert({
-        battery_id: batteryId,
-        device_id: deviceId,
-        started_at: now
-      });
-
-    if (createHistoryError) throw createHistoryError;
-
-    // 3. デバイスのhas_batteriesをtrueに更新
-    const { error: updateDeviceError } = await supabase
-      .from('devices')
-      .update({
-        has_batteries: true
-      })
-      .eq('id', deviceId);
-
-    if (updateDeviceError) throw updateDeviceError;
+    if (error) throw error;
 
     return true;
   } catch (err) {
@@ -224,9 +193,11 @@ export async function getDeviceUsageHistory(deviceId: string) {
     .from('battery_usage_history')
     .select(`
       *,
-      batteries (*,
-            battery_groups (*)),
-      devices (*),
+      batteries (
+        *,
+        battery_groups (*)
+      ),
+      devices (*)
     `)
     .eq('device_id', deviceId)
     .order('started_at', { ascending: false });

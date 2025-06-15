@@ -47,15 +47,15 @@ export function BatteryStatusDisplay({
         const badgeContent = (
             <div
                 className={`inline-flex items-center px-2.5 py-1 rounded-full ${count > 0
-                        ? `${color.background} ${color.text}`
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-50'
+                    ? `${color.background} ${color.text}`
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-50'
                     } ${interactive && count > 0 ? 'cursor-pointer hover:opacity-80' : ''}`}
                 onClick={() => interactive && count > 0 && onStatusClick?.(status)}
             >
                 <BatteryStatusBadge status={status} className="!bg-transparent !p-0" />
                 <span className={`ml-1 rounded-full px-1.5 py-0.5 text-xs font-medium ${count > 0
-                        ? `${color.background} ${color.text}`
-                        : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
+                    ? `${color.background} ${color.text}`
+                    : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
                     }`}>
                     {count}{t('battery.list.unit')}
                 </span>
@@ -70,9 +70,11 @@ export function BatteryStatusDisplay({
             <div className="flex justify-between text-xs text-gray-500 mb-2 w-full">
                 <span>{t('battery.list.batteryStatus')} ({t('battery.list.total', { count: totalCount })})</span>
             </div>
-            {(Object.keys(BATTERY_STATUS_STYLES) as BatteryStatus[]).map(status =>
-                renderStatusBadge(status)
-            )}
+            {(Object.keys(BATTERY_STATUS_STYLES) as BatteryStatus[]).map(status => (
+                <div key={status}>
+                    {renderStatusBadge(status)}
+                </div>
+            ))}
         </div>
     );
 }

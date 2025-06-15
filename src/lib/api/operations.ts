@@ -1,8 +1,8 @@
 import { supabase } from '../supabase';
 import type { Database } from '../database.types';
 import { endDeviceCurrentUsageHistory } from './batteryUsageHistory';
-import { updateDeviceBatteryChange, removeBatteriesFromDevice } from './devices';
-import { updateBatteries } from './batteries';
+import { updateDeviceBatteryChange, removeBatteriesFromDevice, getDevice } from './devices';
+import { updateBatteries, getBatteries } from './batteries';
 import { createBatteryUsageHistory } from './batteryUsageHistory';
 
 // デバイスに電池を割り当てる複合操作
@@ -12,19 +12,35 @@ export async function assignBatteriesToDevice(
   userId: string
 ) {
   const now = new Date().toISOString();
-  
+
   try {
-    // 1. 既存の電池の使用履歴を終了
+    // 0. デバイスの所有者を確認
+    const device = await getDevice(deviceId, userId);
+    if (!device) {
+      throw new Error('デバイスが見つからないか、アクセス権がありません');
+    }
+
+    // 1. 選択された電池が全て同じユーザーに属していることを確認
+    const batteries = await getBatteries(undefined, userId);
+    const validBatteryIds = batteries
+      .filter(battery => batteryIds.includes(battery.id))
+      .map(battery => battery.id);
+
+    if (validBatteryIds.length !== batteryIds.length) {
+      throw new Error('無効な電池が選択されました');
+    }
+
+    // 2. 既存の電池の使用履歴を終了
     await endDeviceCurrentUsageHistory(deviceId);
-    
-    // 2. 既存の電池を取り外し
+
+    // 3. 既存の電池を取り外し
     await removeBatteriesFromDevice(deviceId);
-    
+
     if (batteryIds.length > 0) {
-      // 3. デバイスの最終電池交換日を更新
+      // 4. デバイスの最終電池交換日を更新
       await updateDeviceBatteryChange(deviceId);
-      
-      // 4. 選択された電池を設定
+
+      // 5. 選択された電池を設定
       await updateBatteries(
         batteryIds,
         {
@@ -34,21 +50,37 @@ export async function assignBatteriesToDevice(
           last_changed_at: now,
         }
       );
-      
-      // 5. 使用履歴を記録
+
+      // 6. デバイスのhas_batteriesをtrueに更新
+      await supabase
+        .from('devices')
+        .update({
+          has_batteries: true,
+          last_battery_change: now
+        })
+        .eq('id', deviceId)
+        .eq('user_id', userId);
+
+      // 7. 使用履歴を記録
       const historyRecords = batteryIds.map(batteryId => ({
         battery_id: batteryId,
         device_id: deviceId,
         started_at: now,
         user_id: userId,
       }));
-      
+
       await createBatteryUsageHistory(historyRecords);
     }
-    
+
     return true;
-  } catch (error) {
-    console.error('Error assigning batteries to device:', error);
+  } catch (error: unknown) {
+    console.error('Error assigning batteries to device:', {
+      deviceId,
+      batteryIds,
+      userId,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : 'No stack trace'
+    });
     throw error;
   }
 }
@@ -64,7 +96,10 @@ export async function createBatteryGroupWithBatteries(
     // 1. 電池グループを作成
     const { data: createdGroup, error: groupError } = await supabase
       .from('battery_groups')
-      .insert(groupData)
+      .insert({
+        ...groupData,
+        user_id: userId
+      })
       .select()
       .single();
 
@@ -84,8 +119,15 @@ export async function createBatteryGroupWithBatteries(
     if (batteriesError) throw batteriesError;
 
     return createdGroup;
-  } catch (error) {
-    console.error('Error creating battery group with batteries:', error);
+  } catch (error: unknown) {
+    console.error('Error creating battery group with batteries:', {
+      groupData,
+      count,
+      status,
+      userId,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : 'No stack trace'
+    });
     throw error;
   }
 }

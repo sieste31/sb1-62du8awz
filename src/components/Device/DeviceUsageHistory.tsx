@@ -1,7 +1,7 @@
 // デバイスの電池交換履歴を表示するモーダルコンポーネント
 
-import React from 'react';
-import { X, Battery, Calendar } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { X, Battery, ChevronDown, ChevronUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getDeviceUsageHistory } from '@/lib/api/devices';
 import type { Database } from '@/lib/database.types';
@@ -12,6 +12,13 @@ type UsageHistory = Database['public']['Tables']['battery_usage_history']['Row']
   });
 };
 
+type GroupedUsageHistory = {
+  timestamp: string;
+  records: UsageHistory[];
+  batteryCount: number;
+  expanded?: boolean;
+};
+
 interface DeviceUsageHistoryProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,14 +27,47 @@ interface DeviceUsageHistoryProps {
 }
 
 export function DeviceUsageHistory({ isOpen, onClose, deviceId, deviceName }: DeviceUsageHistoryProps) {
-  const { data: history, isLoading } = useQuery({
+  const { data: history, isLoading } = useQuery<UsageHistory[]>({
     queryKey: ['deviceUsageHistory', deviceId],
     queryFn: async () => {
       const data = await getDeviceUsageHistory(deviceId);
       return data as UsageHistory[];
     },
     enabled: isOpen,
+    initialData: []
   });
+
+  const groupedHistory = useMemo(() => {
+    if (!history || history.length === 0) return [];
+
+    const groups = new Map<string, UsageHistory[]>();
+
+    history.forEach(record => {
+      const key = record.started_at;
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key)!.push(record);
+    });
+
+    return Array.from(groups.entries())
+      .map(([timestamp, records]) => ({
+        timestamp,
+        records,
+        batteryCount: records.length,
+        expanded: false
+      }))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, [history]);
+
+  const [expandedGroups, setExpandedGroups] = React.useState<{ [key: string]: boolean }>({});
+
+  const toggleGroupExpand = (timestamp: string) => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [timestamp]: !prev[timestamp]
+    }));
+  };
 
   if (!isOpen) return null;
 
@@ -62,14 +102,14 @@ export function DeviceUsageHistory({ isOpen, onClose, deviceId, deviceName }: De
                 <div className="mt-4 flex justify-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
                 </div>
-              ) : history && history.length > 0 ? (
+              ) : groupedHistory && groupedHistory.length > 0 ? (
                 <div className="mt-4">
                   <div className="flow-root">
                     <ul className="-mb-8">
-                      {history.map((record, recordIdx) => (
-                        <li key={record.id}>
+                      {groupedHistory.map((group, groupIdx) => (
+                        <li key={group.timestamp}>
                           <div className="relative pb-8">
-                            {recordIdx !== history.length - 1 ? (
+                            {groupIdx !== groupedHistory.length - 1 ? (
                               <span
                                 className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700"
                                 aria-hidden="true"
@@ -82,19 +122,36 @@ export function DeviceUsageHistory({ isOpen, onClose, deviceId, deviceName }: De
                                 </span>
                               </div>
                               <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                <div>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    {record.batteries.battery_groups.name} #{record.batteries.slot_number}を設置
-                                  </p>
-                                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    {new Date(record.started_at).toLocaleString()}
-                                    {record.ended_at && (
-                                      <>
-                                        {' → '}
-                                        {new Date(record.ended_at).toLocaleString()}
-                                      </>
+                                <div className="w-full">
+                                  <div
+                                    className="flex items-center cursor-pointer"
+                                    onClick={() => toggleGroupExpand(group.timestamp)}
+                                  >
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 flex-grow">
+                                      {group.batteryCount}個の電池を設置
+                                    </p>
+                                    {expandedGroups[group.timestamp] ? (
+                                      <ChevronUp className="h-4 w-4 text-gray-500" />
+                                    ) : (
+                                      <ChevronDown className="h-4 w-4 text-gray-500" />
                                     )}
+                                  </div>
+                                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    {new Date(group.timestamp).toLocaleString()}
                                   </p>
+
+                                  {expandedGroups[group.timestamp] && (
+                                    <div className="mt-2 space-y-1">
+                                      {group.records.map(record => (
+                                        <div
+                                          key={record.id}
+                                          className="text-xs text-gray-500 dark:text-gray-400 pl-2 border-l-2 border-blue-200"
+                                        >
+                                          {record.batteries.battery_groups.name} #{record.batteries.slot_number}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
