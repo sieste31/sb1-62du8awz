@@ -24,6 +24,7 @@ export const BaseListItem = forwardRef<HTMLDivElement, BaseListItemProps>(
       padding = 'md',
       className,
       children,
+      details,
       onClick,
       ...props
     },
@@ -139,6 +140,13 @@ export const BaseListItem = forwardRef<HTMLDivElement, BaseListItemProps>(
             </div>
           )}
         </div>
+        
+        {/* 詳細コンテンツ */}
+        {details && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            {details}
+          </div>
+        )}
       </Component>
     );
   }

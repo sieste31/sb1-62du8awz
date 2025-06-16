@@ -75,6 +75,11 @@ export interface BaseListItemProps extends React.HTMLAttributes<HTMLDivElement> 
    * 子要素
    */
   children?: React.ReactNode;
+  
+  /**
+   * 詳細表示エリア（追加コンテンツ）
+   */
+  details?: React.ReactNode;
 }
 
 export interface SelectableListItemProps extends BaseListItemProps {
