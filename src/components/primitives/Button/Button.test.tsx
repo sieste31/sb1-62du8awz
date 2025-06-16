@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { customRender, setupUser, expectToHaveClasses } from '@/test/test-utils';
+import { customRender, setupUser } from '@/test/test-utils';
 import { Button } from './Button';
 import type { ButtonProps } from './types';
 
