@@ -8,3 +8,4 @@ export * from './Input';
 export * from './Card';
 export * from './Badge';
 export * from './Layout';
+export * from './LoadingSpinner';
