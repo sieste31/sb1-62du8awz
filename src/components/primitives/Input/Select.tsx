@@ -31,7 +31,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const baseClasses = cn(
       // 基本スタイル
       'block w-full border transition-colors duration-200',
-      'bg-white appearance-none cursor-pointer',
+      'bg-white dark:bg-gray-700 appearance-none cursor-pointer',
       
       // バリアント
       inputVariants.variant[selectVariant],
@@ -85,7 +85,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {/* 矢印アイコン */}
         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 dark:text-gray-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -102,12 +102,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {(error || helpText) && (
           <div className="mt-1 text-sm">
             {error && (
-              <p className="text-red-600">
+              <p className="text-red-600 dark:text-red-400">
                 {error}
               </p>
             )}
             {!error && helpText && (
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 {helpText}
               </p>
             )}

@@ -32,7 +32,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const baseClasses = cn(
       // 基本スタイル
       'block w-full border transition-colors duration-200',
-      'placeholder:text-gray-400',
+      'placeholder:text-gray-400 dark:placeholder:text-gray-500',
       
       // バリアント
       inputVariants.variant[textareaVariant],
@@ -45,7 +45,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       
       // 条件付きスタイル
       conditionalClass(fullWidth, 'w-full'),
-      conditionalClass(disabled, inputVariants.disabled),
+      conditionalClass(disabled || false, inputVariants.disabled),
       conditionalClass(!resize, 'resize-none'),
       
       // カスタムクラス
@@ -74,12 +74,12 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         {(error || helpText) && (
           <div className="mt-1 text-sm">
             {error && (
-              <p className="text-red-600">
+              <p className="text-red-600 dark:text-red-400">
                 {error}
               </p>
             )}
             {!error && helpText && (
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 {helpText}
               </p>
             )}

@@ -31,7 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const baseClasses = cn(
       // 基本スタイル
       'block w-full border transition-colors duration-200',
-      'placeholder:text-gray-400',
+      'placeholder:text-gray-400 dark:placeholder:text-gray-500',
       
       // バリアント
       inputVariants.variant[inputVariant],
@@ -57,7 +57,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       conditionalClass(fullWidth, 'w-full')
     );
 
-    const iconClasses = 'absolute top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none';
+    const iconClasses = 'absolute top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none';
 
     return (
       <div className={containerClasses}>
@@ -83,12 +83,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {(error || helpText) && (
           <div className="mt-1 text-sm">
             {error && (
-              <p className="text-red-600">
+              <p className="text-red-600 dark:text-red-400">
                 {error}
               </p>
             )}
             {!error && helpText && (
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 {helpText}
               </p>
             )}

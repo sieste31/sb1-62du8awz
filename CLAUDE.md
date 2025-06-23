@@ -11,6 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build with prerendering**: `npm run build:prerender` (includes static page generation)
 - **Linting**: `npm run lint` (ESLint for TypeScript files)
 - **Preview**: `npm run preview` (serve built files)
+- **Testing**: `npm run test` (watch mode), `npm run test:run` (single run), `npm run test:ui` (UI mode), `npm run test:coverage` (with coverage)
 
 ## Architecture Overview
 
