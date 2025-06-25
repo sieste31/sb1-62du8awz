@@ -3,23 +3,22 @@
  * ListItem関連コンポーネントの型定義
  */
 
-import type { ButtonProps } from '@/components/primitives';
 
-export interface BaseListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BaseListItemProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onClick' | 'title'> {
   /**
    * リストアイテムのタイトル
    */
-  title?: string;
+  title?: React.ReactNode;
   
   /**
    * サブタイトル
    */
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   
   /**
    * 説明文
    */
-  description?: string;
+  description?: React.ReactNode;
   
   /**
    * 左側のアイコンまたは画像
@@ -80,6 +79,11 @@ export interface BaseListItemProps extends React.HTMLAttributes<HTMLDivElement> 
    * 詳細表示エリア（追加コンテンツ）
    */
   details?: React.ReactNode;
+  
+  /**
+   * クリックイベントハンドラー
+   */
+  onClick?: React.MouseEventHandler<HTMLElement>;
 }
 
 export interface SelectableListItemProps extends BaseListItemProps {

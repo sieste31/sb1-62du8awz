@@ -20,7 +20,7 @@ export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
     const baseClasses = cn(
       // 基本スタイル
       tokens.spacingY.md,
-      
+
       // カスタムクラス
       className
     );

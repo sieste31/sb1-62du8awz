@@ -57,7 +57,7 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
     const handleBatteryClick = (batteryId: string) => {
       const battery = device.batterySlots
         .find(slot => slot.battery?.id === batteryId)?.battery;
-      
+
       if (battery) {
         onBatteryClick?.(battery, device);
       }
@@ -102,15 +102,15 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
           <div className="flex-shrink-0">
             <span className="text-xl">{deviceIcons[device.type]}</span>
           </div>
-          
+
           <div className="min-w-0 flex-1">
             <h3 className={cn(
-              tokens.typography.body.medium,
+              tokens.typography.body.base,
               'font-medium text-gray-900 truncate'
             )}>
               {device.name}
             </h3>
-            
+
             <div className="flex items-center space-x-2 mt-1">
               <span className={cn(
                 tokens.typography.body.small,
@@ -118,7 +118,7 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
               )}>
                 {deviceTypeLabels[device.type]}
               </span>
-              
+
               <span className="text-gray-400">•</span>
               <span className={cn(
                 tokens.typography.body.small,
@@ -142,7 +142,7 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
     );
 
     // 場所情報
-    const locationInfo = showLocation && device.location && 
+    const locationInfo = showLocation && device.location &&
       `📍 ${device.location}`;
 
     // 電池詳細情報
@@ -153,19 +153,19 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
           <span className="text-gray-600">
             電池: {batteryStats.total}/{device.batterySlots.length}
           </span>
-          
+
           {batteryStats.needsAttention > 0 && (
             <span className="text-orange-600">
               注意: {batteryStats.needsAttention}個
             </span>
           )}
-          
+
           {batteryStats.critical > 0 && (
             <span className="text-red-600">
               要交換: {batteryStats.critical}個
             </span>
           )}
-          
+
           {batteryStats.missing > 0 && (
             <span className="text-red-600">
               未設置: {batteryStats.missing}個
@@ -180,13 +180,13 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
               <span className="text-xs text-gray-500">
                 #{slot.slotNumber}
               </span>
-              
+
               {slot.battery ? (
-                <div 
+                <div
                   className="cursor-pointer"
                   onClick={() => handleBatteryClick(slot.battery!.id)}
                 >
-                  <BatteryStatusBadge 
+                  <BatteryStatusBadge
                     status={slot.battery.status}
                     iconOnly
                   />
@@ -194,8 +194,8 @@ export const DeviceListItem = forwardRef<HTMLDivElement, DeviceListItemProps>(
               ) : (
                 <div className={cn(
                   'w-6 h-6 border-2 border-dashed rounded flex items-center justify-center',
-                  slot.required 
-                    ? 'border-red-300 bg-red-50' 
+                  slot.required
+                    ? 'border-red-300 bg-red-50'
                     : 'border-gray-300 bg-gray-50'
                 )}>
                   <span className="text-xs text-gray-400">-</span>

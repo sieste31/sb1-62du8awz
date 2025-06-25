@@ -72,15 +72,15 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
           <div className="flex-shrink-0">
             <span className="text-lg">🔋</span>
           </div>
-          
+
           <div className="min-w-0 flex-1">
             <h3 className={cn(
-              tokens.typography.body.medium,
+              tokens.typography.body.base,
               'font-medium text-gray-900 truncate'
             )}>
               {battery.name}
             </h3>
-            
+
             <div className="flex items-center space-x-2 mt-1">
               <span className={cn(
                 tokens.typography.body.small,
@@ -88,7 +88,7 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
               )}>
                 {shapeLabels[battery.shape]}
               </span>
-              
+
               {battery.voltage && (
                 <>
                   <span className="text-gray-400">•</span>
@@ -100,7 +100,7 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
                   </span>
                 </>
               )}
-              
+
               {battery.capacity && (
                 <>
                   <span className="text-gray-400">•</span>
@@ -116,7 +116,7 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
           </div>
         </div>
 
-        <div 
+        <div
           className="flex-shrink-0 cursor-pointer"
           onClick={handleStatusClick}
         >
@@ -147,7 +147,7 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
             )}
           </div>
         </div>
-        
+
         <div>
           <span className="text-gray-500">最終確認:</span>
           <div className="text-gray-900">
