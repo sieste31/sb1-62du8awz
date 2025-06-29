@@ -3,10 +3,11 @@
  * 電池形状選択コンポーネント
  */
 
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { Button, Stack } from '@/components/primitives';
 import { tokens } from '@/styles/tokens';
 import { cn } from '@/styles/utils';
+import { SHAPE_MAPPING, REVERSE_SHAPE_MAPPING } from '@/lib/adapters/battery-shape-mapper';
 import type { BatteryShapeSelectorProps, BatteryShape } from './types';
 
 // 電池形状設定
@@ -68,14 +69,34 @@ export const BatteryShapeSelector = forwardRef<HTMLDivElement, BatteryShapeSelec
       error = false,
       helperText,
       orientation = 'horizontal',
+      legacyValue,
+      onLegacyChange,
       className,
       ...props
     },
     ref
   ) => {
+    // 互換性処理：legacyValueがある場合は変換して使用
+    const actualValue = useMemo(() => {
+      if (legacyValue && !value) {
+        return SHAPE_MAPPING[legacyValue] as BatteryShape;
+      }
+      return value;
+    }, [value, legacyValue]);
+
     const handleShapeSelect = (shape: BatteryShape) => {
       if (disabled) return;
+      
+      // 新型のハンドラを呼ぶ
       onChange?.(shape);
+      
+      // 互換性のため、legacyハンドラも呼ぶ
+      if (onLegacyChange) {
+        const legacyShape = REVERSE_SHAPE_MAPPING[shape];
+        if (legacyShape) {
+          onLegacyChange(legacyShape as any);
+        }
+      }
     };
 
     const gridClass = orientation === 'horizontal' 
@@ -96,7 +117,7 @@ export const BatteryShapeSelector = forwardRef<HTMLDivElement, BatteryShapeSelec
         <div className={cn('grid gap-2', gridClass)}>
           {shapeOrder.map((shape) => {
             const config = shapeConfig[shape];
-            const isSelected = value === shape;
+            const isSelected = actualValue === shape;
             
             return (
               <Button
@@ -127,25 +148,25 @@ export const BatteryShapeSelector = forwardRef<HTMLDivElement, BatteryShapeSelec
         </div>
 
         {/* 選択中の詳細 */}
-        {value && (
+        {actualValue && (
           <div className={cn(
             'p-3 rounded-lg bg-blue-50 border border-blue-200',
             error && 'bg-red-50 border-red-200'
           )}>
             <div className="flex items-center space-x-2">
-              <span className="text-lg">{shapeConfig[value].icon}</span>
+              <span className="text-lg">{shapeConfig[actualValue].icon}</span>
               <div>
                 <p className={cn(
                   tokens.typography.body.small,
                   'font-medium text-gray-900'
                 )}>
-                  {shapeConfig[value].label}
+                  {shapeConfig[actualValue].label}
                 </p>
                 <p className={cn(
-                  tokens.typography.body.xsmall,
+                  tokens.typography.body.xs,
                   'text-gray-600'
                 )}>
-                  {shapeConfig[value].description}
+                  {shapeConfig[actualValue].description}
                 </p>
               </div>
             </div>

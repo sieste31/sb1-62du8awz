@@ -3,7 +3,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Battery, BatteryGroup, Device, BatteryStatus } from '../types';
 import { SelectedBatteries } from '../types';
-import { BatteryStatusBadge } from '@/components/Battery/BatteryStatusBadge';
+import { BatteryStatusBadge } from '@/components/domain/battery/BatteryStatusBadge';
+import { BatteryDataAdapter } from '@/lib/adapters/battery-data-adapter';
+import type { BatteryStatus as LegacyBatteryStatus } from '@/components/Battery/types';
 
 interface BatteryGroupProps {
     battery: Battery;
@@ -62,7 +64,9 @@ export function BatteryGroups({
                 </p>
                 <div className="mt-1">
                     <BatteryStatusBadge
-                        status={battery.status as BatteryStatus}
+                        status={BatteryDataAdapter.convertStatusToNew(battery.status as LegacyBatteryStatus)}
+                        originalStatus={battery.status as LegacyBatteryStatus}
+                        useTranslation={true}
                     />
                 </div>
                 {isInstalledInOtherDevice && battery.devices && (

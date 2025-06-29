@@ -31,6 +31,9 @@ export interface BatteryStatusBadgeProps extends Omit<BadgeProps, 'variant' | 'c
   status: BatteryStatus;
   showIcon?: boolean;
   iconOnly?: boolean;
+  // 移行期間用のプロパティ
+  originalStatus?: 'charged' | 'in_use' | 'empty' | 'disposed';
+  useTranslation?: boolean;
 }
 
 // BatteryShapeSelector Props
@@ -41,6 +44,9 @@ export interface BatteryShapeSelectorProps extends Omit<ComponentPropsWithoutRef
   error?: boolean;
   helperText?: string;
   orientation?: 'horizontal' | 'vertical';
+  // 移行期間用のプロパティ
+  legacyValue?: '単1形' | '単2形' | '単3形' | '単4形' | 'CR2032' | 'CR2025' | '9V形' | 'その他';
+  onLegacyChange?: (shape: '単1形' | '単2形' | '単3形' | '単4形' | 'CR2032' | 'CR2025' | '9V形' | 'その他') => void;
 }
 
 // BatteryListItem Props
@@ -52,4 +58,7 @@ export interface BatteryListItemProps extends Omit<ComponentPropsWithoutRef<'div
   showDetails?: boolean;
   selectable?: boolean;
   selected?: boolean;
+  // 移行期間用のプロパティ
+  originalGroup?: any; // BatteryGroup type from existing system
+  legacyMode?: boolean;
 }

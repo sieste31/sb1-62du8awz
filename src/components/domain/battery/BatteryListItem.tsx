@@ -6,6 +6,7 @@
 import React, { forwardRef } from 'react';
 import { SelectableListItem } from '@/components/composed';
 import { BatteryStatusBadge } from './BatteryStatusBadge';
+import { BatteryDataAdapter } from '@/lib/adapters/battery-data-adapter';
 import { tokens } from '@/styles/tokens';
 import { cn } from '@/styles/utils';
 import type { BatteryListItemProps } from './types';
@@ -51,6 +52,8 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
       showDetails = false,
       selectable = false,
       selected = false,
+      originalGroup,
+      legacyMode = false,
       className,
       ...props
     },
@@ -120,7 +123,13 @@ export const BatteryListItem = forwardRef<HTMLDivElement, BatteryListItemProps>(
           className="flex-shrink-0 cursor-pointer"
           onClick={handleStatusClick}
         >
-          <BatteryStatusBadge status={battery.status} />
+          <BatteryStatusBadge 
+            status={battery.status} 
+            {...(legacyMode && originalGroup && {
+              originalStatus: BatteryDataAdapter.findOriginalBattery(battery.id, [originalGroup])?.status,
+              useTranslation: true
+            })}
+          />
         </div>
       </div>
     );
